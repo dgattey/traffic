@@ -9,11 +9,11 @@ import java.awt.Color;
  */
 public abstract class Utilities {
 	
-	public static final String	APPNAME				= "Maps";
+	public static final String	APPNAME				= "Traffic";
 	public static final Color	COLOR_BACKGROUND	= new Color(50, 55, 70);
 	public static final String	GUI					= "gui";
 	public static final String	DEBUG				= "debug";
-	public static final String	USAGE				= "Usage: maps [--gui] <ways file> <nodes file> <index file> ";
+	public static final String	USAGE				= "Usage: traffic [--gui] <ways file> <nodes file> <index file> ";
 	
 	/**
 	 * Calculates minimum of many ints
