@@ -39,7 +39,7 @@ local.properties
 .texlipse
 
 ##Folders
-data/
+info/
 derived/
 derived/*.jar
 
