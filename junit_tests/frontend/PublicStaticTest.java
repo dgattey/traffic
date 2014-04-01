@@ -26,7 +26,7 @@ public class PublicStaticTest {
 	 */
 	@Test
 	public void checkCommandLineParsing() {
-		final ArgParser parser = Main.createFlagParser();
+		final ArgParser parser = Main.createFlagParser(3);
 		
 		final String file = "dummyFileNameHere.txt";
 		parser.parse(new String[] { file, file, file });

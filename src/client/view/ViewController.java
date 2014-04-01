@@ -46,8 +46,9 @@ public class ViewController {
 	private final ClientApp						app;
 	
 	// Constants
-	private static final Color					BGCOLOR				= Color.black;
-	private static final Color					FGCOLOR				= Color.white;
+	private static final Color					COLOR_BG			= Color.black;
+	private static final Color					COLOR_FG			= Color.white;
+	public static final Color					COLOR_WINDOW		= new Color(50, 55, 70);
 	static final String							FONT				= "Arial";
 	
 	public static final String					DEFAULT_LABEL_TEXT	= "Click any two points on the map or enter two intersections and press the button to find a route";
@@ -88,8 +89,8 @@ public class ViewController {
 	 * @param panel the panel to apply it to
 	 */
 	private static void theme(final JComponent panel) {
-		panel.setForeground(FGCOLOR);
-		panel.setBackground(BGCOLOR);
+		panel.setForeground(COLOR_FG);
+		panel.setBackground(COLOR_BG);
 	}
 	
 	/**
@@ -141,7 +142,7 @@ public class ViewController {
 		theme(loadingLabel);
 		
 		centerPanel.setPreferredSize(new Dimension(800, 600));
-		centerPanel.setBackground(Utils.COLOR_BACKGROUND);
+		centerPanel.setBackground(COLOR_WINDOW);
 		centerPanel.add(Box.createVerticalStrut(200));
 		centerPanel.add(loadingLabelStatic);
 		centerPanel.add(Box.createVerticalStrut(25));
@@ -315,8 +316,8 @@ public class ViewController {
 		addPadding(fieldsPanel, 12, 10);
 		
 		// Add items
-		final MatteBorder bottomLine = BorderFactory.createMatteBorder(0, 0, 2, 0, FGCOLOR);
-		final MatteBorder leftLine = BorderFactory.createMatteBorder(0, 1, 0, 0, FGCOLOR);
+		final MatteBorder bottomLine = BorderFactory.createMatteBorder(0, 0, 2, 0, COLOR_FG);
+		final MatteBorder leftLine = BorderFactory.createMatteBorder(0, 1, 0, 0, COLOR_FG);
 		buttonPanel.setBorder(BorderFactory.createCompoundBorder(leftLine, buttonPanel.getBorder()));
 		top.setBorder(BorderFactory.createCompoundBorder(bottomLine, top.getBorder()));
 		top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));

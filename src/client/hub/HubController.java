@@ -8,9 +8,9 @@ import server.io.DataSetException;
 import server.io.IOController;
 import client.ClientApp;
 import data.LatLongPoint;
+import data.MapException;
 import data.MapNode;
 import data.MapWay;
-import data.MapException;
 
 /**
  * @author dgattey
@@ -37,13 +37,17 @@ public class HubController implements Controllable {
 	 */
 	
 	/**
-	 * @param hostName
-	 * @param serverPort
-	 * @param guiApp
+	 * Main Constructor for HubController
+	 * 
+	 * @param hostName the host name to use as the server's hostname
+	 * @param serverPort the server port to use when connecting to the server
+	 * @param guiApp the app that's running this hub controller
 	 */
 	public HubController(final String hostName, final int serverPort, final ClientApp guiApp) {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
+		// TODO: setup a test socket and make sure it's connectable - perhaps to set appLoadPoint?
+		// TODO: Set isReady
 	}
 	
 	@Override
@@ -106,6 +110,11 @@ public class HubController implements Controllable {
 		return isReady;
 	}
 	
+	/**
+	 * Gets the public load point of the app (used as center)
+	 * 
+	 * @return the center point of the app
+	 */
 	public LatLongPoint getAppLoadPoint() {
 		return appLoadPoint;
 	}

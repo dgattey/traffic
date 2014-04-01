@@ -14,8 +14,8 @@ import java.util.Map;
  */
 public class ArgParser {
 	
-	private final List<String>			fileList;
-	private final Integer				expectedFileNum;
+	private final List<String>			otherList;
+	private final Integer				expectedArgNum;
 	private final Map<String, Object>	objectsMap;
 	private final Map<String, Class<?>>	flagMap;
 	
@@ -24,13 +24,13 @@ public class ArgParser {
 	 * 
 	 * @param map a map representing command line flags and type of argument each flag expects - if null class, there's
 	 *            no related argument
-	 * @param expectedFileNum the number of files expected in the list
+	 * @param expectedArgNum the number of arguments beyond flags expected in the list
 	 */
-	public ArgParser(final Map<String, Class<?>> map, final Integer expectedFileNum) {
+	public ArgParser(final Map<String, Class<?>> map, final Integer expectedArgNum) {
 		flagMap = map;
 		objectsMap = new HashMap<>();
-		fileList = new ArrayList<>();
-		this.expectedFileNum = expectedFileNum;
+		otherList = new ArrayList<>();
+		this.expectedArgNum = expectedArgNum;
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class ArgParser {
 	 * @return a list of non-flag arguments encountered while parsing
 	 */
 	public List<String> getArguments() {
-		return fileList;
+		return otherList;
 	}
 	
 	/**
@@ -105,14 +105,14 @@ public class ArgParser {
 					cleanupAndThrow("Invalid flag - unexpected value");
 				}
 			} else {
-				// Not a flag, so make the string a filename
-				fileList.add(s);
+				// Not a flag, so make the string an other
+				otherList.add(s);
 			}
 		}
 		
 		// Check expected length of stuff other than flags
-		if (expectedFileNum != null && fileList.size() != expectedFileNum) {
-			cleanupAndThrow("Number of flags was wrong");
+		if (expectedArgNum != null && otherList.size() != expectedArgNum) {
+			cleanupAndThrow("Number of arguments was wrong");
 		}
 	}
 	
@@ -158,6 +158,6 @@ public class ArgParser {
 	 */
 	private void clear() {
 		objectsMap.clear();
-		fileList.clear();
+		otherList.clear();
 	}
 }

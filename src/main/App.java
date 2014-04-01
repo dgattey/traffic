@@ -11,8 +11,10 @@ public abstract class App {
 	public final int	serverPort;
 	
 	/**
-	 * @param hostName
-	 * @param serverPort
+	 * Constructor for app that saves host name and server port
+	 * 
+	 * @param hostName the host name of the server
+	 * @param serverPort the server port
 	 */
 	public App(final String hostName, final int serverPort) {
 		this.serverPort = serverPort;

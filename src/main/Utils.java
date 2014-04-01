@@ -1,6 +1,5 @@
 package main;
 
-import java.awt.Color;
 
 /**
  * Constants class to package up strings used in multiple classes
@@ -9,10 +8,9 @@ import java.awt.Color;
  */
 public abstract class Utils {
 	
-	public static final String	APPNAME				= "Traffic";
-	public static final Color	COLOR_BACKGROUND	= new Color(50, 55, 70);
-	public static final String	USAGE_CLIENT		= "Usage: trafficClient hostname serverport";
-	public static final String	USAGE_SERVER		= "Usage: trafficServer ways nodes index hostname trafficport serverport";
+	public static final String	APPNAME			= "Traffic";
+	public static final String	USAGE_CLIENT	= "Usage: trafficClient hostname serverport";
+	public static final String	USAGE_SERVER	= "Usage: trafficServer ways nodes index hostname trafficport serverport";
 	
 	/**
 	 * Calculates minimum of many ints

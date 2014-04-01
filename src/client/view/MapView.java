@@ -15,7 +15,6 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import main.Utils;
 import client.ClientApp;
 import data.LatLongPoint;
 import data.MapWay;
@@ -67,7 +66,7 @@ public class MapView extends JComponent {
 		content.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		content.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		content.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-		content.setColor(Utils.COLOR_BACKGROUND);
+		content.setColor(ViewController.COLOR_WINDOW);
 		content.fillRect(0, 0, screenWidth, screenHeight);
 		
 		// Start chunking in what should be based on viewport size

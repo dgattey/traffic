@@ -22,6 +22,8 @@ public class ClientApp extends App {
 	/**
 	 * Uses the App constructor plus gui specific stuff
 	 * 
+	 * @param hostName the host name of the server to connect to
+	 * @param serverPort the host port of the server
 	 * @throws IOException if there was an error reading a file
 	 * @throws MapException if the hub had an error
 	 */
@@ -55,7 +57,9 @@ public class ClientApp extends App {
 	}
 	
 	/**
-	 * @return
+	 * Public getter for the hub controller
+	 * 
+	 * @return the current hub controller
 	 */
 	public HubController getHub() {
 		return hub;
