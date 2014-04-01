@@ -11,9 +11,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import backend.io.BinaryFileSearcher;
-import backend.io.DataSetException;
-import backend.io.IOController;
+import server.io.BinaryFileSearcher;
+import server.io.DataSetException;
+import server.io.IOController;
 
 @SuppressWarnings("static-method")
 public class BinaryFileSearcherTest {

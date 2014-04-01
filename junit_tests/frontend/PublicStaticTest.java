@@ -1,16 +1,18 @@
 package frontend;
 
-import static hub.Utilities.GUI;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import hub.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import main.Main;
+import main.Utils;
+
 import org.junit.Test;
 
-import backend.autocorrect.ACParser;
+import server.autocorrect.ACParser;
+import client.ArgParser;
 
 /**
  * Tests public static methods related to autocorrect
@@ -26,18 +28,15 @@ public class PublicStaticTest {
 	public void checkCommandLineParsing() {
 		final ArgParser parser = Main.createFlagParser();
 		
-		parser.parse(new String[] { "--" + GUI, "file1", "file2", "file3" });
-		assertTrue(parser.existsFlag(GUI));
-		
 		final String file = "dummyFileNameHere.txt";
 		parser.parse(new String[] { file, file, file });
 		assertFalse(parser.existsFlag("asdfasdfasd"));
-		assertTrue(parser.getFileNames().contains(file));
+		assertTrue(parser.getArguments().contains(file));
 		
 		// Invalid flag
 		boolean bad = false;
 		try {
-			parser.parse(new String[] { "--" + GUI, "--errror!" });
+			parser.parse(new String[] { "--errror!" });
 		} catch (final IllegalArgumentException e) {
 			bad = true;
 		}
@@ -51,15 +50,6 @@ public class PublicStaticTest {
 			bad = true;
 		}
 		assertTrue(bad);
-		
-		// Invalid number of files, with flag
-		bad = false;
-		try {
-			parser.parse(new String[] { file, file, "--" + GUI });
-		} catch (final IllegalArgumentException e) {
-			bad = true;
-		}
-		assertTrue(bad);
 	}
 	
 	/**
@@ -68,14 +58,14 @@ public class PublicStaticTest {
 	@Test
 	public void checkUtilities() {
 		// Checks signs and different conditions
-		assertTrue(Utilities.min(5, 12, 0) == 0);
-		assertTrue(Utilities.min(23, -34, -34) == -34);
-		assertTrue(Utilities.min(3, 3, 6) == 3);
+		assertTrue(Utils.min(5, 12, 0) == 0);
+		assertTrue(Utils.min(23, -34, -34) == -34);
+		assertTrue(Utils.min(3, 3, 6) == 3);
 		
 		// Checks different conditions and one elements
-		assertTrue(Utilities.getMinOfArray(new int[] { 4, 5, 1, 2, 8, 1 }) == 1);
-		assertTrue(Utilities.getMinOfArray(new int[] { -1, -2, 0, 123 }) == -2);
-		assertTrue(Utilities.getMinOfArray(new int[] { 84 }) == 84);
+		assertTrue(Utils.getMinOfArray(new int[] { 4, 5, 1, 2, 8, 1 }) == 1);
+		assertTrue(Utils.getMinOfArray(new int[] { -1, -2, 0, 123 }) == -2);
+		assertTrue(Utils.getMinOfArray(new int[] { 84 }) == 84);
 	}
 	
 	/**

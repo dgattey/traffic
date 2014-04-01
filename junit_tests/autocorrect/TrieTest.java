@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import backend.autocorrect.trie.TrieTree;
+import server.autocorrect.trie.TrieTree;
 
 public class TrieTest {
 	

@@ -2,8 +2,6 @@ package kdtree;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import hub.LatLongPoint;
-import hub.MapNode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,8 +9,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import backend.kdtree.KDTree;
-import backend.kdtree.KDTreeException;
+import data.LatLongPoint;
+import data.MapNode;
+import server.kdtree.KDTree;
+import server.kdtree.KDTreeException;
 
 @SuppressWarnings("static-method")
 public class KDTreeTest {

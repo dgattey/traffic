@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import data.LatLongPoint;
+
 /**
  * Tests intersection of lat long points
  * 

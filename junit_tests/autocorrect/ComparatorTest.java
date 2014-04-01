@@ -4,10 +4,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import backend.autocorrect.SuggestionToken;
-import backend.autocorrect.comparators.DumbComparator;
-import backend.autocorrect.comparators.KeyboardComparator;
-import backend.autocorrect.comparators.SmartComparator;
+import server.autocorrect.SuggestionToken;
+import server.autocorrect.comparators.DumbComparator;
+import server.autocorrect.comparators.KeyboardComparator;
+import server.autocorrect.comparators.SmartComparator;
 
 public class ComparatorTest {
 	

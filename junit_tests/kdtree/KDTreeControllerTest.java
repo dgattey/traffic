@@ -2,8 +2,6 @@ package kdtree;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import hub.LatLongPoint;
-import hub.MapsException;
 
 import java.io.IOException;
 
@@ -11,8 +9,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import backend.io.IOController;
-import backend.kdtree.KDTreeController;
+import data.LatLongPoint;
+import data.MapException;
+import server.io.IOController;
+import server.kdtree.KDTreeController;
 
 @SuppressWarnings("static-method")
 public class KDTreeControllerTest {
@@ -37,7 +37,7 @@ public class KDTreeControllerTest {
 			final LatLongPoint p2 = new LatLongPoint(41.82, -71.40);
 			assertTrue(c.getNearestNeighbors(1000, p2).equals(c.getNearestNaive(1000, p2)));
 			
-		} catch (IOException | MapsException e) {
+		} catch (IOException | MapException e) {
 			// TODO Auto-generated catch block
 			fail("Threw Exception");
 		}

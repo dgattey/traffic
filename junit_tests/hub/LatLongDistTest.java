@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import data.LatLongPoint;
+
 @SuppressWarnings("static-method")
 public class LatLongDistTest {
 	

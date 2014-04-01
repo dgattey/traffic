@@ -2,9 +2,6 @@ package io;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import hub.LatLongPoint;
-import hub.MapWay;
-import hub.MapsException;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,9 +10,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import backend.io.BinaryFileSearcher;
-import backend.io.DataSetException;
-import backend.io.IOController;
+import data.LatLongPoint;
+import data.MapWay;
+import data.MapException;
+import server.io.BinaryFileSearcher;
+import server.io.DataSetException;
+import server.io.IOController;
 
 @SuppressWarnings("static-method")
 public class IOTest {
@@ -57,7 +57,7 @@ public class IOTest {
 					.equals("/n/4183.7140.201160091"));
 			assertTrue(IOController.findIntersection("Thayer Street", "Waterman Street").getID()
 					.equals("/n/4182.7140.1955940297"));
-		} catch (MapsException | IOException e) {
+		} catch (MapException | IOException e) {
 			fail("Threw Exception");
 		}
 	}

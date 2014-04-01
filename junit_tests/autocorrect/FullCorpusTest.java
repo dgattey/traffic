@@ -10,10 +10,10 @@ import java.util.Map.Entry;
 
 import org.junit.Test;
 
-import backend.autocorrect.Corpus;
-import backend.autocorrect.generators.LEDObject;
-import backend.autocorrect.generators.PrefixObject;
-import backend.autocorrect.generators.WhitespaceObject;
+import server.autocorrect.Corpus;
+import server.autocorrect.generators.LEDObject;
+import server.autocorrect.generators.PrefixObject;
+import server.autocorrect.generators.WhitespaceObject;
 
 public class FullCorpusTest extends Corpus {
 	
