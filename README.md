@@ -22,11 +22,19 @@ None at this time.
 ##Design Details##
 
 
-##Optimizations ##
+##Optimizations##
 Multi Threading
 1. Initial loading
 2. Predictive paging for GUI
 3. Route finding for GUI
+
+##Protocol for Sending/Receiving##
+
+Header/footer like "autocorrect" to wrap the data (so sending header, data objects, then footer)
+Dropping client on server as easy as socket.close() and happens if footer doesn't get sent
+On client, get IOException, closes gracefully, error message shows in dialog box
+Convertible interface has encodeObject and decodeObject
+Switch statement in Server and Client that correctly goes both directions
 
 ##How to Run Tests ##
 
