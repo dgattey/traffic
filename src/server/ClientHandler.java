@@ -13,9 +13,11 @@ import java.net.Socket;
  */
 public class ClientHandler extends Thread {
 	
-	private final Socket			_client;
-	private final BufferedReader	_input;
-	private final PrintWriter		_output;
+	private final Socket				_client;
+	private final BufferedReader		_input;
+	private final PrintWriter			_output;
+	
+	private final ResponseController	_response;
 	
 	/**
 	 * Constructs a ClientHandler on the given client
@@ -24,7 +26,7 @@ public class ClientHandler extends Thread {
 	 * @throws IOException if the client socket is invalid
 	 * @throws IllegalArgumentException if client is null
 	 */
-	public ClientHandler(final Socket client) throws IOException {
+	public ClientHandler(final Socket client, final ResponseController response) throws IOException {
 		if (client == null) {
 			throw new IllegalArgumentException("Cannot accept null arguments.");
 		}
@@ -32,6 +34,17 @@ public class ClientHandler extends Thread {
 		_client = client;
 		_input = new BufferedReader(new InputStreamReader(_client.getInputStream()));
 		_output = new PrintWriter(_client.getOutputStream(), true);
+		_response = response;
+	}
+	
+	/**
+	 * Send a string to the client via the socket
+	 * 
+	 * @param message response to send
+	 */
+	public void send(final String message) {
+		_output.write(message + "\n");
+		_output.flush();
 	}
 	
 	/**

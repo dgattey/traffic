@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import main.Utils;
+import data.MapException;
 
 /**
  * Main maps server that listens for incoming client connections and starts them on separate threads
@@ -13,30 +14,31 @@ import main.Utils;
  */
 public class Server extends Thread {
 	
-	private final int			port;
-	private final ServerSocket	socket;
-	private boolean				running;
+	private final int					_port;
+	private final ServerSocket			_socket;
+	private boolean						_running;
+	private final ResponseController	_response;
 	
-	public Server(final int port) throws IOException {
-		if (port <= 1024) {
+	public Server(final String ways, final String nodes, final String index, final String hostName,
+			final int trafficPort, final int serverPort) throws IOException, MapException {
+		if (serverPort <= 1024) {
 			throw new IllegalArgumentException("<Server> Ports below 1025 are reserved.");
 		}
 		
-		this.port = port;
-		// TODO: Set up a server socket that will listen to socket connection requests
-		socket = new ServerSocket(this.port);
+		_port = serverPort;
+		_socket = new ServerSocket(_port);
+		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, serverPort);
+		
 	}
 	
 	@Override
 	public void run() {
-		running = true;
-		// TODO: Set up a while loop to receive all the socket connection
-		// requests made by a client
-		while (running) {
+		_running = true;
+		while (_running) {
 			try {
-				final Socket clientConnection = socket.accept();
+				final Socket clientConnection = _socket.accept();
 				System.out.println("Connected to a client!");
-				final ClientHandler c = new ClientHandler(clientConnection);
+				final ClientHandler c = new ClientHandler(clientConnection, _response);
 				c.start();
 			} catch (final IOException e) {
 				Utils.printError("<Server> Failed to accept clients.");

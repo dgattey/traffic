@@ -36,6 +36,44 @@ On client, get IOException, closes gracefully, error message shows in dialog box
 Convertible interface has encodeObject and decodeObject
 Switch statement in Server and Client that correctly goes both directions
 
+###Examples###
+The (____) signify the object being represented by the string
+
+1. AUTOCORRECT
+Request String:
+start_ac_req
+Thaye (String)
+end_ac_req
+
+Response String:
+start_ac_res
+Thayer Street (String)
+Thayer St (String)
+Thayer Court (String)
+Thayer Road (String)
+end_ac_res
+
+
+2. INTERSECTION
+Request:
+start_int_req
+Thayer Street (String)
+Cushing Street (String)
+end_int_req
+
+Response:
+start_int_res
+/n/4171.12009 (String representing MapNode id)
+41.7123 -71.1341 (LatLongPoint)
+end_int_res
+
+
+
+
+
+
+
+
 ##How to Run Tests ##
 
 
