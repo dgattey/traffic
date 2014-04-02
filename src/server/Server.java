@@ -22,13 +22,12 @@ public class Server extends Thread {
 	public Server(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) throws IOException, MapException {
 		if (serverPort <= 1024) {
-			throw new IllegalArgumentException("<Server> Ports below 1025 are reserved.");
+			throw new IllegalArgumentException("<Server> Ports under 1025 are reserved.");
 		}
 		
 		_port = serverPort;
 		_socket = new ServerSocket(_port);
 		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, serverPort);
-		
 	}
 	
 	@Override
@@ -46,5 +45,15 @@ public class Server extends Thread {
 			}
 			
 		}
+	}
+	
+	/**
+	 * Stop waiting for connections, close all connected clients, and close this server's ServerSocket
+	 * 
+	 * @throws IOException if any socket is invalid.
+	 */
+	public void kill() throws IOException {
+		_running = false;
+		_socket.close();
 	}
 }
