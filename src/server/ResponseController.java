@@ -22,12 +22,14 @@ public class ResponseController {
 		isReady = true;
 	}
 	
-	public void autocorrectResponse() {}
+	public void autocorrectResponse(final ClientHandler c, final String request) {}
 	
-	public void intersectionResponse() {}
+	public void intersectionResponse(final ClientHandler c, final String request) {}
 	
-	public void routeResponse() {}
+	public void routeResponse(final ClientHandler c, final String request) {}
 	
-	public void mapDataResponse() {}
+	public void mapDataResponse(final ClientHandler c, final String request) {}
+	
+	public void errorResponse(final ClientHandler c, final String message) {};
 	
 }

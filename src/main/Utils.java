@@ -1,6 +1,5 @@
 package main;
 
-
 /**
  * Constants class to package up strings used in multiple classes
  * 
@@ -47,6 +46,19 @@ public abstract class Utils {
 	 */
 	public static void printError(final String msg) {
 		System.err.println("ERROR: " + msg);
+	}
+	
+	/**
+	 * Removes trailing new line characters from the string
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static String removeTrailingNewlines(String s) {
+		if (s.charAt(s.length() - 1) == '\n') {
+			s = s.substring(0, s.length() - 1);
+		}
+		return s;
 	}
 	
 	/**

@@ -14,12 +14,14 @@ import server.kdtree.KComparer;
  * 
  * @author Advik
  */
-public class MapNode implements KComparer<MapNode>, Graphable<MapNode>, Comparable<MapNode> {
+public class MapNode implements KComparer<MapNode>, Graphable<MapNode>, Comparable<MapNode>, Convertible<MapNode> {
 	
 	private final String		id;
 	private final List<String>	ways;
 	private final LatLongPoint	p;
 	private final double[]		coords;
+	
+	private final static String	delimiter	= ":";
 	
 	/**
 	 * Makes a new MapNode to return statically
@@ -176,6 +178,17 @@ public class MapNode implements KComparer<MapNode>, Graphable<MapNode>, Comparab
 	public String toString() {
 		final String holder = "(%s, %s)";
 		return String.format(holder, getLatitude(), getLongitude());
+	}
+	
+	@Override
+	public String encodeObject() {
+		final String encoded = String.format("%s" + delimiter + " %s", id, p.encodeObject());
+		return encoded;
+	}
+	
+	@Override
+	public MapNode decodeObject(final String rep) {
+		return null;
 	}
 	
 }

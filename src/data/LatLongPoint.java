@@ -2,16 +2,20 @@ package data;
 
 import java.awt.geom.Point2D;
 
+import main.Utils;
+
 /**
  * Wrapper for Point2D to represent Latitude and Longitude points
  * 
  * @author dgattey
  */
-public class LatLongPoint extends Point2D.Double {
+public class LatLongPoint extends Point2D.Double implements Convertible<LatLongPoint> {
 	
 	private static final long	serialVersionUID	= 5402819518527207517L;
 	
 	private static final double	EARTH_RADIUS_M		= 6371000;
+	
+	private static final String	delimiter			= ":";
 	
 	/**
 	 * Constructor takes lat and long and sets x and y from them
@@ -178,7 +182,7 @@ public class LatLongPoint extends Point2D.Double {
 		final double lat1Rad = Math.toRadians(getLat());
 		final double lat2Rad = Math.toRadians(other.getLat());
 		final double a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2) + Math.sin(longDiff / 2)
-			* Math.sin(longDiff / 2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
+				* Math.sin(longDiff / 2) * Math.cos(lat1Rad) * Math.cos(lat2Rad);
 		final double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		final double d = EARTH_RADIUS_M * c;
 		return d;
@@ -193,5 +197,26 @@ public class LatLongPoint extends Point2D.Double {
 	public double flatDistance(final LatLongPoint other) {
 		final double dist = Math.pow(getLat() - other.getLat(), 2) + Math.pow(getLong() - other.getLong(), 2);
 		return Math.abs(Math.sqrt(dist));
+	}
+	
+	@Override
+	public String encodeObject() {
+		return getLat() + delimiter + getLong() + "\n";
+	}
+	
+	@Override
+	public LatLongPoint decodeObject(String rep) {
+		rep = Utils.removeTrailingNewlines(rep);
+		final String[] coords = rep.split(delimiter);
+		if (coords.length != 2) {
+			return null;
+		}
+		try {
+			final double lat = java.lang.Double.parseDouble(coords[0]);
+			final double lon = java.lang.Double.parseDouble(coords[1]);
+			final LatLongPoint p = new LatLongPoint(lat, lon);
+			return p;
+		} catch (final NumberFormatException e) {}
+		return null;
 	}
 }

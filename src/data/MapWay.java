@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import server.graph.Weighable;
 
-public class MapWay implements Weighable<MapWay> {
+public class MapWay implements Weighable<MapWay>, Convertible<MapWay> {
 	
 	private final String	name;
 	private final String	id;
@@ -72,5 +72,16 @@ public class MapWay implements Weighable<MapWay> {
 	@Override
 	public String toString() {
 		return String.format("%s -> %s : %s", start.getID(), end.getID(), name);
+	}
+	
+	@Override
+	public String encodeObject() {
+		final String encoded = String.format("%s\n%s\n%s%s", name, id, start.encodeObject(), end.encodeObject());
+		return encoded;
+	}
+	
+	@Override
+	public MapWay decodeObject(final String rep) {
+		return null;
 	}
 }
