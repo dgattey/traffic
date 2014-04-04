@@ -15,8 +15,6 @@ public class LatLongPoint extends Point2D.Double implements Convertible<LatLongP
 	
 	private static final double	EARTH_RADIUS_M		= 6371000;
 	
-	private static final String	delimiter			= ":";
-	
 	/**
 	 * Constructor takes lat and long and sets x and y from them
 	 * 
@@ -201,13 +199,13 @@ public class LatLongPoint extends Point2D.Double implements Convertible<LatLongP
 	
 	@Override
 	public String encodeObject() {
-		return getLat() + delimiter + getLong() + "\n";
+		return ProParser.LLP_TAG + getLat() + ProParser.LLP_DELIM + getLong() + "\n";
 	}
 	
 	@Override
 	public LatLongPoint decodeObject(String rep) {
 		rep = Utils.removeTrailingNewlines(rep);
-		final String[] coords = rep.split(delimiter);
+		final String[] coords = rep.split(ProParser.LLP_DELIM);
 		if (coords.length != 2) {
 			return null;
 		}

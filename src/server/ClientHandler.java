@@ -19,6 +19,11 @@ public class ClientHandler extends Thread {
 	
 	private final ResponseController	_response;
 	
+	private final String				AC	= "@q:AC";
+	private final String				RS	= "@q:RS";
+	private final String				RC	= "@q:RC";
+	private final String				MC	= "@q:MC";
+	
 	/**
 	 * Constructs a ClientHandler on the given client
 	 * 
@@ -37,7 +42,28 @@ public class ClientHandler extends Thread {
 		_response = response;
 	}
 	
-	public void dispatch(final String request) {
+	void dispatch() {
+		String req_start = "";
+		try {
+			req_start = _input.readLine();
+		} catch (final IOException e) {
+			_response.errorResponse(this);
+		}
+		switch (req_start) {
+		case AC:
+			_response.autocorrectResponse(this);
+			break;
+		case RS:
+			_response.routeFromNamesResponse(this);
+			break;
+		case RC:
+			_response.routeFromClicksResponse(this);
+			break;
+		case MC:
+			_response.mapDataResponse(this);
+		default:
+			_response.errorResponse(this);
+		}
 		
 	}
 	
@@ -46,6 +72,20 @@ public class ClientHandler extends Thread {
 	 */
 	@Override
 	public void run() {
+		// The worker thread is created so the main client thread may listen to heartbeats from
+		// the client end, to know when a client hangs up unexpectedly
+		final Thread worker = new Thread() {
+			
+			@Override
+			public void run() {
+				dispatch();
+			}
+		};
+		
+		worker.start();
+		while (worker.isAlive()) {
+			// Check if peer connection still exists
+		}
 		
 	}
 	
