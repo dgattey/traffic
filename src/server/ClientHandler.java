@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import main.Utils;
-
 /**
  * Wraps the client socket and encapsulates all IO
  * 
@@ -48,18 +46,7 @@ public class ClientHandler extends Thread {
 	 */
 	@Override
 	public void run() {
-		try {
-			// Reads line by line appending to a request, in case line analysis has to be done in the future before
-			// dispatching
-			String line = null;
-			final StringBuilder request = new StringBuilder(64);
-			while ((line = _input.readLine()) != null) {
-				request.append(line + "\n");
-			}
-			dispatch(request.toString());
-		} catch (final IOException e) {
-			Utils.printError("<ClientHandler> Error while reading request from Client.");
-		}
+		
 	}
 	
 	/**
