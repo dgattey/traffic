@@ -34,6 +34,37 @@ Dropping client on server as easy as socket.close() and happens if footer doesn'
 On client, get IOException, closes gracefully, error message shows in dialog box
 Switch statement in Server and Client that correctly goes both directions
 
+<way:
+______ (id)
+______ (name)
+______ (startid)
+#llp: __ __ 
+______ (endid)
+#llp: __ __
+>
+
+<chunk:
+#llp: __ __
+	<list:way:20
+		<way:
+		>
+		<way:
+		>
+		<way:
+		>
+	>
+>
+
+AC:
+
+RS:
+
+RC:
+
+MC:
+
+
+
 ##How to Run Tests ##
 
 
