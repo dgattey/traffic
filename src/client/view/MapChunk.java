@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import client.ClientApp;
+import data.ClientMapWay;
 import data.LatLongPoint;
-import data.MapWay;
 
 /**
  * Represents a chunk of data consisting of MapWays to draw to screen
@@ -14,12 +14,12 @@ import data.MapWay;
  */
 public class MapChunk implements Runnable {
 	
-	public static final double	CHUNKSIZE	= 0.01;
-	private final List<MapWay>	ways;
-	private boolean				isAdding;
-	private final ClientApp		app;
-	private final LatLongPoint	min;
-	private final LatLongPoint	max;
+	public static final double			CHUNKSIZE	= 0.01;
+	private final List<ClientMapWay>	ways;
+	private boolean						isAdding;
+	private final ClientApp				app;
+	private final LatLongPoint			min;
+	private final LatLongPoint			max;
 	
 	/**
 	 * Constructor takes an app for its hub reference, a min and a max, and spawns a new thread to find that chunk from
@@ -43,7 +43,7 @@ public class MapChunk implements Runnable {
 	 * 
 	 * @return a list of MapWays
 	 */
-	public List<MapWay> getWays() {
+	public List<ClientMapWay> getWays() {
 		if (!isAdding) {
 			return ways;
 		}
@@ -55,7 +55,8 @@ public class MapChunk implements Runnable {
 	 */
 	@Override
 	public void run() {
-		final List<MapWay> found = app.getHub().pageInMapData(min, max);
+		// TODO: Make this better since it gives me back a chunk
+		final List<ClientMapWay> found = app.getHub().getChunk(min, max).getWays();
 		isAdding = true;
 		ways.addAll(found);
 		isAdding = false;

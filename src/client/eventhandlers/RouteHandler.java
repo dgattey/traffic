@@ -8,10 +8,10 @@ import java.awt.geom.Point2D;
 import java.util.List;
 
 import client.ClientApp;
+import client.hub.HubController;
 import client.view.ViewController;
+import data.ClientMapWay;
 import data.LatLongPoint;
-import data.MapNode;
-import data.MapWay;
 
 /**
  * Deals with finding a route given four fields representing intersections or two points representing clicks
@@ -34,72 +34,36 @@ public class RouteHandler implements ActionListener, MouseListener {
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		final ViewController controller = app.getViewController();
+		final HubController hub = app.getHub();
 		controller.setLabel(ViewController.DEFAULT_LABEL_TEXT);
 		if (thread != null) {
 			thread.interrupt();
 		}
-		controller.clearPoints();
-		thread = new Thread() {
-			
-			@Override
-			public void run() {
-				final List<String> streets = controller.getFields();
-				for (final String s : streets) {
-					if (s.isEmpty()) {
-						controller.setLabel("You've got to enter a street, silly!");
-						controller.repaintMap();
-						return;
-					}
-				}
-				controller.clearRoute();
-				controller.setLabel("Finding a route...");
-				final MapNode a = app.getHub().getNearestIntersection(streets.get(0), streets.get(1));
-				final MapNode b = app.getHub().getNearestIntersection(streets.get(2), streets.get(3));
-				if (!Thread.currentThread().isInterrupted()) {
-					makeRoute(a, b, true);
-				}
-				
-			}
-		};
-		thread.start();
-	}
-	
-	/**
-	 * Takes the current route and reverses it
-	 */
-	public void reverseRoute() {
-		final ViewController controller = app.getViewController();
-		controller.setLabel(ViewController.DEFAULT_LABEL_TEXT);
-		if (thread != null) {
-			thread.interrupt();
-		}
-		final List<MapWay> oldRoute = controller.getRoute();
 		controller.clearRoute();
 		controller.clearPoints();
-		controller.repaintMap();
+		
+		// Make a new thread and try finding a route
 		thread = new Thread() {
 			
 			@Override
 			public void run() {
-				boolean empty = false;
-				for (final String street : controller.getFields()) {
-					if (street.isEmpty()) {
-						empty = true;
-						break;
-					}
-				}
-				if (oldRoute != null && !oldRoute.isEmpty()) {
-					if (empty) {
-						controller.clearFields();
-					}
-					controller.setLabel("Finding a route...");
-					final MapNode b = oldRoute.get(0).getStart();
-					final MapNode a = oldRoute.get(oldRoute.size() - 1).getEnd();
-					if (!Thread.currentThread().isInterrupted()) {
-						makeRoute(a, b, true);
-					}
+				// Update status and get data
+				controller.setLabel("Finding a route...");
+				final List<String> streets = controller.getFields();
+				final List<ClientMapWay> route = hub.getRoute(streets.get(0), streets.get(1), streets.get(2),
+						streets.get(3));
+				
+				// Someone else wanted a route, so just return
+				if (Thread.currentThread().isInterrupted()) {
+					return;
 				}
 				
+				// Refresh frontend
+				controller.clearPoints();
+				controller.setLabel((route != null && !route.isEmpty()) ? "Route found!"
+						: "No route found between those intersections");
+				controller.setRoute(route);
+				controller.repaintMap();
 			}
 		};
 		thread.start();
@@ -112,58 +76,45 @@ public class RouteHandler implements ActionListener, MouseListener {
 	@Override
 	public void mouseClicked(final MouseEvent e) {
 		final ViewController controller = app.getViewController();
+		final HubController hub = app.getHub();
 		controller.setLabel("Click another point to route between the intersections");
 		if (thread != null) {
 			thread.interrupt();
 		}
 		controller.clearRoute();
-		if (controller.updateUserPoints(new Point2D.Double(e.getX(), e.getY()))) {
-			final List<LatLongPoint> pts = controller.getUserPoints();
-			thread = new Thread() {
-				
-				@Override
-				public void run() {
-					controller.setLabel("Finding a route... Click anywhere to cancel.");
-					if (pts != null && !Thread.currentThread().isInterrupted()) {
-						final MapNode a = app.getHub().getNearestIntersection(pts.get(0));
-						final MapNode b = app.getHub().getNearestIntersection(pts.get(1));
-						if (!Thread.currentThread().isInterrupted()) {
-							makeRoute(a, b, false);
-							controller.clearFields();
-							return;
-						}
-					}
-					controller.setLabel(ViewController.DEFAULT_LABEL_TEXT);
-				}
-			};
-			thread.start();
+		
+		// If there's only one point in the user points, just return
+		if (!controller.updateUserPoints(new Point2D.Double(e.getX(), e.getY()))) {
+			return;
 		}
-	}
-	
-	/**
-	 * Internal helper to make a route
-	 * 
-	 * @param a starting point
-	 * @param b ending point
-	 * @param streets if streets were used to create this or not
-	 */
-	private void makeRoute(final MapNode a, final MapNode b, final boolean streets) {
-		final ViewController controller = app.getViewController();
-		if (a != null && b != null) {
-			final List<MapWay> route = app.getHub().getRoute(a, b);
-			if (!Thread.currentThread().isInterrupted()) {
+		
+		// Make a new thread and try finding a route
+		thread = new Thread() {
+			
+			@Override
+			public void run() {
+				// Update status and get data
+				controller.setLabel("Finding a route...");
+				final List<LatLongPoint> pts = controller.getUserPoints();
+				final List<ClientMapWay> route = hub.getRoute(pts.get(0), pts.get(1));
+				
+				// Someone else wanted a route, so just return
+				if (Thread.currentThread().isInterrupted()) {
+					return;
+				}
+				
+				// Refresh frontend
+				controller.clearFields();
+				controller.clearPoints();
 				controller.setLabel((route != null && !route.isEmpty()) ? "Route found!"
 						: "No route found between those points");
 				controller.setRoute(route);
-			} else {
-				controller.setLabel(ViewController.DEFAULT_LABEL_TEXT);
+				controller.repaintMap();
+				
 			}
-		} else {
-			controller.setLabel("No intersections found for those " + (streets ? "streets" : "points"));
-			controller.clearRoute();
-		}
-		controller.clearPoints();
-		controller.repaintMap();
+		};
+		thread.start();
+		
 	}
 	
 	@Override
