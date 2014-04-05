@@ -6,7 +6,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import client.ClientApp;
 import data.ClientMapWay;
@@ -65,16 +64,57 @@ public class HubController implements Controllable {
 		return null;
 	}
 	
+	// TODO: Fix repeated code everywhere for Callable, etc
+	
 	@Override
 	public List<ClientMapWay> getRoute(final String streetA1, final String streetA2, final String streetB1,
 			final String streetB2) {
+		
+		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
 			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
 			throw new IllegalArgumentException("empty or null street names");
 		}
-		// TODO: connect to server, get route for 4 streets
+		
 		// TODO: throw illegal exception for no intersections to display (from backend)
-		return null;
+		List<ClientMapWay> ret = null;
+		if (isReady) {
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			final Callable<List<ClientMapWay>> callable = new Callable<List<ClientMapWay>>() {
+				
+				@Override
+				public List<ClientMapWay> call() throws Exception {
+					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
+					List<ClientMapWay> route = null;
+					try {
+						comm.connect();
+						// TODO: Fix protocol strings
+						comm.write("<route:street");
+						comm.write(streetA1);
+						comm.write(streetA2);
+						comm.write(streetB1);
+						comm.write(streetB2);
+						comm.write(">");
+						route = ProtocolManager.parseRoute(comm.getReader());
+						comm.disconnect();
+					} catch (final IOException e) {
+						// TODO: Fix up exception handling
+						e.printStackTrace();
+					}
+					return route;
+				}
+			};
+			
+			// Make it work and get return value
+			try {
+				ret = executor.submit(callable).get();
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO: Fix up exception handling
+				e.printStackTrace();
+			}
+			executor.shutdown();
+		}
+		return ret;
 		
 	}
 	
@@ -100,8 +140,10 @@ public class HubController implements Controllable {
 					List<ClientMapWay> chunk = null;
 					try {
 						comm.connect();
+						comm.write("<chunk");
 						comm.write(min);
 						comm.write(max);
+						comm.write(">");
 						chunk = ProtocolManager.parseMapChunk(comm.getReader());
 						comm.disconnect();
 					} catch (final IOException e) {
@@ -111,9 +153,10 @@ public class HubController implements Controllable {
 					return chunk;
 				}
 			};
-			final Future<List<ClientMapWay>> future = executor.submit(callable);
+			
+			// Make it work and get return value
 			try {
-				ret = future.get();
+				ret = executor.submit(callable).get();
 			} catch (InterruptedException | ExecutionException e) {
 				// TODO: Fix up exception handling
 				e.printStackTrace();

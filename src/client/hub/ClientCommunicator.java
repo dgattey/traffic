@@ -74,6 +74,19 @@ class ClientCommunicator {
 	}
 	
 	/**
+	 * Writes a string to the server (used for actual strings)
+	 * 
+	 * @param str the string to write to server
+	 * @throws IOException if the server failed to accept the object being written
+	 */
+	public void write(final String str) throws IOException {
+		if (sock == null || sock.isClosed()) {
+			throw new IOException("<ClientServerWriter> Socket is closed - can't write string");
+		}
+		writer.write(str);
+	}
+	
+	/**
 	 * Shuts down the server, reader, and writer for use later
 	 * 
 	 * @throws IOException if something went wrong in closing everything

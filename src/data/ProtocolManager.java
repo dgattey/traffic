@@ -105,4 +105,8 @@ public class ProtocolManager {
 		build.append(">");
 		return build.toString();
 	}
+	
+	public static List<ClientMapWay> parseRoute(final BufferedReader reader) {
+		throw new UnsupportedOperationException();
+	}
 }
