@@ -2,6 +2,11 @@ package client.hub;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import client.ClientApp;
 import data.ClientMapWay;
@@ -84,28 +89,37 @@ public class HubController implements Controllable {
 	
 	@Override
 	public List<ClientMapWay> getChunk(final LatLongPoint min, final LatLongPoint max) {
+		List<ClientMapWay> ret = null;
 		if (isReady) {
-			final Thread t = new Thread() {
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			final Callable<List<ClientMapWay>> callable = new Callable<List<ClientMapWay>>() {
 				
 				@Override
-				public void run() {
+				public List<ClientMapWay> call() throws Exception {
 					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
+					List<ClientMapWay> chunk = null;
 					try {
 						comm.connect();
 						comm.write(min);
 						comm.write(max);
-						final List<ClientMapWay> chunk = ProtocolManager.parseMapChunk(comm.getReader());
+						chunk = ProtocolManager.parseMapChunk(comm.getReader());
 						comm.disconnect();
 					} catch (final IOException e) {
 						// TODO: Fix up exception handling
 						e.printStackTrace();
 					}
-				};
-				
+					return chunk;
+				}
 			};
-			t.start();
-			
+			final Future<List<ClientMapWay>> future = executor.submit(callable);
+			try {
+				ret = future.get();
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO: Fix up exception handling
+				e.printStackTrace();
+			}
+			executor.shutdown();
 		}
-		return null;
+		return ret;
 	}
 }
