@@ -84,11 +84,16 @@ public class ProtocolManager {
 	
 	public synchronized static String encodeMapChunk(final MapChunk ch) {
 		throw new UnsupportedOperationException();
+		
+	}
+	
+	public static List<ClientMapWay> parseMapChunk(final BufferedReader r) {
+		throw new UnsupportedOperationException();
 	}
 	
 	public synchronized static String encodeRoute(List<MapWay> route) {
 		if (route == null) {
-			route = new ArrayList<MapWay>();
+			route = new ArrayList<>();
 		}
 		final StringBuilder build = new StringBuilder(128);
 		build.append(WAY_LIST_TAG);

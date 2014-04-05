@@ -23,7 +23,6 @@
     <javac srcdir="${app.src}" destdir="${derived.classes}" debug="true" includeantruntime="true">
       <classpath refid="class.path"/>
       <compilerarg value="-Xlint:all"/>
-      <compilerarg value="-Werror"/>
     </javac>
     <javac srcdir="${app.junit_tests}" destdir="${derived.classes}" debug="true" includeantruntime="true">
       <classpath refid="class.path"/>

@@ -2,7 +2,6 @@ package client.hub;
 
 import java.util.List;
 
-import client.view.MapChunk;
 import data.ClientMapWay;
 import data.LatLongPoint;
 
@@ -47,5 +46,5 @@ public interface Controllable {
 	 * @param max the maximum LatLongPoint for this data
 	 * @return a list of MapWays in this page of data
 	 */
-	public MapChunk getChunk(LatLongPoint min, LatLongPoint max);
+	public List<ClientMapWay> getChunk(LatLongPoint min, LatLongPoint max);
 }

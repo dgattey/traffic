@@ -55,8 +55,7 @@ public class MapChunk implements Runnable {
 	 */
 	@Override
 	public void run() {
-		// TODO: Make this better since it gives me back a chunk
-		final List<ClientMapWay> found = app.getHub().getChunk(min, max).getWays();
+		final List<ClientMapWay> found = app.getHub().getChunk(min, max);
 		isAdding = true;
 		ways.addAll(found);
 		isAdding = false;

@@ -1,11 +1,12 @@
 package client.hub;
 
+import java.io.IOException;
 import java.util.List;
 
 import client.ClientApp;
-import client.view.MapChunk;
 import data.ClientMapWay;
 import data.LatLongPoint;
+import data.ProtocolManager;
 
 /**
  * @author dgattey
@@ -52,30 +53,59 @@ public class HubController implements Controllable {
 	
 	@Override
 	public List<ClientMapWay> getRoute(final LatLongPoint a, final LatLongPoint b) {
+		if (a == null || b == null) {
+			throw new IllegalArgumentException("null points in route finding");
+		}
 		// TODO: connect to server, get route for 2 points
-		// TODO: throw illegal argument for null/bad points
 		return null;
 	}
 	
 	@Override
 	public List<ClientMapWay> getRoute(final String streetA1, final String streetA2, final String streetB1,
 			final String streetB2) {
+		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
+			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
+			throw new IllegalArgumentException("empty or null street names");
+		}
 		// TODO: connect to server, get route for 4 streets
-		// TODO: throw illegal argument for empty/null strings
 		// TODO: throw illegal exception for no intersections to display (from backend)
 		return null;
+		
 	}
 	
 	@Override
 	public List<String> getSuggestions(final String input) {
 		// TODO: connect to server, get suggestions
+		if (isReady) {
+			
+		}
 		return null;
 	}
 	
 	@Override
-	public MapChunk getChunk(final LatLongPoint min, final LatLongPoint max) {
-		// TODO: connect to server, get chunk data
+	public List<ClientMapWay> getChunk(final LatLongPoint min, final LatLongPoint max) {
+		if (isReady) {
+			final Thread t = new Thread() {
+				
+				@Override
+				public void run() {
+					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
+					try {
+						comm.connect();
+						comm.write(min);
+						comm.write(max);
+						final List<ClientMapWay> chunk = ProtocolManager.parseMapChunk(comm.getReader());
+						comm.disconnect();
+					} catch (final IOException e) {
+						// TODO: Fix up exception handling
+						e.printStackTrace();
+					}
+				};
+				
+			};
+			t.start();
+			
+		}
 		return null;
 	}
-	
 }

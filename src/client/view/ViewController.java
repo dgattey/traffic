@@ -133,7 +133,7 @@ public class ViewController {
 		loadingLabelStatic.setAlignmentX(Component.CENTER_ALIGNMENT);
 		theme(loadingLabelStatic);
 		
-		loadingLabel = new JLabel("33% complete");
+		loadingLabel = new JLabel("0% complete");
 		loadingLabel.setFont(new Font(FONT, Font.BOLD, 14));
 		loadingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		theme(loadingLabel);
