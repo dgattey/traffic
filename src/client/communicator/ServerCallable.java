@@ -26,17 +26,13 @@ public abstract class ServerCallable<V> implements Callable<V> {
 	}
 	
 	@Override
-	public V call() {
+	public V call() throws IOException {
 		final CommController comm = new CommController(hostName, serverPort);
 		V chunk = null;
-		try {
-			comm.connect();
-			chunk = writeAndGetInfo(comm);
-			comm.disconnect();
-		} catch (final IOException e) {
-			// TODO: Fix up exception handling
-			e.printStackTrace();
-		}
+		comm.connect();
+		chunk = writeAndGetInfo(comm);
+		comm.disconnect();
+		
 		return chunk;
 	}
 	

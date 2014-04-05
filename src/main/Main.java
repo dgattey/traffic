@@ -60,7 +60,7 @@ public class Main {
 			break;
 		}
 		if (isClient == null) {
-			Utils.printError("You messed up the executables (first arg not client or server");
+			Utils.printError("You messed up the executables! (first arg not client or server");
 			return;
 		}
 		

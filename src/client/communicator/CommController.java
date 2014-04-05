@@ -29,17 +29,18 @@ public class CommController {
 	 * 
 	 * @param callable a ServerCallable that will interface with server
 	 * @return a V to return
+	 * @throws IOException if there was an error executing the callable
 	 */
-	public static <V> V getFromServer(final ServerCallable<V> callable) {
+	public static <V> V getFromServer(final ServerCallable<V> callable) throws IOException {
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
 		try {
 			return executor.submit(callable).get();
 		} catch (InterruptedException | ExecutionException e) {
-			// TODO: Fix up exception handling
-			e.printStackTrace();
+			throw new IOException("<Communicator> something went wrong executing the communication with the server", e);
 		}
-		executor.shutdown();
-		return null;
+		finally {
+			executor.shutdown();
+		}
 	}
 	
 	/**
@@ -48,7 +49,7 @@ public class CommController {
 	 * @param hostName the string name of the host
 	 * @param serverPort the port where the socket should connect
 	 */
-	public CommController(final String hostName, final int serverPort) {
+	CommController(final String hostName, final int serverPort) {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
 	}
@@ -58,7 +59,7 @@ public class CommController {
 	 * 
 	 * @throws IOException if the server or writer failed to open
 	 */
-	public void connect() throws IOException {
+	void connect() throws IOException {
 		if (sock != null) {
 			sock.close();
 		}
@@ -112,7 +113,7 @@ public class CommController {
 	 * 
 	 * @throws IOException if something went wrong in closing everything
 	 */
-	public void disconnect() throws IOException {
+	void disconnect() throws IOException {
 		sock.close();
 		reader.close();
 		writer.close();

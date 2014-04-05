@@ -52,7 +52,7 @@ public class HubController implements Controllable {
 				try {
 					return ProtocolManager.parseLatLongPoint(comm.getReader());
 				} catch (final ParseException e) {
-					throw new IOException("<HubController> parsing appLoadPoint", e);
+					throw new IOException("<HubController> parsing appLoadPoint failed", e);
 				}
 			}
 		});
@@ -79,21 +79,26 @@ public class HubController implements Controllable {
 	@Override
 	public List<ClientMapWay> getRoute(final LatLongPoint a, final LatLongPoint b) {
 		if (a == null || b == null) {
-			throw new IllegalArgumentException("null points in route finding");
+			throw new IllegalArgumentException("<HubController> null points to route find not allowed");
 		}
 		List<ClientMapWay> ret = null;
 		if (isReady) {
-			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
-				
-				@Override
-				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
-					comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_POINT + ":" + "2");
-					comm.write(a);
-					comm.write(b);
-					comm.write(FOOTER);
-					return ProtocolManager.parseWayList(comm.getReader());
-				}
-			});
+			try {
+				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
+					
+					@Override
+					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+						comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_POINT + ":" + "2");
+						comm.write(a);
+						comm.write(b);
+						comm.write(FOOTER);
+						return ProtocolManager.parseWayList(comm.getReader());
+					}
+				});
+			} catch (final IOException e) {
+				// TODO: ERROR HANDLING
+				e.printStackTrace();
+			}
 		}
 		return ret;
 	}
@@ -105,25 +110,30 @@ public class HubController implements Controllable {
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
 			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
-			throw new IllegalArgumentException("empty or null street names");
+			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		
 		// TODO: throw illegal exception for no intersections to display (from backend)
 		List<ClientMapWay> ret = null;
 		if (isReady) {
-			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
-				
-				@Override
-				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
-					comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_STREET + ":" + "4");
-					comm.write(streetA1);
-					comm.write(streetA2);
-					comm.write(streetB1);
-					comm.write(streetB2);
-					comm.write(FOOTER);
-					return ProtocolManager.parseWayList(comm.getReader());
-				}
-			});
+			try {
+				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
+					
+					@Override
+					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+						comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_STREET + ":" + "4");
+						comm.write(streetA1);
+						comm.write(streetA2);
+						comm.write(streetB1);
+						comm.write(streetB2);
+						comm.write(FOOTER);
+						return ProtocolManager.parseWayList(comm.getReader());
+					}
+				});
+			} catch (final IOException e) {
+				// TODO: ERROR HANDLING
+				e.printStackTrace();
+			}
 		}
 		return ret;
 		
@@ -133,17 +143,22 @@ public class HubController implements Controllable {
 	public List<String> getSuggestions(final String input) {
 		List<String> ret = null;
 		if (isReady) {
-			ret = CommController.getFromServer(new ServerCallable<List<String>>(hostName, serverPort) {
-				
-				@Override
-				protected List<String> writeAndGetInfo(final CommController comm) throws IOException {
-					comm.write(HEADER_QUERY + ":" + TYPE_AUTOCORRECT + ":" + "1");
-					comm.write(input);
-					comm.write(FOOTER);
-					return ProtocolManager.parseStreetList(comm.getReader());
-				}
-				
-			});
+			try {
+				ret = CommController.getFromServer(new ServerCallable<List<String>>(hostName, serverPort) {
+					
+					@Override
+					protected List<String> writeAndGetInfo(final CommController comm) throws IOException {
+						comm.write(HEADER_QUERY + ":" + TYPE_AUTOCORRECT + ":" + "1");
+						comm.write(input);
+						comm.write(FOOTER);
+						return ProtocolManager.parseStreetList(comm.getReader());
+					}
+					
+				});
+			} catch (final IOException e) {
+				// TODO: ERROR HANDLING
+				e.printStackTrace();
+			}
 		}
 		return ret;
 	}
@@ -152,18 +167,23 @@ public class HubController implements Controllable {
 	public List<ClientMapWay> getChunk(final LatLongPoint min, final LatLongPoint max) {
 		List<ClientMapWay> ret = null;
 		if (isReady) {
-			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
-				
-				@Override
-				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
-					comm.write(HEADER_QUERY + ":" + TYPE_CHUNK + ":" + "2");
-					comm.write(min);
-					comm.write(max);
-					comm.write(FOOTER);
-					return ProtocolManager.parseWayList(comm.getReader());
-				}
-				
-			});
+			try {
+				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
+					
+					@Override
+					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+						comm.write(HEADER_QUERY + ":" + TYPE_CHUNK + ":" + "2");
+						comm.write(min);
+						comm.write(max);
+						comm.write(FOOTER);
+						return ProtocolManager.parseWayList(comm.getReader());
+					}
+					
+				});
+			} catch (final IOException e) {
+				// TODO: ERROR HANDLING
+				e.printStackTrace();
+			}
 		}
 		return ret;
 	}

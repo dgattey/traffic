@@ -18,7 +18,6 @@ public class ProtocolManager {
 	
 	static final String			WAY_TAG				= "<way:";
 	static final String			NODE_TAG			= "<node:";
-	static final String			CHUNK_TAG			= "<chunk:";
 	static final String			WAY_LIST_TAG		= "<list:way:";
 	
 	static final String			CLOSE_TAG			= ">";
