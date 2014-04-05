@@ -16,8 +16,8 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import client.ClientApp;
+import data.ClientMapWay;
 import data.LatLongPoint;
-import data.MapWay;
 
 /**
  * Canvas class to draw shapes to screen with ability to zoom and pan
@@ -95,7 +95,7 @@ public class MapView extends JComponent {
 		content.setColor(COLOR_WAY);
 		for (final LatLongPoint p : app.getViewController().getChunks().keySet()) {
 			if (LatLongPoint.intersectChunk(p, p.plus(MapChunk.CHUNKSIZE, MapChunk.CHUNKSIZE), screenMax, screenMin)) {
-				for (final MapWay w : app.getViewController().getChunks().get(p).getWays()) {
+				for (final ClientMapWay w : app.getViewController().getChunks().get(p).getWays()) {
 					
 					// Only draws lines that are big enough to make a difference for the user
 					final Line2D line = makeLine2D(w);
@@ -115,13 +115,13 @@ public class MapView extends JComponent {
 		}
 		
 		// Route
-		final List<MapWay> route = app.getViewController().getRoute();
+		final List<ClientMapWay> route = app.getViewController().getRoute();
 		if (route != null && !route.isEmpty()) {
 			
 			// Draw all ways of the route
 			content.setColor(COLOR_ROUTE);
 			content.setStroke(new BasicStroke(6.0f));
-			for (final MapWay l : route) {
+			for (final ClientMapWay l : route) {
 				content.draw(makeLine2D(l));
 			}
 			
@@ -183,7 +183,7 @@ public class MapView extends JComponent {
 	 * @param way the way to convert
 	 * @return a Line2D representation of the way
 	 */
-	public Line2D.Double makeLine2D(final MapWay way) {
+	public Line2D.Double makeLine2D(final ClientMapWay way) {
 		final Point2D.Double start = latLongToScreen(way.getStart().getPoint());
 		final Point2D.Double end = latLongToScreen(way.getEnd().getPoint());
 		return new Line2D.Double(start, end);

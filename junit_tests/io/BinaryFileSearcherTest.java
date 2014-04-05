@@ -39,7 +39,6 @@ public class BinaryFileSearcherTest {
 			assertTrue(r.readLine().startsWith("/w/4170.7125"));
 			r.close();
 		} catch (DataSetException | IOException e) {
-			// TODO Auto-generated catch block
 			fail("Threw Exception");
 		}
 	}
@@ -53,7 +52,7 @@ public class BinaryFileSearcherTest {
 			assertTrue(result != null);
 			assertTrue(result.get(0).contains("/w/4170.7125"));
 			assertTrue(result.get(result.size() / 2).contains("/w/4170.7125")
-					|| result.get(result.size() / 2).contains("/w/4170.7126"));
+				|| result.get(result.size() / 2).contains("/w/4170.7126"));
 			assertTrue(result.get(result.size() - 1).contains("/w/4170.7126"));
 			
 			final List<String> result2 = (BinaryFileSearcher.getPage("data/ways.tsv", "/w/4170.7125", "/w/4170.7127",
@@ -61,8 +60,8 @@ public class BinaryFileSearcherTest {
 			assertTrue(result2 != null);
 			assertTrue(result2.get(0).contains("/w/4170.7125"));
 			assertTrue(result2.get(result2.size() / 2).contains("/w/4170.7125")
-					|| result2.get(result2.size() / 2).contains("/w/4170.7126")
-					|| result2.get(result2.size() / 2).contains("/w/4170.7127"));
+				|| result2.get(result2.size() / 2).contains("/w/4170.7126")
+				|| result2.get(result2.size() / 2).contains("/w/4170.7127"));
 			assertTrue(result2.get(result2.size() - 1).contains("/w/4170.7127"));
 			
 			// Top of the file

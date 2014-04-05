@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,8 +31,8 @@ import main.Utils;
 import client.ClientApp;
 import client.eventhandlers.AutocorrectHandler;
 import client.eventhandlers.RouteHandler;
+import data.ClientMapWay;
 import data.LatLongPoint;
-import data.MapWay;
 
 /**
  * Class that deals with drawing information to screen
@@ -59,14 +57,13 @@ public class ViewController {
 	private JLabel								statusLabel;
 	private JLabel								loadingLabel;
 	private JButton								routeButton;
-	private JButton								reverseButton;
 	private final List<JComboBox<String>>		fields				= new ArrayList<>();
 	private MapView								mapView;
 	
 	// Data
 	private final ExecutorService				chunkerPool			= Executors.newFixedThreadPool(10);
 	private final Map<LatLongPoint, MapChunk>	chunks				= new HashMap<>();
-	private List<MapWay>						route				= new ArrayList<>();
+	private List<ClientMapWay>					route				= new ArrayList<>();
 	private final LatLongPoint[]				userPoints			= new LatLongPoint[2];
 	
 	// Handlers
@@ -108,7 +105,7 @@ public class ViewController {
 	 * Constructor makes a frame, canvas to go on top of it, sets up mouse listeners, and adds components
 	 */
 	public void create() {
-		window = new JFrame(Utils.APPNAME);
+		window = new JFrame(Utils.APP_NAME);
 		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		window.setMinimumSize(new Dimension(400, 500));
 		window.setResizable(false);
@@ -157,8 +154,8 @@ public class ViewController {
 	 */
 	private static JPanel createTitlePanel() {
 		final JPanel titleArea = new JPanel();
-		final JLabel title = new JLabel("Maps");
-		final JLabel about = new JLabel("by aiguha and dgattey");
+		final JLabel title = new JLabel(Utils.APP_NAME);
+		final JLabel about = new JLabel(Utils.APP_ABOUT);
 		title.setFont(new Font(FONT, Font.BOLD, 32));
 		about.setFont(new Font(FONT, Font.BOLD, 16));
 		titleArea.setLayout(new BoxLayout(titleArea, BoxLayout.X_AXIS));
@@ -260,27 +257,7 @@ public class ViewController {
 		routeButton.setEnabled(false);
 		routeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		reverseButton = new JButton(new String(new int[] { 0x021f5 }, 0, 1));
-		reverseButton.setFont(new Font(FONT, Font.BOLD, 22));
-		reverseButton.setEnabled(false);
-		reverseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		reverseButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(final ActionEvent e) {
-				final String[] streets = new String[4];
-				for (int i = 0; i < fields.size(); i++) {
-					final JComboBox<String> f = fields.get(i);
-					streets[i] = f.getEditor().getItem().toString();
-				}
-				for (int i = 0; i < fields.size(); i++) {
-					fields.get(i).getEditor().setItem(streets[(i + 2) % 4]);
-				}
-				routeHandler.reverseRoute();
-			}
-		});
 		parent.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
-		parent.add(reverseButton);
 		parent.add(Box.createVerticalStrut(10));
 		parent.add(routeButton);
 		return parent;
@@ -360,7 +337,6 @@ public class ViewController {
 		}
 		routeButton.addActionListener(routeHandler);
 		routeButton.setEnabled(true);
-		reverseButton.setEnabled(true);
 		for (final JComboBox<String> box : fields) {
 			box.setEnabled(true);
 		}
@@ -437,7 +413,7 @@ public class ViewController {
 	 * 
 	 * @param route the new route
 	 */
-	public void setRoute(final List<MapWay> route) {
+	public void setRoute(final List<ClientMapWay> route) {
 		this.route = route;
 		if (route != null && !route.isEmpty() && mapView != null) {
 			mapView.centerViewOn(route.get(0).getStart().getPoint());
@@ -480,7 +456,7 @@ public class ViewController {
 	 * 
 	 * @return a list of MapWays representing the route
 	 */
-	public List<MapWay> getRoute() {
+	public List<ClientMapWay> getRoute() {
 		return route;
 	}
 	

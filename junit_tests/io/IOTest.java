@@ -10,12 +10,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import data.LatLongPoint;
-import data.MapWay;
-import data.MapException;
 import server.io.BinaryFileSearcher;
 import server.io.DataSetException;
 import server.io.IOController;
+import data.LatLongPoint;
+import data.MapException;
+import data.MapWay;
 
 @SuppressWarnings("static-method")
 public class IOTest {
@@ -44,7 +44,6 @@ public class IOTest {
 					IOController.getIndexHeaderMap().get("name"), "\\t");
 			assertTrue(records3.size() == 6);
 		} catch (DataSetException | IOException e) {
-			// TODO Auto-generated catch block
 			fail("Threw Exception");
 		}
 	}
@@ -75,7 +74,6 @@ public class IOTest {
 			final List<MapWay> chunk = IOController.getChunkOfWays(p1, p2);
 			
 		} catch (DataSetException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

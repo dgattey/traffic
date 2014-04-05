@@ -2,9 +2,9 @@ package client.hub;
 
 import java.util.List;
 
+import client.view.MapChunk;
+import data.ClientMapWay;
 import data.LatLongPoint;
-import data.MapNode;
-import data.MapWay;
 
 /**
  * @author dgattey
@@ -12,30 +12,24 @@ import data.MapWay;
 public interface Controllable {
 	
 	/**
-	 * Does KDTree search for LatLongPoint p and returns the nearest intersection as a node to use in the frontend
+	 * Returns a list of ClientMapWay representing the route between points a and b for visual display
 	 * 
-	 * @param p a LatLongPoint to search for in the backend
-	 * @return a MapNode representing the intersection
-	 */
-	public MapNode getNearestIntersection(LatLongPoint p);
-	
-	/**
-	 * Does file search for two strings representing an intersection
-	 * 
-	 * @param street1 a street name to cross with another
-	 * @param street2 a second street
-	 * @return the MapNode representing the intersection or null if streets don't intersection
-	 */
-	public MapNode getNearestIntersection(String street1, String street2);
-	
-	/**
-	 * Returns a list of MapLines representing the route between start and end for visual display
-	 * 
-	 * @param start the beginning
-	 * @param end the obvious end
+	 * @param a the beginning
+	 * @param b the obvious end
 	 * @return a list of lines to draw to screen
 	 */
-	public List<MapWay> getRoute(MapNode start, MapNode end);
+	public List<ClientMapWay> getRoute(LatLongPoint a, LatLongPoint b);
+	
+	/**
+	 * Returns a list of MapLines representing the route between intersections A and B for visual display
+	 * 
+	 * @param streetA1 street 1 of intersection A
+	 * @param streetA2 street 2 of intersection A
+	 * @param streetB1 street 1 of intersection B
+	 * @param streetB2 street 2 of intersection B
+	 * @return a list of lines to draw to screen
+	 */
+	public List<ClientMapWay> getRoute(String streetA1, String streetA2, String streetB1, String streetB2);
 	
 	/**
 	 * Searches the trie for the given input and returns a list of suggestions for input
@@ -53,5 +47,5 @@ public interface Controllable {
 	 * @param max the maximum LatLongPoint for this data
 	 * @return a list of MapWays in this page of data
 	 */
-	public List<MapWay> pageInMapData(LatLongPoint min, LatLongPoint max);
+	public MapChunk getChunk(LatLongPoint min, LatLongPoint max);
 }
