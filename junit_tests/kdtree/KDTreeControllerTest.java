@@ -9,10 +9,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import data.LatLongPoint;
-import data.MapException;
 import server.io.IOController;
 import server.kdtree.KDTreeController;
+import data.LatLongPoint;
+import data.MapException;
 
 @SuppressWarnings("static-method")
 public class KDTreeControllerTest {
@@ -38,7 +38,6 @@ public class KDTreeControllerTest {
 			assertTrue(c.getNearestNeighbors(1000, p2).equals(c.getNearestNaive(1000, p2)));
 			
 		} catch (IOException | MapException e) {
-			// TODO Auto-generated catch block
 			fail("Threw Exception");
 		}
 	}

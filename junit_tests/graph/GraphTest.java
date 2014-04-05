@@ -9,9 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import data.MapNode;
-import data.MapWay;
-import data.MapException;
 import server.graph.DataProviderException;
 import server.graph.Graph;
 import server.graph.GraphEdge;
@@ -19,6 +16,9 @@ import server.graph.GraphException;
 import server.graph.GraphNode;
 import server.graph.MapsDataProvider;
 import server.io.IOController;
+import data.MapException;
+import data.MapNode;
+import data.MapWay;
 
 @SuppressWarnings("static-method")
 public class GraphTest extends IOController {
@@ -50,7 +50,6 @@ public class GraphTest extends IOController {
 			assertTrue(path.get(0).getTarget().getValue().getID().equals("/n/4182.7140.1957915158"));
 			
 		} catch (MapException | IOException | GraphException | DataProviderException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -72,7 +71,6 @@ public class GraphTest extends IOController {
 			assertTrue(path.get(1).getTarget().getValue().getID().equals("/n/4182.7140.1957915190"));
 			
 		} catch (IOException | GraphException | DataProviderException | MapException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -92,7 +90,6 @@ public class GraphTest extends IOController {
 			assertTrue(path.size() == 0);
 			
 		} catch (IOException | GraphException | DataProviderException | MapException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
