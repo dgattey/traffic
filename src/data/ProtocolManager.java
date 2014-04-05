@@ -2,37 +2,50 @@ package data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import client.view.MapChunk;
 
 /**
- * Protocol-based Parser<br>
+ * Protocol Manager <br>
  * Tools for parsing according to our unique protocol
  * 
  * @author aiguha
  */
-public class ProParser {
+public class ProtocolManager {
 	
-	static final String	LLP_TAG		= "#llp:";
-	static final String	LLP_DELIM	= " ";
+	static final String	LLP_TAG			= "#llp:";
+	static final String	LLP_DELIM		= " ";
 	
-	static final String	WAY_TAG		= "<way: ";
+	static final String	WAY_TAG			= "<way:";
+	static final String	NODE_TAG		= "<node:";
+	static final String	CHUNK_TAG		= "<chunk:";
+	static final String	WAY_LIST_TAG	= "<list:way:";
 	
-	static final String	CLOSE_TAG	= ">";
+	static final String	CLOSE_TAG		= ">";
 	
-	public static void checkForOpeningTag(final String line, final String tag) throws ParseException {
+	public synchronized static void checkForOpeningTag(final String line, final String tag) throws ParseException {
 		if (!line.startsWith(tag)) {
 			throw new ParseException("Missing Opening Tag: " + tag);
 		}
 	}
 	
-	public static void checkForClosingTag(final String line) throws ParseException {
+	public synchronized static void checkForClosingTag(final String line) throws ParseException {
 		if (!line.equals(CLOSE_TAG)) {
 			throw new ParseException("Missing Closing Tag");
 		}
 	}
 	
-	public static LatLongPoint parseLatLongPoint(final BufferedReader r) throws ParseException, IOException {
+	public synchronized static String parseStreetName(final BufferedReader r) throws ParseException, IOException {
+		if (r == null) {
+			throw new ParseException("Null reader");
+		}
+		return r.readLine();
+	}
+	
+	public synchronized static LatLongPoint parseLatLongPoint(final BufferedReader r) throws ParseException,
+			IOException {
 		try {
 			String line = r.readLine();
 			if (line == null) {
@@ -52,7 +65,8 @@ public class ProParser {
 		}
 	}
 	
-	public static ClientMapWay parseClientMapWay(final BufferedReader r) throws IOException, ParseException {
+	public synchronized static ClientMapWay parseClientMapWay(final BufferedReader r) throws IOException,
+			ParseException {
 		final String line = r.readLine();
 		checkForOpeningTag(line, WAY_TAG);
 		final String id = r.readLine();
@@ -68,8 +82,22 @@ public class ProParser {
 		return new ClientMapWay(id, name, new ClientMapNode(startID, start), new ClientMapNode(endID, end));
 	}
 	
-	public static MapChunk parseMapChunk(final BufferedReader r) {
+	public synchronized static String encodeMapChunk(final MapChunk ch) {
 		throw new UnsupportedOperationException();
 	}
 	
+	public synchronized static String encodeRoute(List<MapWay> route) {
+		if (route == null) {
+			route = new ArrayList<MapWay>();
+		}
+		final StringBuilder build = new StringBuilder(128);
+		build.append(WAY_LIST_TAG);
+		build.append(route.size());
+		build.append("\n");
+		for (final MapWay way : route) {
+			build.append(way.encodeObject());
+		}
+		build.append(">");
+		return build.toString();
+	}
 }

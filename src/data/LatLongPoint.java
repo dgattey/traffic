@@ -2,8 +2,6 @@ package data;
 
 import java.awt.geom.Point2D;
 
-import main.Utils;
-
 /**
  * Wrapper for Point2D to represent Latitude and Longitude points
  * 
@@ -199,22 +197,11 @@ public class LatLongPoint extends Point2D.Double implements Convertible<LatLongP
 	
 	@Override
 	public String encodeObject() {
-		return ProParser.LLP_TAG + getLat() + ProParser.LLP_DELIM + getLong() + "\n";
+		return ProtocolManager.LLP_TAG + getLat() + ProtocolManager.LLP_DELIM + getLong() + "\n";
 	}
 	
 	@Override
-	public LatLongPoint decodeObject(String rep) {
-		rep = Utils.removeTrailingNewlines(rep);
-		final String[] coords = rep.split(ProParser.LLP_DELIM);
-		if (coords.length != 2) {
-			return null;
-		}
-		try {
-			final double lat = java.lang.Double.parseDouble(coords[0]);
-			final double lon = java.lang.Double.parseDouble(coords[1]);
-			final LatLongPoint p = new LatLongPoint(lat, lon);
-			return p;
-		} catch (final NumberFormatException e) {}
+	public LatLongPoint decodeObject(final String rep) {
 		return null;
 	}
 }

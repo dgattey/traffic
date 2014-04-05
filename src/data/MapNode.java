@@ -21,8 +21,6 @@ public class MapNode implements KComparer<MapNode>, Graphable<MapNode>, Comparab
 	private final LatLongPoint	p;
 	private final double[]		coords;
 	
-	private final static String	delimiter	= ":";
-	
 	/**
 	 * Makes a new MapNode to return statically
 	 * 
@@ -182,7 +180,7 @@ public class MapNode implements KComparer<MapNode>, Graphable<MapNode>, Comparab
 	
 	@Override
 	public String encodeObject() {
-		final String encoded = String.format("%s" + delimiter + " %s", id, p.encodeObject());
+		final String encoded = String.format("%s\n%s", id, p.encodeObject());
 		return encoded;
 	}
 	

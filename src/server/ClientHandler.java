@@ -46,23 +46,23 @@ public class ClientHandler extends Thread {
 		String req_start = "";
 		try {
 			req_start = _input.readLine();
+			switch (req_start) {
+			case AC:
+				_response.autocorrectResponse(this);
+				break;
+			case RS:
+				_response.routeFromNamesResponse(this);
+				break;
+			case RC:
+				_response.routeFromClicksResponse(this);
+				break;
+			case MC:
+				_response.mapDataResponse(this);
+			default:
+				_response.errorResponse(this, null);
+			}
 		} catch (final IOException e) {
-			_response.errorResponse(this);
-		}
-		switch (req_start) {
-		case AC:
-			_response.autocorrectResponse(this);
-			break;
-		case RS:
-			_response.routeFromNamesResponse(this);
-			break;
-		case RC:
-			_response.routeFromClicksResponse(this);
-			break;
-		case MC:
-			_response.mapDataResponse(this);
-		default:
-			_response.errorResponse(this);
+			_response.errorResponse(this, e);
 		}
 		
 	}
@@ -89,13 +89,17 @@ public class ClientHandler extends Thread {
 		
 	}
 	
+	public BufferedReader getReader() {
+		return _input;
+	}
+	
 	/**
 	 * Send a string to the client via the socket
 	 * 
 	 * @param message response to send
 	 */
 	public void send(final String message) {
-		_output.write(message + "\n");
+		_output.write(message);
 		_output.flush();
 	}
 	

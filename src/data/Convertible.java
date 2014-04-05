@@ -3,7 +3,7 @@ package data;
 interface Convertible<T> {
 	
 	/**
-	 * Returns a string representation of the object for the default protocol
+	 * Returns a string representation of the object for the default protocol, including the trailing newline character
 	 * 
 	 * @return String
 	 */

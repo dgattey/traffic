@@ -76,7 +76,7 @@ public class MapWay implements Weighable<MapWay>, Convertible<MapWay> {
 	
 	@Override
 	public String encodeObject() {
-		final String encoded = String.format("%s\n%s\n%s%s", name, id, start.encodeObject(), end.encodeObject());
+		final String encoded = String.format("%s\n%s\n%s%s", id, name, start.encodeObject(), end.encodeObject());
 		return encoded;
 	}
 	
