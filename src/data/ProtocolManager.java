@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import client.view.MapChunk;
-
 /**
  * Protocol Manager <br>
  * Tools for parsing according to our unique protocol
@@ -93,15 +91,6 @@ public class ProtocolManager {
 		return new ClientMapWay(id, name, new ClientMapNode(startID, start), new ClientMapNode(endID, end));
 	}
 	
-	public synchronized static String encodeMapChunk(final MapChunk ch) {
-		throw new UnsupportedOperationException();
-		
-	}
-	
-	public static List<ClientMapWay> parseMapChunk(final BufferedReader r) {
-		throw new UnsupportedOperationException();
-	}
-	
 	public synchronized static String encodeRoute(List<MapWay> route) {
 		if (route == null) {
 			route = new ArrayList<>();
@@ -117,7 +106,7 @@ public class ProtocolManager {
 		return build.toString();
 	}
 	
-	public static List<ClientMapWay> parseRoute(final BufferedReader reader) {
+	public static List<ClientMapWay> parseWayList(final BufferedReader reader) {
 		throw new UnsupportedOperationException();
 	}
 	

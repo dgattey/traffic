@@ -91,7 +91,7 @@ public class HubController implements Controllable {
 					comm.write(a);
 					comm.write(b);
 					comm.write(FOOTER);
-					return ProtocolManager.parseRoute(comm.getReader());
+					return ProtocolManager.parseWayList(comm.getReader());
 				}
 			});
 		}
@@ -121,7 +121,7 @@ public class HubController implements Controllable {
 					comm.write(streetB1);
 					comm.write(streetB2);
 					comm.write(FOOTER);
-					return ProtocolManager.parseRoute(comm.getReader());
+					return ProtocolManager.parseWayList(comm.getReader());
 				}
 			});
 		}
@@ -160,7 +160,7 @@ public class HubController implements Controllable {
 					comm.write(min);
 					comm.write(max);
 					comm.write(FOOTER);
-					return ProtocolManager.parseMapChunk(comm.getReader());
+					return ProtocolManager.parseWayList(comm.getReader());
 				}
 				
 			});
