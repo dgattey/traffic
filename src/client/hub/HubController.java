@@ -1,13 +1,19 @@
 package client.hub;
 
+import static data.ProtocolManager.FOOTER;
+import static data.ProtocolManager.HEADER_QUERY;
+import static data.ProtocolManager.TYPE_AUTOCORRECT;
+import static data.ProtocolManager.TYPE_CHUNK;
+import static data.ProtocolManager.TYPE_POINT;
+import static data.ProtocolManager.TYPE_ROUTE_POINT;
+import static data.ProtocolManager.TYPE_ROUTE_STREET;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import client.ClientApp;
+import client.communicator.CommController;
+import client.communicator.ServerCallable;
 import data.ClientMapWay;
 import data.LatLongPoint;
 import data.ParseException;
@@ -30,40 +36,26 @@ public class HubController implements Controllable {
 	 * @param hostName the host name to use as the server's hostname
 	 * @param serverPort the server port to use when connecting to the server
 	 * @param guiApp the app that's running this hub controller
-	 * @throws IOException
-	 * @throws ParseException
+	 * @throws IOException if there was an error communicating with the server
 	 */
-	public HubController(final String hostName, final int serverPort, final ClientApp guiApp) throws IOException,
-			ParseException {
+	public HubController(final String hostName, final int serverPort, final ClientApp guiApp) throws IOException {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
-		final ExecutorService executor = Executors.newSingleThreadExecutor();
-		final Callable<LatLongPoint> callable = new Callable<LatLongPoint>() {
+		appLoadPoint = CommController.getFromServer(new ServerCallable<LatLongPoint>(hostName, serverPort) {
 			
 			@Override
-			public LatLongPoint call() throws Exception {
-				final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
-				comm.connect();
-				// TODO: Fix protocol strings
-				comm.write("<intersection");
+			protected LatLongPoint writeAndGetInfo(final CommController comm) throws IOException {
+				comm.write(HEADER_QUERY + ":" + TYPE_POINT + ":" + "2");
 				comm.write("Thayer Street");
 				comm.write("Waterman Street");
-				comm.write(">");
-				final LatLongPoint ret = ProtocolManager.parseLatLongPoint(comm.getReader());
-				comm.disconnect();
-				return ret;
+				comm.write(FOOTER);
+				try {
+					return ProtocolManager.parseLatLongPoint(comm.getReader());
+				} catch (final ParseException e) {
+					throw new IOException("<HubController> parsing appLoadPoint", e);
+				}
 			}
-		};
-		
-		// Make it work and get return value
-		try {
-			appLoadPoint = executor.submit(callable).get();
-			isReady = true;
-		} catch (InterruptedException | ExecutionException e) {
-			// TODO: Fix up exception handling
-			e.printStackTrace();
-		}
-		executor.shutdown();
+		});
 	}
 	
 	/**
@@ -91,43 +83,20 @@ public class HubController implements Controllable {
 		}
 		List<ClientMapWay> ret = null;
 		if (isReady) {
-			final ExecutorService executor = Executors.newSingleThreadExecutor();
-			final Callable<List<ClientMapWay>> callable = new Callable<List<ClientMapWay>>() {
+			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 				
 				@Override
-				public List<ClientMapWay> call() throws Exception {
-					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
-					List<ClientMapWay> route = null;
-					try {
-						comm.connect();
-						// TODO: Fix protocol strings
-						comm.write("<route:points");
-						comm.write(a);
-						comm.write(b);
-						comm.write(">");
-						route = ProtocolManager.parseRoute(comm.getReader());
-						comm.disconnect();
-					} catch (final IOException e) {
-						// TODO: Fix up exception handling
-						e.printStackTrace();
-					}
-					return route;
+				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+					comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_POINT + ":" + "2");
+					comm.write(a);
+					comm.write(b);
+					comm.write(FOOTER);
+					return ProtocolManager.parseRoute(comm.getReader());
 				}
-			};
-			
-			// Make it work and get return value
-			try {
-				ret = executor.submit(callable).get();
-			} catch (InterruptedException | ExecutionException e) {
-				// TODO: Fix up exception handling
-				e.printStackTrace();
-			}
-			executor.shutdown();
+			});
 		}
 		return ret;
 	}
-	
-	// TODO: Fix repeated code everywhere for Callable, etc
 	
 	@Override
 	public List<ClientMapWay> getRoute(final String streetA1, final String streetA2, final String streetB1,
@@ -142,40 +111,19 @@ public class HubController implements Controllable {
 		// TODO: throw illegal exception for no intersections to display (from backend)
 		List<ClientMapWay> ret = null;
 		if (isReady) {
-			final ExecutorService executor = Executors.newSingleThreadExecutor();
-			final Callable<List<ClientMapWay>> callable = new Callable<List<ClientMapWay>>() {
+			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 				
 				@Override
-				public List<ClientMapWay> call() throws Exception {
-					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
-					List<ClientMapWay> route = null;
-					try {
-						comm.connect();
-						// TODO: Fix protocol strings
-						comm.write("<route:street");
-						comm.write(streetA1);
-						comm.write(streetA2);
-						comm.write(streetB1);
-						comm.write(streetB2);
-						comm.write(">");
-						route = ProtocolManager.parseRoute(comm.getReader());
-						comm.disconnect();
-					} catch (final IOException e) {
-						// TODO: Fix up exception handling
-						e.printStackTrace();
-					}
-					return route;
+				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+					comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_STREET + ":" + "4");
+					comm.write(streetA1);
+					comm.write(streetA2);
+					comm.write(streetB1);
+					comm.write(streetB2);
+					comm.write(FOOTER);
+					return ProtocolManager.parseRoute(comm.getReader());
 				}
-			};
-			
-			// Make it work and get return value
-			try {
-				ret = executor.submit(callable).get();
-			} catch (InterruptedException | ExecutionException e) {
-				// TODO: Fix up exception handling
-				e.printStackTrace();
-			}
-			executor.shutdown();
+			});
 		}
 		return ret;
 		
@@ -185,37 +133,17 @@ public class HubController implements Controllable {
 	public List<String> getSuggestions(final String input) {
 		List<String> ret = null;
 		if (isReady) {
-			final ExecutorService executor = Executors.newSingleThreadExecutor();
-			final Callable<List<String>> callable = new Callable<List<String>>() {
+			ret = CommController.getFromServer(new ServerCallable<List<String>>(hostName, serverPort) {
 				
 				@Override
-				public List<String> call() throws Exception {
-					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
-					List<String> sugg = null;
-					try {
-						comm.connect();
-						// TODO: Fix protocol strings
-						comm.write("<ac");
-						comm.write(input);
-						comm.write(">");
-						sugg = ProtocolManager.parseStreetList(comm.getReader());
-						comm.disconnect();
-					} catch (final IOException e) {
-						// TODO: Fix up exception handling
-						e.printStackTrace();
-					}
-					return sugg;
+				protected List<String> writeAndGetInfo(final CommController comm) throws IOException {
+					comm.write(HEADER_QUERY + ":" + TYPE_AUTOCORRECT + ":" + "1");
+					comm.write(input);
+					comm.write(FOOTER);
+					return ProtocolManager.parseStreetList(comm.getReader());
 				}
-			};
-			
-			// Make it work and get return value
-			try {
-				ret = executor.submit(callable).get();
-			} catch (InterruptedException | ExecutionException e) {
-				// TODO: Fix up exception handling
-				e.printStackTrace();
-			}
-			executor.shutdown();
+				
+			});
 		}
 		return ret;
 	}
@@ -224,37 +152,18 @@ public class HubController implements Controllable {
 	public List<ClientMapWay> getChunk(final LatLongPoint min, final LatLongPoint max) {
 		List<ClientMapWay> ret = null;
 		if (isReady) {
-			final ExecutorService executor = Executors.newSingleThreadExecutor();
-			final Callable<List<ClientMapWay>> callable = new Callable<List<ClientMapWay>>() {
+			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 				
 				@Override
-				public List<ClientMapWay> call() throws Exception {
-					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
-					List<ClientMapWay> chunk = null;
-					try {
-						comm.connect();
-						comm.write("<chunk");
-						comm.write(min);
-						comm.write(max);
-						comm.write(">");
-						chunk = ProtocolManager.parseMapChunk(comm.getReader());
-						comm.disconnect();
-					} catch (final IOException e) {
-						// TODO: Fix up exception handling
-						e.printStackTrace();
-					}
-					return chunk;
+				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+					comm.write(HEADER_QUERY + ":" + TYPE_CHUNK + ":" + "2");
+					comm.write(min);
+					comm.write(max);
+					comm.write(FOOTER);
+					return ProtocolManager.parseMapChunk(comm.getReader());
 				}
-			};
-			
-			// Make it work and get return value
-			try {
-				ret = executor.submit(callable).get();
-			} catch (InterruptedException | ExecutionException e) {
-				// TODO: Fix up exception handling
-				e.printStackTrace();
-			}
-			executor.shutdown();
+				
+			});
 		}
 		return ret;
 	}

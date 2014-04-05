@@ -1,10 +1,13 @@
-package client.hub;
+package client.communicator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import data.Convertible;
 
@@ -13,7 +16,7 @@ import data.Convertible;
  * 
  * @author dgattey
  */
-class ClientCommunicator {
+public class CommController {
 	
 	private Socket			sock;
 	private PrintWriter		writer;
@@ -22,12 +25,30 @@ class ClientCommunicator {
 	private final int		serverPort;
 	
 	/**
+	 * Executes a callable and returns a V representing what the server returned
+	 * 
+	 * @param callable a ServerCallable that will interface with server
+	 * @return a V to return
+	 */
+	public static <V> V getFromServer(final ServerCallable<V> callable) {
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		try {
+			return executor.submit(callable).get();
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO: Fix up exception handling
+			e.printStackTrace();
+		}
+		executor.shutdown();
+		return null;
+	}
+	
+	/**
 	 * Sets relevant details to allow connection later
 	 * 
 	 * @param hostName the string name of the host
 	 * @param serverPort the port where the socket should connect
 	 */
-	public ClientCommunicator(final String hostName, final int serverPort) {
+	public CommController(final String hostName, final int serverPort) {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
 	}

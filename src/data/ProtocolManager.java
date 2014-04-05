@@ -15,15 +15,26 @@ import client.view.MapChunk;
  */
 public class ProtocolManager {
 	
-	static final String	LLP_TAG			= "#llp:";
-	static final String	LLP_DELIM		= " ";
+	static final String			LLP_TAG				= "#llp:";
+	static final String			LLP_DELIM			= " ";
 	
-	static final String	WAY_TAG			= "<way:";
-	static final String	NODE_TAG		= "<node:";
-	static final String	CHUNK_TAG		= "<chunk:";
-	static final String	WAY_LIST_TAG	= "<list:way:";
+	static final String			WAY_TAG				= "<way:";
+	static final String			NODE_TAG			= "<node:";
+	static final String			CHUNK_TAG			= "<chunk:";
+	static final String			WAY_LIST_TAG		= "<list:way:";
 	
-	static final String	CLOSE_TAG		= ">";
+	static final String			CLOSE_TAG			= ">";
+	
+	public static final String	HEADER_QUERY		= "@q";
+	public static final String	HEADER_RESPONSE		= "@r";
+	public static final String	FOOTER				= "@x";
+	public static final String	TYPE_AUTOCORRECT	= "ac";
+	public static final String	TYPE_ROUTE_POINT	= "rp";
+	public static final String	TYPE_ROUTE_STREET	= "rs";
+	public static final String	TYPE_INTERSECTION	= "in";
+	public static final String	TYPE_CHUNK			= "ch";
+	public static final String	TYPE_ROUTE			= "rt";
+	public static final String	TYPE_POINT			= "pt";
 	
 	public synchronized static void checkForOpeningTag(final String line, final String tag) throws ParseException {
 		if (!line.startsWith(tag)) {
