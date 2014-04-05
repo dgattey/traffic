@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import client.ClientApp;
 import data.ClientMapWay;
 import data.LatLongPoint;
+import data.ParseException;
 import data.ProtocolManager;
 
 /**
@@ -29,12 +30,40 @@ public class HubController implements Controllable {
 	 * @param hostName the host name to use as the server's hostname
 	 * @param serverPort the server port to use when connecting to the server
 	 * @param guiApp the app that's running this hub controller
+	 * @throws IOException
+	 * @throws ParseException
 	 */
-	public HubController(final String hostName, final int serverPort, final ClientApp guiApp) {
+	public HubController(final String hostName, final int serverPort, final ClientApp guiApp) throws IOException,
+			ParseException {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
-		// TODO: setup a test socket and make sure it's connectable - perhaps to set appLoadPoint?
-		// TODO: Set isReady
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		final Callable<LatLongPoint> callable = new Callable<LatLongPoint>() {
+			
+			@Override
+			public LatLongPoint call() throws Exception {
+				final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
+				comm.connect();
+				// TODO: Fix protocol strings
+				comm.write("<intersection");
+				comm.write("Thayer Street");
+				comm.write("Waterman Street");
+				comm.write(">");
+				final LatLongPoint ret = ProtocolManager.parseLatLongPoint(comm.getReader());
+				comm.disconnect();
+				return ret;
+			}
+		};
+		
+		// Make it work and get return value
+		try {
+			appLoadPoint = executor.submit(callable).get();
+			isReady = true;
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO: Fix up exception handling
+			e.printStackTrace();
+		}
+		executor.shutdown();
 	}
 	
 	/**
