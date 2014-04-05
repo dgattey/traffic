@@ -109,4 +109,8 @@ public class ProtocolManager {
 	public static List<ClientMapWay> parseRoute(final BufferedReader reader) {
 		throw new UnsupportedOperationException();
 	}
+	
+	public static List<String> parseStreetList(final BufferedReader reader) {
+		throw new UnsupportedOperationException();
+	}
 }

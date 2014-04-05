@@ -60,8 +60,42 @@ public class HubController implements Controllable {
 		if (a == null || b == null) {
 			throw new IllegalArgumentException("null points in route finding");
 		}
-		// TODO: connect to server, get route for 2 points
-		return null;
+		List<ClientMapWay> ret = null;
+		if (isReady) {
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			final Callable<List<ClientMapWay>> callable = new Callable<List<ClientMapWay>>() {
+				
+				@Override
+				public List<ClientMapWay> call() throws Exception {
+					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
+					List<ClientMapWay> route = null;
+					try {
+						comm.connect();
+						// TODO: Fix protocol strings
+						comm.write("<route:points");
+						comm.write(a);
+						comm.write(b);
+						comm.write(">");
+						route = ProtocolManager.parseRoute(comm.getReader());
+						comm.disconnect();
+					} catch (final IOException e) {
+						// TODO: Fix up exception handling
+						e.printStackTrace();
+					}
+					return route;
+				}
+			};
+			
+			// Make it work and get return value
+			try {
+				ret = executor.submit(callable).get();
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO: Fix up exception handling
+				e.printStackTrace();
+			}
+			executor.shutdown();
+		}
+		return ret;
 	}
 	
 	// TODO: Fix repeated code everywhere for Callable, etc
@@ -120,11 +154,41 @@ public class HubController implements Controllable {
 	
 	@Override
 	public List<String> getSuggestions(final String input) {
-		// TODO: connect to server, get suggestions
+		List<String> ret = null;
 		if (isReady) {
+			final ExecutorService executor = Executors.newSingleThreadExecutor();
+			final Callable<List<String>> callable = new Callable<List<String>>() {
+				
+				@Override
+				public List<String> call() throws Exception {
+					final ClientCommunicator comm = new ClientCommunicator(hostName, serverPort);
+					List<String> sugg = null;
+					try {
+						comm.connect();
+						// TODO: Fix protocol strings
+						comm.write("<ac");
+						comm.write(input);
+						comm.write(">");
+						sugg = ProtocolManager.parseStreetList(comm.getReader());
+						comm.disconnect();
+					} catch (final IOException e) {
+						// TODO: Fix up exception handling
+						e.printStackTrace();
+					}
+					return sugg;
+				}
+			};
 			
+			// Make it work and get return value
+			try {
+				ret = executor.submit(callable).get();
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO: Fix up exception handling
+				e.printStackTrace();
+			}
+			executor.shutdown();
 		}
-		return null;
+		return ret;
 	}
 	
 	@Override
