@@ -1,12 +1,10 @@
 package client.hub;
 
+import static data.ProtocolManager.AC_Q;
 import static data.ProtocolManager.FOOTER;
-import static data.ProtocolManager.HEADER_QUERY;
-import static data.ProtocolManager.TYPE_AUTOCORRECT;
-import static data.ProtocolManager.TYPE_CHUNK;
-import static data.ProtocolManager.TYPE_POINT;
-import static data.ProtocolManager.TYPE_ROUTE_POINT;
-import static data.ProtocolManager.TYPE_ROUTE_STREET;
+import static data.ProtocolManager.MC_Q;
+import static data.ProtocolManager.RP_Q;
+import static data.ProtocolManager.RS_Q;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +14,6 @@ import client.communicator.CommController;
 import client.communicator.ServerCallable;
 import data.ClientMapWay;
 import data.LatLongPoint;
-import data.ParseException;
 import data.ProtocolManager;
 
 /**
@@ -24,11 +21,10 @@ import data.ProtocolManager;
  */
 public class HubController implements Controllable {
 	
-	boolean					isReady;
-	private LatLongPoint	appLoadPoint;
-	
-	private final String	hostName;
-	private final int		serverPort;
+	private static final LatLongPoint	APP_LOAD_POINT	= new LatLongPoint(41.827196, -71.400369);
+	private final boolean				isReady;
+	private final String				hostName;
+	private final int					serverPort;
 	
 	/**
 	 * Main Constructor for HubController
@@ -41,21 +37,7 @@ public class HubController implements Controllable {
 	public HubController(final String hostName, final int serverPort, final ClientApp guiApp) throws IOException {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
-		appLoadPoint = CommController.getFromServer(new ServerCallable<LatLongPoint>(hostName, serverPort) {
-			
-			@Override
-			protected LatLongPoint writeAndGetInfo(final CommController comm) throws IOException {
-				comm.write(HEADER_QUERY + ":" + TYPE_POINT + ":" + "2");
-				comm.write("Thayer Street");
-				comm.write("Waterman Street");
-				comm.write(FOOTER);
-				try {
-					return ProtocolManager.parseLatLongPoint(comm.getReader());
-				} catch (final ParseException e) {
-					throw new IOException("<HubController> parsing appLoadPoint failed", e);
-				}
-			}
-		});
+		isReady = true;
 	}
 	
 	/**
@@ -73,7 +55,7 @@ public class HubController implements Controllable {
 	 * @return the center point of the app
 	 */
 	public LatLongPoint getAppLoadPoint() {
-		return appLoadPoint;
+		return APP_LOAD_POINT;
 	}
 	
 	@Override
@@ -88,7 +70,7 @@ public class HubController implements Controllable {
 					
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
-						comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_POINT + ":" + "2");
+						comm.write(RP_Q + "2");
 						comm.write(a);
 						comm.write(b);
 						comm.write(FOOTER);
@@ -121,7 +103,7 @@ public class HubController implements Controllable {
 					
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
-						comm.write(HEADER_QUERY + ":" + TYPE_ROUTE_STREET + ":" + "4");
+						comm.write(RS_Q + "4");
 						comm.write(streetA1);
 						comm.write(streetA2);
 						comm.write(streetB1);
@@ -148,7 +130,7 @@ public class HubController implements Controllable {
 					
 					@Override
 					protected List<String> writeAndGetInfo(final CommController comm) throws IOException {
-						comm.write(HEADER_QUERY + ":" + TYPE_AUTOCORRECT + ":" + "1");
+						comm.write(AC_Q + "1");
 						comm.write(input);
 						comm.write(FOOTER);
 						return ProtocolManager.parseStreetList(comm.getReader());
@@ -172,7 +154,7 @@ public class HubController implements Controllable {
 					
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
-						comm.write(HEADER_QUERY + ":" + TYPE_CHUNK + ":" + "2");
+						comm.write(MC_Q + "2");
 						comm.write(min);
 						comm.write(max);
 						comm.write(FOOTER);

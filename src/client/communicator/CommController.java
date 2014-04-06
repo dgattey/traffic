@@ -93,6 +93,7 @@ public class CommController {
 			throw new IOException("<ClientServerWriter> Socket is closed - can't write");
 		}
 		writer.write(obj.encodeObject());
+		writer.write("\n");
 	}
 	
 	/**

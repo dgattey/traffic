@@ -52,10 +52,8 @@ public class ViewController {
 	public static final String					DEFAULT_LABEL_TEXT	= "Click any two points on the map or enter two intersections and press the button to find a route";
 	
 	// View stuff
-	private JComponent							centerPanel;
 	private JFrame								window;
 	private JLabel								statusLabel;
-	private JLabel								loadingLabel;
 	private JButton								routeButton;
 	private final List<JComboBox<String>>		fields				= new ArrayList<>();
 	private MapView								mapView;
@@ -111,40 +109,12 @@ public class ViewController {
 		window.setResizable(false);
 		
 		// Add content
-		window.getContentPane().add(createLoadingPanel(), BorderLayout.CENTER);
+		window.getContentPane().add(loadMap(), BorderLayout.CENTER);
 		window.getContentPane().add(createTopPanel(), BorderLayout.NORTH);
 		
 		// Show it
 		window.pack();
 		window.setVisible(true);
-	}
-	
-	/**
-	 * Makes the loading panel
-	 * 
-	 * @return the new loading panel
-	 */
-	private JComponent createLoadingPanel() {
-		centerPanel = new JPanel();
-		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-		
-		final JLabel loadingLabelStatic = new JLabel("Loading...");
-		loadingLabelStatic.setFont(new Font(FONT, Font.BOLD, 20));
-		loadingLabelStatic.setAlignmentX(Component.CENTER_ALIGNMENT);
-		theme(loadingLabelStatic);
-		
-		loadingLabel = new JLabel("0% complete");
-		loadingLabel.setFont(new Font(FONT, Font.BOLD, 14));
-		loadingLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		theme(loadingLabel);
-		
-		centerPanel.setPreferredSize(new Dimension(800, 600));
-		centerPanel.setBackground(COLOR_WINDOW);
-		centerPanel.add(Box.createVerticalStrut(200));
-		centerPanel.add(loadingLabelStatic);
-		centerPanel.add(Box.createVerticalStrut(25));
-		centerPanel.add(loadingLabel);
-		return centerPanel;
 	}
 	
 	/**
@@ -306,23 +276,11 @@ public class ViewController {
 	}
 	
 	/**
-	 * While app loads, updates progress
+	 * Loads map
 	 * 
-	 * @param completed the number of tasks so far completed
-	 * @param total the total number of tasks
+	 * @return a new JPanel with the map on it
 	 */
-	public void updateProgress(final double completed, final double total) {
-		if (loadingLabel != null) {
-			loadingLabel.setText((int) ((completed / total) * 100) + "% complete");
-			window.revalidate();
-			window.repaint();
-		}
-	}
-	
-	/**
-	 * Loads map from callback
-	 */
-	public void loadMap() {
+	private JComponent loadMap() {
 		mapView = new MapView(app);
 		panHandler = new PanHandler(mapView);
 		scaleHandler = new ScaleHandler(mapView);
@@ -341,11 +299,10 @@ public class ViewController {
 			box.setEnabled(true);
 		}
 		
-		centerPanel.removeAll();
-		centerPanel.add(mapView);
 		window.invalidate();
 		window.validate();
 		window.repaint();
+		return mapView;
 	}
 	
 	/**
