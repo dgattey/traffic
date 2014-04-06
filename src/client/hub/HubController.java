@@ -14,6 +14,7 @@ import client.communicator.CommController;
 import client.communicator.ServerCallable;
 import data.ClientMapWay;
 import data.LatLongPoint;
+import data.ParseException;
 import data.ProtocolManager;
 
 /**
@@ -69,7 +70,8 @@ public class HubController implements Controllable {
 				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 					
 					@Override
-					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
+							ParseException {
 						comm.write(RP_Q + "2");
 						comm.write(a);
 						comm.write(b);
@@ -102,7 +104,8 @@ public class HubController implements Controllable {
 				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 					
 					@Override
-					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
+							ParseException {
 						comm.write(RS_Q + "4");
 						comm.write(streetA1);
 						comm.write(streetA2);
@@ -129,7 +132,8 @@ public class HubController implements Controllable {
 				ret = CommController.getFromServer(new ServerCallable<List<String>>(hostName, serverPort) {
 					
 					@Override
-					protected List<String> writeAndGetInfo(final CommController comm) throws IOException {
+					protected List<String> writeAndGetInfo(final CommController comm) throws IOException,
+							ParseException {
 						comm.write(AC_Q + "1");
 						comm.write(input);
 						comm.write(FOOTER);
@@ -153,7 +157,8 @@ public class HubController implements Controllable {
 				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 					
 					@Override
-					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException {
+					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
+							ParseException {
 						comm.write(MC_Q + "2");
 						comm.write(min);
 						comm.write(max);

@@ -3,6 +3,8 @@ package client.communicator;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
+import data.ParseException;
+
 /**
  * Main callable class to use in creating information to send to server - should be subclassed
  * 
@@ -26,7 +28,7 @@ public abstract class ServerCallable<V> implements Callable<V> {
 	}
 	
 	@Override
-	public V call() throws IOException {
+	public V call() throws IOException, ParseException {
 		final CommController comm = new CommController(hostName, serverPort);
 		V chunk = null;
 		comm.connect();
@@ -42,7 +44,8 @@ public abstract class ServerCallable<V> implements Callable<V> {
 	 * @param comm the communication controller to use
 	 * @return a V object representing what you want
 	 * @throws IOException if there was some server error
+	 * @throws ParseException if there was an error reading from the server
 	 */
-	protected abstract V writeAndGetInfo(CommController comm) throws IOException;
+	protected abstract V writeAndGetInfo(CommController comm) throws IOException, ParseException;
 	
 }
