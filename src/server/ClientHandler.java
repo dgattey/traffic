@@ -49,13 +49,13 @@ public class ClientHandler extends Thread {
 				_response.autocorrectResponse(this);
 				break;
 			case ProtocolManager.RS_Q:
-				_response.routeFromNamesResponse(this);
+				ResponseController.routeFromNamesResponse(this);
 				break;
 			case ProtocolManager.RP_Q:
 				_response.routeFromClicksResponse(this);
 				break;
 			case ProtocolManager.MC_Q:
-				_response.mapDataResponse(this);
+				ResponseController.mapDataResponse(this);
 			default:
 				ResponseController.errorResponse(this, null);
 			}

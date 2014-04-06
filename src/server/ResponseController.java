@@ -137,7 +137,7 @@ public class ResponseController {
 		// Build Response
 		final StringBuilder response = new StringBuilder(256);
 		response.append(ProtocolManager.ER_R);
-		response.append(ProtocolManager.encodeError(e.getMessage()));
+		response.append(ProtocolManager.encodeError(e == null ? "No message" : e.getMessage()));
 		response.append(ProtocolManager.FOOTER);
 		response.append("\n");
 		c.send(response.toString());
