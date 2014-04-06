@@ -19,9 +19,11 @@ public class ProtocolManager {
 	static final String			WAY_TAG				= "<way:";
 	static final String			NODE_TAG			= "<node:";
 	static final String			WAY_LIST_TAG		= "<list:way:";
+	static final String			STRING_LIST_TAG		= "<list:string:";
 	
 	static final String			CLOSE_TAG			= ">";
 	
+	public static final String	DELIM				= ":";
 	public static final String	HEADER_QUERY		= "@q";
 	public static final String	HEADER_RESPONSE		= "@r";
 	public static final String	FOOTER				= "@x";
@@ -32,6 +34,18 @@ public class ProtocolManager {
 	public static final String	TYPE_CHUNK			= "ch";
 	public static final String	TYPE_ROUTE			= "rt";
 	public static final String	TYPE_POINT			= "pt";
+	public static final String	TYPE_ERROR			= "er";
+	
+	public static final String	AC_Q				= HEADER_QUERY + DELIM + TYPE_AUTOCORRECT + DELIM;
+	public static final String	RS_Q				= HEADER_QUERY + DELIM + TYPE_ROUTE_STREET + DELIM;
+	public static final String	RP_Q				= HEADER_QUERY + DELIM + TYPE_ROUTE_POINT + DELIM;
+	public static final String	MC_Q				= HEADER_QUERY + DELIM + TYPE_CHUNK + DELIM;
+	
+	public static final String	AC_R				= HEADER_RESPONSE + DELIM + TYPE_AUTOCORRECT + DELIM;
+	public static final String	RS_R				= HEADER_RESPONSE + DELIM + TYPE_ROUTE_STREET + DELIM;
+	public static final String	RP_R				= HEADER_RESPONSE + DELIM + TYPE_ROUTE_POINT + DELIM;
+	public static final String	MC_R				= HEADER_RESPONSE + DELIM + TYPE_CHUNK + DELIM;
+	public static final String	ER_R				= HEADER_RESPONSE + DELIM + TYPE_ERROR + DELIM;
 	
 	public synchronized static void checkForOpeningTag(final String line, final String tag) throws ParseException {
 		if (!line.startsWith(tag)) {
@@ -90,19 +104,39 @@ public class ProtocolManager {
 		return new ClientMapWay(id, name, new ClientMapNode(startID, start), new ClientMapNode(endID, end));
 	}
 	
-	public synchronized static String encodeRoute(List<MapWay> route) {
-		if (route == null) {
-			route = new ArrayList<>();
+	public synchronized static String encodeMapWayList(List<MapWay> l) {
+		if (l == null) {
+			l = new ArrayList<>();
 		}
 		final StringBuilder build = new StringBuilder(128);
 		build.append(WAY_LIST_TAG);
-		build.append(route.size());
+		build.append(l.size());
 		build.append("\n");
-		for (final MapWay way : route) {
+		for (final MapWay way : l) {
 			build.append(way.encodeObject());
 		}
-		build.append(">");
+		build.append(CLOSE_TAG); // Closes list
 		return build.toString();
+	}
+	
+	public synchronized static String encodeSuggestions(List<String> suggestions) {
+		if (suggestions == null) {
+			suggestions = new ArrayList<>();
+		}
+		final StringBuilder build = new StringBuilder(128);
+		build.append(STRING_LIST_TAG);
+		build.append(suggestions.size());
+		build.append("\n");
+		for (final String suggestion : suggestions) {
+			build.append(suggestion);
+			build.append("\n");
+		}
+		build.append(CLOSE_TAG); // Closes list
+		return build.toString();
+	}
+	
+	public synchronized static String encodeError(final String error) {
+		return "ERROR:" + error + "\n";
 	}
 	
 	public static List<ClientMapWay> parseWayList(final BufferedReader reader) {

@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import main.Utils;
+import data.ProtocolManager;
+
 /**
  * Wraps the client socket and encapsulates all IO
  * 
@@ -18,11 +21,6 @@ public class ClientHandler extends Thread {
 	private final PrintWriter			_output;
 	
 	private final ResponseController	_response;
-	
-	private final String				AC	= "@q:AC";
-	private final String				RS	= "@q:RS";
-	private final String				RC	= "@q:RC";
-	private final String				MC	= "@q:MC";
 	
 	/**
 	 * Constructs a ClientHandler on the given client
@@ -47,22 +45,25 @@ public class ClientHandler extends Thread {
 		try {
 			req_start = _input.readLine();
 			switch (req_start) {
-			case AC:
+			case ProtocolManager.AC_Q:
 				_response.autocorrectResponse(this);
 				break;
-			case RS:
+			case ProtocolManager.RS_Q:
 				_response.routeFromNamesResponse(this);
 				break;
-			case RC:
+			case ProtocolManager.RP_Q:
 				_response.routeFromClicksResponse(this);
 				break;
-			case MC:
+			case ProtocolManager.MC_Q:
 				_response.mapDataResponse(this);
 			default:
-				_response.errorResponse(this, null);
+				ResponseController.errorResponse(this, null);
 			}
 		} catch (final IOException e) {
-			_response.errorResponse(this, e);
+			// It's possible that the IOException was caused by writing to a closed socket, in which case trying
+			// to write again doesn't make a whole lot of sense. I suppose we just try responsding and then "kill" the
+			// client
+			ResponseController.errorResponse(this, e);
 		}
 		
 	}
@@ -83,9 +84,14 @@ public class ClientHandler extends Thread {
 		};
 		
 		worker.start();
-		while (worker.isAlive()) {
-			// Check if peer connection still exists
-		}
+		try {
+			Thread.sleep(2000);
+			
+			while (worker.isAlive()) {
+				// Check if peer connection still exists
+			}
+		} catch (final InterruptedException e) {}
+		kill();
 		
 	}
 	
@@ -108,11 +114,16 @@ public class ClientHandler extends Thread {
 	 * 
 	 * @throws IOException Passed up from socket
 	 */
-	public void kill() throws IOException {
+	public void kill() {
 		// Close all the streams after the client disconnects.
-		_client.close();
-		_input.close();
-		_output.close();
+		try {
+			_client.close();
+			_input.close();
+			_output.close();
+		} catch (final IOException e) {
+			Utils.printError("<ClientHandler> Unrecoverable IO error in client");
+		}
+		
 	}
 	
 }
