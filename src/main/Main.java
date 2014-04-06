@@ -95,6 +95,9 @@ public class Main {
 		} catch (final NumberFormatException e) {
 			Utils.printError("Couldn't start app: port number wasn't a number");
 			return;
+		} catch (final IllegalArgumentException e) {
+			Utils.printError(e.getMessage());
+			return;
 		}
 		
 		// Assuming all went well, start the app!

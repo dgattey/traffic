@@ -27,6 +27,7 @@ public class ServerApp extends App {
 	public ServerApp(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) {
 		super(hostName, serverPort);
+		checkPort(trafficPort, "traffic");
 		try {
 			server = new Server(ways, nodes, index, hostName, trafficPort, serverPort);
 		} catch (IOException | MapException e) {
