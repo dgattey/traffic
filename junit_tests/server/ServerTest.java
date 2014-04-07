@@ -8,6 +8,8 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import server.core.Server;
+
 import data.MapException;
 
 public class ServerTest {

@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import server.core.ResponseController;
+
 import data.MapException;
 import data.ProtocolManager;
 

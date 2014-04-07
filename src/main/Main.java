@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import server.ServerApp;
+import server.core.ServerApp;
 import client.ArgParser;
 import client.ClientApp;
 import data.MapException;
