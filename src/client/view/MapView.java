@@ -69,15 +69,21 @@ public class MapView extends JComponent {
 		content.setColor(ViewController.COLOR_WINDOW);
 		content.fillRect(0, 0, screenWidth, screenHeight);
 		
-		// Start chunking in what should be based on viewport size
+		chunk();
+		
+		// Drawing!
+		drawMap(content);
+	}
+	
+	/**
+	 * Take the viewport size and chunk in the chunks that exist within the current window
+	 */
+	public void chunk() {
 		final LatLongPoint nw = screenToLatLong(new Point2D.Double(0, screenHeight));
 		final LatLongPoint se = screenToLatLong(new Point2D.Double(screenWidth, screenHeight * 2));
 		final LatLongPoint sw = new LatLongPoint(se.getLat(), nw.getLong());
 		final LatLongPoint ne = new LatLongPoint(nw.getLat(), se.getLong());
 		app.getViewController().chunkInVisible(nw, se, sw, ne);
-		
-		// Drawing!
-		drawMap(content);
 	}
 	
 	/**
@@ -95,11 +101,12 @@ public class MapView extends JComponent {
 		content.setColor(COLOR_WAY);
 		for (final LatLongPoint p : app.getViewController().getChunks().keySet()) {
 			if (LatLongPoint.intersectChunk(p, p.plus(MapChunk.CHUNKSIZE, MapChunk.CHUNKSIZE), screenMax, screenMin)) {
-				for (final ClientMapWay w : app.getViewController().getChunks().get(p).getWays()) {
+				final List<ClientMapWay> allWays = app.getViewController().getChunks().get(p).getWays();
+				for (final ClientMapWay w : allWays) {
 					
 					// Only draws lines that are big enough to make a difference for the user
 					final Line2D line = makeLine2D(w);
-					if (line.getP2().distanceSq(line.getP1()) > 9) {
+					if (line.getP2().distanceSq(line.getP1()) > 10) {
 						content.draw(line);
 					}
 				}
@@ -313,7 +320,7 @@ public class MapView extends JComponent {
 	
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(800, 600);
+		return new Dimension(900, 560);
 	}
 	
 	/**

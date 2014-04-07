@@ -20,11 +20,12 @@ import data.ProtocolManager;
  */
 public class CommController {
 	
-	private Socket			sock;
-	private PrintWriter		writer;
-	private BufferedReader	reader;
-	private final String	hostName;
-	private final int		serverPort;
+	private Socket							sock;
+	private PrintWriter						writer;
+	private BufferedReader					reader;
+	private final String					hostName;
+	private final int						serverPort;
+	private final static ExecutorService	executor	= Executors.newFixedThreadPool(20);
 	
 	/**
 	 * Executes a callable and returns a V representing what the server returned
@@ -35,17 +36,13 @@ public class CommController {
 	 * @throws ParseException if the thread parsed wrong
 	 */
 	public static <V> V getFromServer(final ServerCallable<V> callable) throws IOException, ParseException {
-		final ExecutorService executor = Executors.newSingleThreadExecutor();
 		try {
 			return executor.submit(callable).get();
 		} catch (InterruptedException | ExecutionException e) {
-			if (e.getMessage().contains("parse")) {
+			if (e.getMessage() != null && e.getMessage().contains("parse")) {
 				throw new ParseException(e.getMessage());
 			}
 			throw new IOException(e.getMessage());
-		}
-		finally {
-			executor.shutdown();
 		}
 	}
 	
@@ -86,8 +83,8 @@ public class CommController {
 		}
 		final String line = reader.readLine();
 		if (ProtocolManager.hasErrorTag(line)) {
-			throw new ParseException("<ClientServerWriter> Error response header found...");
-			// TODO: Flesh this error response out
+			throw new ParseException("<ClientServerWriter> Server returned an error");
+			// TODO: More information here?
 		}
 		ProtocolManager.checkForOpeningTag(line, tag);
 	}
@@ -168,5 +165,22 @@ public class CommController {
 		sock.close();
 		reader.close();
 		writer.close();
+	}
+	
+	/**
+	 * Tries connecting to a host on a port to see whether there's a connection
+	 * 
+	 * @param host the host name to connect on
+	 * @param sPort the port to connect on
+	 * @return if there was a connection using the given host and port
+	 */
+	public static boolean checkConnection(final String host, final int sPort) {
+		try {
+			final Socket testSocket = new Socket(host, sPort);
+			testSocket.close();
+			return true;
+		} catch (final IOException e) {
+			return false;
+		}
 	}
 }

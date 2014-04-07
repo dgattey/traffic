@@ -50,8 +50,13 @@ public class RouteHandler implements ActionListener, MouseListener {
 				// Update status and get data
 				controller.setLabel("Finding a route...");
 				final List<String> streets = controller.getFields();
-				final List<ClientMapWay> route = hub.getRoute(streets.get(0), streets.get(1), streets.get(2),
-						streets.get(3));
+				List<ClientMapWay> route;
+				try {
+					route = hub.getRoute(streets.get(0), streets.get(1), streets.get(2), streets.get(3));
+				} catch (final IllegalArgumentException e) {
+					controller.setLabel("Oops! Street names can't be empty");
+					return;
+				}
 				
 				// Someone else wanted a route, so just return
 				if (Thread.currentThread().isInterrupted()) {

@@ -12,7 +12,10 @@ import static data.ProtocolManager.RS_R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import main.Utils;
 import client.ClientApp;
@@ -28,32 +31,59 @@ import data.ProtocolManager;
  */
 public class HubController implements Controllable {
 	
-	private static final LatLongPoint	APP_LOAD_POINT	= new LatLongPoint(41.827196, -71.400369);
-	private final boolean				isReady;
+	private static final LatLongPoint	APP_LOAD_POINT		= new LatLongPoint(41.827196, -71.400369);
+	private static final String			MSG_CONNECTED		= "Connected to server";
+	private static final String			MSG_DISCONNECTED	= "Disconnected from server";
+	
+	private final ClientApp				app;
 	private final String				hostName;
 	private final int					serverPort;
+	private boolean						connected;
 	
 	/**
 	 * Main Constructor for HubController
 	 * 
 	 * @param hostName the host name to use as the server's hostname
 	 * @param serverPort the server port to use when connecting to the server
-	 * @param guiApp the app that's running this hub controller
+	 * @param app the app that's running this hub controller
 	 * @throws IOException if there was an error communicating with the server
 	 */
-	public HubController(final String hostName, final int serverPort, final ClientApp guiApp) throws IOException {
+	public HubController(final String hostName, final int serverPort, final ClientApp app) throws IOException {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
-		isReady = true;
+		this.app = app;
+		
+		// Constant thread checking connection - will also update the label
+		new Timer().scheduleAtFixedRate(new TimerTask() {
+			
+			@Override
+			public void run() {
+				updateConnection();
+			}
+			
+		}, new Date(), 2000);
 	}
 	
 	/**
-	 * Public getter for the ready attribute
-	 * 
-	 * @return if the app is ready
+	 * Checks the connected status and updates the view appropriately
 	 */
-	public boolean isReady() {
-		return isReady;
+	protected void updateConnection() {
+		final boolean previous = connected;
+		final boolean newConnected = CommController.checkConnection(hostName, serverPort);
+		app.getViewController().setConnectionLabel(newConnected ? MSG_CONNECTED : MSG_DISCONNECTED);
+		if (!previous && newConnected) {
+			app.getViewController().chunk();
+		}
+		connected = newConnected;
+	}
+	
+	/**
+	 * Checks whether this hub is connected
+	 * 
+	 * @return a boolean representing connection status to server
+	 */
+	public boolean isConnected() {
+		return connected;
 	}
 	
 	/**
@@ -71,7 +101,7 @@ public class HubController implements Controllable {
 			throw new IllegalArgumentException("<HubController> null points to route find not allowed");
 		}
 		List<ClientMapWay> ret = null;
-		if (isReady) {
+		if (isConnected()) {
 			try {
 				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 					
@@ -94,6 +124,9 @@ public class HubController implements Controllable {
 				handleError(e);
 			}
 		}
+		if (ret == null) {
+			throw new IllegalArgumentException("<HubController> route was null");
+		}
 		return ret;
 	}
 	
@@ -109,7 +142,7 @@ public class HubController implements Controllable {
 		
 		// TODO: throw illegal exception for no intersections to display (from backend)
 		List<ClientMapWay> ret = null;
-		if (isReady) {
+		if (isConnected()) {
 			try {
 				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 					
@@ -134,6 +167,9 @@ public class HubController implements Controllable {
 				handleError(e);
 			}
 		}
+		if (ret == null) {
+			throw new IllegalArgumentException("<HubController> route was null");
+		}
 		return ret;
 		
 	}
@@ -141,15 +177,15 @@ public class HubController implements Controllable {
 	@Override
 	public List<String> getSuggestions(final String input) {
 		List<String> ret = null;
-		if (isReady) {
+		if (isConnected()) {
 			try {
 				ret = CommController.getFromServer(new ServerCallable<List<String>>(hostName, serverPort) {
 					
 					@Override
 					protected List<String> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(AC_Q + "1");
-						comm.write(input);
+						comm.writeWithNL(AC_Q + "2");
+						comm.writeWithNL(input);
 						comm.writeWithNL(FOOTER);
 						
 						final BufferedReader reader = comm.getReader();
@@ -170,7 +206,7 @@ public class HubController implements Controllable {
 	@Override
 	public List<ClientMapWay> getChunk(final LatLongPoint min, final LatLongPoint max) {
 		List<ClientMapWay> ret = null;
-		if (isReady) {
+		if (isConnected()) {
 			try {
 				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
 					
@@ -185,7 +221,6 @@ public class HubController implements Controllable {
 						final BufferedReader reader = comm.getReader();
 						comm.checkForResponseHeader(MC_R);
 						final List<ClientMapWay> ret = ProtocolManager.parseWayList(reader);
-						System.out.println("Size is: " + ret.size());
 						comm.checkForResponseFooter();
 						return ret;
 					}
@@ -204,6 +239,6 @@ public class HubController implements Controllable {
 	 * @param e an exception
 	 */
 	private static void handleError(final Exception e) {
-		Utils.printError("<HubController> Communicating with server failed: " + e.getMessage());
+		Utils.printError("<HubController> Communication failed: " + e.getMessage());
 	}
 }

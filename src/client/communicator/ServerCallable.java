@@ -27,15 +27,18 @@ public abstract class ServerCallable<V> implements Callable<V> {
 		this.serverPort = serverPort;
 	}
 	
+	/**
+	 * Connects to the server, writes information and gets information back dynamically, and disconnects
+	 */
 	@Override
 	public V call() throws IOException, ParseException {
 		final CommController comm = new CommController(hostName, serverPort);
-		V chunk = null;
+		V thing = null;
 		comm.connect();
-		chunk = writeAndGetInfo(comm);
+		thing = writeAndGetInfo(comm);
 		comm.disconnect();
 		
-		return chunk;
+		return thing;
 	}
 	
 	/**

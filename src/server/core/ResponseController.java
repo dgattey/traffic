@@ -22,6 +22,7 @@ public class ResponseController {
 	private final ACController		_autocorrect;
 	private final KDTreeController	_kdtree;
 	
+	// TODO: These synchronized?
 	public ResponseController(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) throws MapException, IOException {
 		IOController.setup(ways, nodes, index);
@@ -29,6 +30,11 @@ public class ResponseController {
 		_autocorrect = new ACController();
 	}
 	
+	/**
+	 * @param r
+	 * @param w
+	 * @throws IOException
+	 */
 	public synchronized void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Get street name
@@ -36,6 +42,7 @@ public class ResponseController {
 			
 			// Find suggestions
 			final List<String> sugg = _autocorrect.suggest(input);
+			ProtocolManager.checkForResponseFooter(r.readLine());
 			
 			// Build Response
 			final StringBuilder response = new StringBuilder(256);
@@ -64,6 +71,7 @@ public class ResponseController {
 			final String street2 = ProtocolManager.parseStreetName(r);
 			final String street3 = ProtocolManager.parseStreetName(r);
 			final String street4 = ProtocolManager.parseStreetName(r);
+			ProtocolManager.checkForResponseFooter(r.readLine());
 			
 			// Find their intersections
 			final MapNode inter1 = IOController.findIntersection(street1, street2);
@@ -86,6 +94,11 @@ public class ResponseController {
 		
 	}
 	
+	/**
+	 * @param r
+	 * @param w
+	 * @throws IOException
+	 */
 	public synchronized void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Parse two points
@@ -122,6 +135,7 @@ public class ResponseController {
 			
 			// Find corresponding mapchunk
 			final List<MapWay> chunk = IOController.getChunkOfWays(p1, p2);
+			ProtocolManager.checkForResponseFooter(r.readLine());
 			
 			// Build Response
 			final StringBuilder response = new StringBuilder(256);
@@ -138,7 +152,7 @@ public class ResponseController {
 		
 	}
 	
-	public synchronized static void errorResponse(final Writer w, final Exception e) throws IOException {
+	public static void errorResponse(final Writer w, final Exception e) throws IOException {
 		// Build Response
 		final StringBuilder response = new StringBuilder(256);
 		response.append(ProtocolManager.ER_R);

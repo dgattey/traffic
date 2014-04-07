@@ -43,7 +43,7 @@ public class MapChunk implements Runnable {
 	 * 
 	 * @return a list of MapWays
 	 */
-	public List<ClientMapWay> getWays() {
+	public synchronized List<ClientMapWay> getWays() {
 		if (!isAdding) {
 			return ways;
 		}
@@ -57,6 +57,7 @@ public class MapChunk implements Runnable {
 	public void run() {
 		final List<ClientMapWay> found = app.getHub().getChunk(min, max);
 		if (found == null) {
+			app.getViewController().removeChunk(min);
 			return;
 		}
 		isAdding = true;

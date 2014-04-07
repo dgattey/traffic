@@ -8,9 +8,9 @@ import java.awt.Font;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -57,10 +58,11 @@ public class ViewController {
 	private JButton								routeButton;
 	private final List<JComboBox<String>>		fields				= new ArrayList<>();
 	private MapView								mapView;
+	private JLabel								connectionLabel;
 	
 	// Data
 	private final ExecutorService				chunkerPool			= Executors.newFixedThreadPool(10);
-	private final Map<LatLongPoint, MapChunk>	chunks				= new HashMap<>();
+	private final Map<LatLongPoint, MapChunk>	chunks				= new ConcurrentHashMap<>();
 	private List<ClientMapWay>					route				= new ArrayList<>();
 	private final LatLongPoint[]				userPoints			= new LatLongPoint[2];
 	
@@ -109,8 +111,9 @@ public class ViewController {
 		window.setResizable(false);
 		
 		// Add content
-		window.getContentPane().add(loadMap(), BorderLayout.CENTER);
 		window.getContentPane().add(createTopPanel(), BorderLayout.NORTH);
+		window.getContentPane().add(createConnectionBar(), BorderLayout.SOUTH);
+		window.getContentPane().add(createMap(), BorderLayout.CENTER);
 		
 		// Show it
 		window.pack();
@@ -135,6 +138,24 @@ public class ViewController {
 		theme(title);
 		theme(about);
 		return titleArea;
+	}
+	
+	/**
+	 * Creates the bottom bar for the connection
+	 * 
+	 * @return a new JPanel for the connection
+	 */
+	private JPanel createConnectionBar() {
+		final JPanel bar = new JPanel();
+		connectionLabel = new JLabel("Connected to server!");
+		connectionLabel.setFont(new Font(FONT, Font.BOLD, 10));
+		theme(connectionLabel);
+		theme(bar);
+		addPadding(bar, 0, 2);
+		bar.setAlignmentY(SwingConstants.CENTER);
+		bar.setAlignmentX(SwingConstants.CENTER);
+		bar.add(connectionLabel);
+		return bar;
 	}
 	
 	/**
@@ -280,7 +301,7 @@ public class ViewController {
 	 * 
 	 * @return a new JPanel with the map on it
 	 */
-	private JComponent loadMap() {
+	private JComponent createMap() {
 		mapView = new MapView(app);
 		panHandler = new PanHandler(mapView);
 		scaleHandler = new ScaleHandler(mapView);
@@ -299,9 +320,6 @@ public class ViewController {
 			box.setEnabled(true);
 		}
 		
-		window.invalidate();
-		window.validate();
-		window.repaint();
 		return mapView;
 	}
 	
@@ -330,6 +348,15 @@ public class ViewController {
 					chunks.put(min, chunk);
 				}
 			}
+		}
+	}
+	
+	/**
+	 * A bit strange, but calls the map chunk method which calls chunkInVisible with the right parameters
+	 */
+	public void chunk() {
+		if (mapView != null) {
+			mapView.chunk();
 		}
 	}
 	
@@ -400,12 +427,16 @@ public class ViewController {
 	}
 	
 	/**
-	 * Sets a message for the user
+	 * Sets a message for the user unless disconnected
 	 * 
 	 * @param message the new message
 	 */
 	public void setLabel(final String message) {
-		statusLabel.setText(message);
+		if (connectionLabel.getText().toLowerCase().contains("dis")) {
+			statusLabel.setText(DEFAULT_LABEL_TEXT);
+		} else {
+			statusLabel.setText(message);
+		}
 	}
 	
 	/**
@@ -445,6 +476,28 @@ public class ViewController {
 	 * Repaints the map
 	 */
 	public void repaintMap() {
-		mapView.repaint();
+		if (mapView != null) {
+			mapView.repaint();
+		}
+	}
+	
+	/**
+	 * Sets the connectionLabel
+	 * 
+	 * @param message the message to set in the connection handler
+	 */
+	public void setConnectionLabel(final String message) {
+		if (connectionLabel != null) {
+			connectionLabel.setText(message);
+		}
+	}
+	
+	/**
+	 * If the chunk returned null, this is called to remove the chunk from the table so we can check it again later
+	 * 
+	 * @param min the minimum point of the chunk
+	 */
+	public void removeChunk(final LatLongPoint min) {
+		chunks.remove(min);
 	}
 }

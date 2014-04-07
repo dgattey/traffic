@@ -44,7 +44,9 @@ public class ClientHandler extends Thread {
 		String req_start = "";
 		try {
 			req_start = _input.readLine();
-			if (req_start.startsWith(ProtocolManager.AC_Q)) {
+			if (req_start == null) {
+				ResponseController.errorResponse(_output, null);
+			} else if (req_start.startsWith(ProtocolManager.AC_Q)) {
 				_response.autocorrectResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.RS_Q)) {
 				ResponseController.routeFromNamesResponse(_input, _output);
