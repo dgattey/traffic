@@ -9,6 +9,7 @@ import static data.ProtocolManager.RS_Q;
 import java.io.IOException;
 import java.util.List;
 
+import main.Utils;
 import client.ClientApp;
 import client.communicator.CommController;
 import client.communicator.ServerCallable;
@@ -79,9 +80,8 @@ public class HubController implements Controllable {
 						return ProtocolManager.parseWayList(comm.getReader());
 					}
 				});
-			} catch (final IOException e) {
-				// TODO: ERROR HANDLING
-				e.printStackTrace();
+			} catch (final IOException | ParseException e) {
+				handleError(e);
 			}
 		}
 		return ret;
@@ -115,9 +115,8 @@ public class HubController implements Controllable {
 						return ProtocolManager.parseWayList(comm.getReader());
 					}
 				});
-			} catch (final IOException e) {
-				// TODO: ERROR HANDLING
-				e.printStackTrace();
+			} catch (final IOException | ParseException e) {
+				handleError(e);
 			}
 		}
 		return ret;
@@ -141,9 +140,8 @@ public class HubController implements Controllable {
 					}
 					
 				});
-			} catch (final IOException e) {
-				// TODO: ERROR HANDLING
-				e.printStackTrace();
+			} catch (final IOException | ParseException e) {
+				handleError(e);
 			}
 		}
 		return ret;
@@ -167,11 +165,19 @@ public class HubController implements Controllable {
 					}
 					
 				});
-			} catch (final IOException e) {
-				// TODO: ERROR HANDLING
-				e.printStackTrace();
+			} catch (final IOException | ParseException e) {
+				handleError(e);
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Prints an error out that happened in communicating with server
+	 * 
+	 * @param e an exception
+	 */
+	private static void handleError(final Exception e) {
+		Utils.printError("<HubController> Communicating with server failed: " + e.getMessage());
 	}
 }

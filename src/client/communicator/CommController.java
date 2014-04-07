@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import data.Convertible;
+import data.ParseException;
 
 /**
  * Represents class to read/write to server from the client
@@ -30,13 +31,18 @@ public class CommController {
 	 * @param callable a ServerCallable that will interface with server
 	 * @return a V to return
 	 * @throws IOException if there was an error executing the callable
+	 * @throws ParseException if the thread parsed wrong
 	 */
-	public static <V> V getFromServer(final ServerCallable<V> callable) throws IOException {
+	public static <V> V getFromServer(final ServerCallable<V> callable) throws IOException, ParseException {
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
 		try {
 			return executor.submit(callable).get();
 		} catch (InterruptedException | ExecutionException e) {
-			throw new IOException("<Communicator> something went wrong executing the communication with the server", e);
+			final Throwable e2 = e.initCause(e);
+			if (e2 instanceof ParseException) {
+				throw (ParseException) e2;
+			}
+			throw new IOException(e2);
 		}
 		finally {
 			executor.shutdown();
