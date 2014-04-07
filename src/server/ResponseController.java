@@ -1,6 +1,8 @@
 package server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 
 import server.autocorrect.ACController;
@@ -27,10 +29,10 @@ public class ResponseController {
 		_autocorrect = new ACController();
 	}
 	
-	public synchronized void autocorrectResponse(final ClientHandler c) throws IOException {
+	public synchronized void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Get street name
-			final String input = ProtocolManager.parseStreetName(c.getReader());
+			final String input = ProtocolManager.parseStreetName(r);
 			
 			// Find suggestions
 			final List<String> sugg = _autocorrect.suggest(input);
@@ -40,10 +42,12 @@ public class ResponseController {
 			response.append(ProtocolManager.AC_R);
 			response.append("\n");
 			response.append(ProtocolManager.encodeSuggestions(sugg));
+			response.append(ProtocolManager.FOOTER);
 			response.append("\n");
-			c.send(response.toString());
+			w.write(response.toString());
+			w.flush();
 		} catch (final ParseException e) {
-			errorResponse(c, e);
+			errorResponse(w, e);
 		}
 	}
 	
@@ -53,13 +57,13 @@ public class ResponseController {
 	 * @param c
 	 * @throws IOException
 	 */
-	public synchronized static void routeFromNamesResponse(final ClientHandler c) throws IOException {
+	public synchronized static void routeFromNamesResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Get four street names
-			final String street1 = ProtocolManager.parseStreetName(c.getReader());
-			final String street2 = ProtocolManager.parseStreetName(c.getReader());
-			final String street3 = ProtocolManager.parseStreetName(c.getReader());
-			final String street4 = ProtocolManager.parseStreetName(c.getReader());
+			final String street1 = ProtocolManager.parseStreetName(r);
+			final String street2 = ProtocolManager.parseStreetName(r);
+			final String street3 = ProtocolManager.parseStreetName(r);
+			final String street4 = ProtocolManager.parseStreetName(r);
 			
 			// Find their intersections
 			final MapNode inter1 = IOController.findIntersection(street1, street2);
@@ -74,18 +78,19 @@ public class ResponseController {
 			response.append(ProtocolManager.encodeMapWayList(path));
 			response.append(ProtocolManager.FOOTER);
 			response.append("\n");
-			c.send(response.toString());
+			w.write(response.toString());
+			w.flush();
 		} catch (final MapException | ParseException e) {
-			errorResponse(c, e);
+			errorResponse(w, e);
 		}
 		
 	}
 	
-	public synchronized void routeFromClicksResponse(final ClientHandler c) throws IOException {
+	public synchronized void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Parse two points
-			final LatLongPoint p1 = ProtocolManager.parseLatLongPoint(c.getReader());
-			final LatLongPoint p2 = ProtocolManager.parseLatLongPoint(c.getReader());
+			final LatLongPoint p1 = ProtocolManager.parseLatLongPoint(r);
+			final LatLongPoint p2 = ProtocolManager.parseLatLongPoint(r);
 			
 			// Find Closest Neighbors
 			final MapNode n1 = _kdtree.getNeighbor(p1);
@@ -101,19 +106,19 @@ public class ResponseController {
 			response.append(ProtocolManager.encodeMapWayList(route));
 			response.append(ProtocolManager.FOOTER);
 			response.append("\n");
-			c.send(response.toString());
-			
+			w.write(response.toString());
+			w.flush();
 		} catch (final ParseException | MapException e) {
-			errorResponse(c, e);
+			errorResponse(w, e);
 		}
 		
 	}
 	
-	public synchronized static void mapDataResponse(final ClientHandler c) throws IOException {
+	public synchronized static void mapDataResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Find min LatLongPoint of mapchunk to be generated
-			final LatLongPoint p1 = ProtocolManager.parseLatLongPoint(c.getReader());
-			final LatLongPoint p2 = ProtocolManager.parseLatLongPoint(c.getReader());
+			final LatLongPoint p1 = ProtocolManager.parseLatLongPoint(r);
+			final LatLongPoint p2 = ProtocolManager.parseLatLongPoint(r);
 			
 			// Find corresponding mapchunk
 			final List<MapWay> chunk = IOController.getChunkOfWays(p1, p2);
@@ -125,22 +130,23 @@ public class ResponseController {
 			response.append(ProtocolManager.encodeMapWayList(chunk));
 			response.append(ProtocolManager.FOOTER);
 			response.append("\n");
-			c.send(response.toString());
-			
+			w.write(response.toString());
+			w.flush();
 		} catch (final ParseException | DataSetException e) {
-			errorResponse(c, e);
+			errorResponse(w, e);
 		}
 		
 	}
 	
-	public synchronized static void errorResponse(final ClientHandler c, final Exception e) {
+	public synchronized static void errorResponse(final Writer w, final Exception e) throws IOException {
 		// Build Response
 		final StringBuilder response = new StringBuilder(256);
 		response.append(ProtocolManager.ER_R);
 		response.append(ProtocolManager.encodeError(e == null ? "No message" : e.getMessage()));
 		response.append(ProtocolManager.FOOTER);
 		response.append("\n");
-		c.send(response.toString());
+		w.write(response.toString());
+		w.flush();
 	};
 	
 }
