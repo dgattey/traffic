@@ -126,14 +126,13 @@ public class ResponseController {
 			response.append(ProtocolManager.FOOTER);
 			response.append("\n");
 			c.send(response.toString());
-			
 		} catch (final ParseException | DataSetException e) {
 			errorResponse(c, e);
 		}
 		
 	}
 	
-	public synchronized static void errorResponse(final ClientHandler c, final Exception e) {
+	public synchronized static void errorResponse(final ClientHandler c, final Exception e) throws IOException {
 		// Build Response
 		final StringBuilder response = new StringBuilder(256);
 		response.append(ProtocolManager.ER_R);

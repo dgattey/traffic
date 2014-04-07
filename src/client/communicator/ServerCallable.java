@@ -39,7 +39,8 @@ public abstract class ServerCallable<V> implements Callable<V> {
 	}
 	
 	/**
-	 * Here's where to write data you want the server to have and get whatever you need back
+	 * Here's where to write data you want the server to have and get whatever you need back (don't forget the header
+	 * and footer after you write!)
 	 * 
 	 * @param comm the communication controller to use
 	 * @return a V object representing what you want

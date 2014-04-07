@@ -56,6 +56,9 @@ public class MapChunk implements Runnable {
 	@Override
 	public void run() {
 		final List<ClientMapWay> found = app.getHub().getChunk(min, max);
+		if (found == null) {
+			return;
+		}
 		isAdding = true;
 		ways.addAll(found);
 		isAdding = false;

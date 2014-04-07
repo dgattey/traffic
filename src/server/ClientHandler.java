@@ -44,26 +44,29 @@ public class ClientHandler extends Thread {
 		String req_start = "";
 		try {
 			req_start = _input.readLine();
-			switch (req_start) {
-			case ProtocolManager.AC_Q:
+			if (req_start.startsWith(ProtocolManager.AC_Q)) {
 				_response.autocorrectResponse(this);
-				break;
-			case ProtocolManager.RS_Q:
+			} else if (req_start.startsWith(ProtocolManager.RS_Q)) {
 				ResponseController.routeFromNamesResponse(this);
-				break;
-			case ProtocolManager.RP_Q:
+			} else if (req_start.startsWith(ProtocolManager.RP_Q)) {
 				_response.routeFromClicksResponse(this);
-				break;
-			case ProtocolManager.MC_Q:
+			} else if (req_start.startsWith(ProtocolManager.MC_Q)) {
+				System.out.println("Starting response!");
 				ResponseController.mapDataResponse(this);
-			default:
+				System.out.println("Done!");
+			} else {
 				ResponseController.errorResponse(this, null);
 			}
 		} catch (final IOException e) {
 			// It's possible that the IOException was caused by writing to a closed socket, in which case trying
 			// to write again doesn't make a whole lot of sense. I suppose we just try responsding and then "kill" the
 			// client
-			ResponseController.errorResponse(this, e);
+			try {
+				ResponseController.errorResponse(this, e);
+			} catch (final IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 	}
@@ -103,10 +106,12 @@ public class ClientHandler extends Thread {
 	 * Send a string to the client via the socket
 	 * 
 	 * @param message response to send
+	 * @throws IOException
 	 */
-	public void send(final String message) {
+	public void send(final String message) throws IOException {
 		_output.write(message);
 		_output.flush();
+		_client.shutdownOutput();
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import data.Convertible;
 import data.ParseException;
+import data.ProtocolManager;
 
 /**
  * Represents class to read/write to server from the client
@@ -38,11 +39,10 @@ public class CommController {
 		try {
 			return executor.submit(callable).get();
 		} catch (InterruptedException | ExecutionException e) {
-			final Throwable e2 = e.initCause(e);
-			if (e2 instanceof ParseException) {
-				throw (ParseException) e2;
+			if (e.getMessage().contains("parse")) {
+				throw new ParseException(e.getMessage());
 			}
-			throw new IOException(e2);
+			throw new IOException(e.getMessage());
 		}
 		finally {
 			executor.shutdown();
@@ -74,6 +74,38 @@ public class CommController {
 	}
 	
 	/**
+	 * Reads from the server for a response header given the tag passed in
+	 * 
+	 * @param tag a tag that may appear as the header
+	 * @throws IOException if something was unintentionally closed
+	 * @throws ParseException if there was no header as the next line
+	 */
+	public void checkForResponseHeader(final String tag) throws IOException, ParseException {
+		if (reader == null || sock.isClosed()) {
+			throw new IOException("<ClientServerWriter> Socket is closed - can't check response header");
+		}
+		final String line = reader.readLine();
+		if (ProtocolManager.hasErrorTag(line)) {
+			throw new ParseException("<ClientServerWriter> Error response header found...");
+			// TODO: Flesh this error response out
+		}
+		ProtocolManager.checkForOpeningTag(line, tag);
+	}
+	
+	/**
+	 * Reads from the server for a response footer
+	 * 
+	 * @throws IOException if something was unintentionally closed
+	 * @throws ParseException if there was no header as the next line
+	 */
+	public void checkForResponseFooter() throws IOException, ParseException {
+		if (reader == null || sock.isClosed()) {
+			throw new IOException("<ClientServerWriter> Socket is closed - can't check response footer");
+		}
+		ProtocolManager.checkForResponseFooter(reader.readLine());
+	}
+	
+	/**
 	 * Flushes the writer and opens the reader to get the response from the server
 	 * 
 	 * @return the reader created to the server
@@ -84,6 +116,7 @@ public class CommController {
 			throw new IOException("<ClientServerWriter> Socket is closed - can't open reader");
 		}
 		writer.flush();
+		sock.shutdownOutput();
 		reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		return reader;
 	}
@@ -99,7 +132,17 @@ public class CommController {
 			throw new IOException("<ClientServerWriter> Socket is closed - can't write");
 		}
 		writer.write(obj.encodeObject());
-		writer.write("\n");
+	}
+	
+	/**
+	 * Writes a string with a newline after
+	 * 
+	 * @param string the message to write
+	 * @throws IOException if writing failed
+	 */
+	public void writeWithNL(final String string) throws IOException {
+		write(string);
+		write("\n");
 	}
 	
 	/**
@@ -121,6 +164,7 @@ public class CommController {
 	 * @throws IOException if something went wrong in closing everything
 	 */
 	void disconnect() throws IOException {
+		sock.shutdownInput();
 		sock.close();
 		reader.close();
 		writer.close();

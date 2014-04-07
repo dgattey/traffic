@@ -75,8 +75,18 @@ public class ProtocolManager {
 	 */
 	public static void checkForOpeningTag(final String line, final String tag) throws ParseException {
 		if (!line.startsWith(tag)) {
-			throw new ParseException("Missing Opening Tag: " + tag);
+			throw new ParseException(String.format("Missing Opening Tag (found %s instead of \"%s\")", line, tag));
 		}
+	}
+	
+	/**
+	 * Checks for existence of error response
+	 * 
+	 * @param line a line of server response
+	 * @return if there was an error found
+	 */
+	public static boolean hasErrorTag(final String line) {
+		return line.startsWith(ER_R);
 	}
 	
 	/**
@@ -87,7 +97,19 @@ public class ProtocolManager {
 	 */
 	public static void checkForClosingTag(final String line) throws ParseException {
 		if (!line.equals(CLOSE_TAG)) {
-			throw new ParseException("Missing Closing Tag");
+			throw new ParseException(String.format("Missing Closing Tag (found %s instead of \">\")", line));
+		}
+	}
+	
+	/**
+	 * Checks the line for a footer tag
+	 * 
+	 * @param line a string that represents a line read from a server/client
+	 * @throws ParseException if the tag was wrong
+	 */
+	public static void checkForResponseFooter(final String line) throws ParseException {
+		if (!line.equals(FOOTER)) {
+			throw new ParseException(String.format("Missing Footer (found %s instead of \"%s\")", line, FOOTER));
 		}
 	}
 	
@@ -153,7 +175,7 @@ public class ProtocolManager {
 		final LatLongPoint start = parseLatLongPoint(r);
 		final String endID = r.readLine();
 		final LatLongPoint end = parseLatLongPoint(r);
-		checkForClosingTag(CLOSE_TAG);
+		checkForClosingTag(r.readLine());
 		if (id == null || name == null || startID == null || endID == null || id.isEmpty()) {
 			throw new ParseException("Null or empty fields. Cannot parse.");
 		}
@@ -180,7 +202,7 @@ public class ProtocolManager {
 			final ClientMapWay w = parseClientMapWay(reader);
 			ways.add(w);
 		}
-		checkForClosingTag(CLOSE_TAG);
+		checkForClosingTag(reader.readLine());
 		return ways;
 	}
 	
@@ -206,7 +228,7 @@ public class ProtocolManager {
 			}
 			strings.add(line);
 		}
-		checkForClosingTag(CLOSE_TAG);
+		checkForClosingTag(reader.readLine());
 		return strings;
 	}
 	
@@ -227,7 +249,8 @@ public class ProtocolManager {
 		for (final MapWay way : l) {
 			build.append(way.encodeObject());
 		}
-		build.append(CLOSE_TAG); // Closes list
+		build.append(CLOSE_TAG);
+		build.append("\n"); // Closes list
 		return build.toString();
 	}
 	

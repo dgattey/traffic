@@ -76,12 +76,14 @@ public class MapWay implements Weighable<MapWay>, Convertible<MapWay> {
 	
 	@Override
 	public String encodeObject() {
-		final String encoded = String.format("%s\n%s\n%s%s", id, name, start.encodeObject(), end.encodeObject());
+		final String encoded = String.format("%s\n%s\n%s\n%s%s%s\n", ProtocolManager.WAY_TAG, id, name,
+				start.encodeObject(), end.encodeObject(), ProtocolManager.CLOSE_TAG);
 		return encoded;
 	}
 	
 	@Override
 	public MapWay decodeObject(final String rep) {
+		// Should never have to do this, hence null
 		return null;
 	}
 }
