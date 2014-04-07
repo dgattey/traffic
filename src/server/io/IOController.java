@@ -12,9 +12,9 @@ import java.util.Map;
 import java.util.Set;
 
 import data.LatLongPoint;
+import data.MapException;
 import data.MapNode;
 import data.MapWay;
-import data.MapException;
 
 /**
  * Controller for all file searching and parsing. Used by Autocorrect, KDtree and Graphs
@@ -325,8 +325,7 @@ public class IOController {
 	 * @throws MapException
 	 * @throws IOException
 	 */
-	public static MapNode findIntersection(final String street1, final String street2) throws MapException,
-			IOException {
+	public static MapNode findIntersection(final String street1, final String street2) throws MapException, IOException {
 		if (street1 == null || street2 == null) {
 			return null;
 		}
@@ -402,12 +401,22 @@ public class IOController {
 			}
 		}
 		if (start1.equals(end1) || start1.equals(end2) || start1.equals(start2) || start2.equals(end1)
-				|| start2.equals(end2) || end1.equals(end2)) {
+			|| start2.equals(end2) || end1.equals(end2)) {
 			System.out.println(String.format(
 					"Received (%s, %s). \n\t chunking between: (%s, %s, %s, %s) \n\t blocksize: %d chunksize: %d ", p1,
 					p2, start1, end1, start2, end2, blockData.size(), chunk.size()));
 		}
 		
 		return chunk;
+	}
+	
+	/**
+	 * Returns if this is setup
+	 * 
+	 * @return if the whole IOController is setup
+	 */
+	public static boolean isSetup() {
+		return !(waysFile == null || nodesFile == null || indexFile == null || allMapNodes == null
+			|| mapWayStore == null || waysHeaderMap == null || indexHeaderMap == null || nodesHeaderMap == null);
 	}
 }

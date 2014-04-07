@@ -40,9 +40,19 @@ public class ClientHandler extends Thread {
 		_response = response;
 	}
 	
-	void dispatch() {
+	/**
+	 * @return tells whether the response handler was ready
+	 */
+	boolean dispatch() {
 		String req_start = "";
 		try {
+			
+			// Stops the hanging issue
+			if (!_response.isReady()) {
+				return false;
+			}
+			
+			// Do stuff!
 			req_start = _input.readLine();
 			if (req_start == null) {
 				ResponseController.errorResponse(_output, null);
@@ -67,6 +77,7 @@ public class ClientHandler extends Thread {
 				kill();
 			}
 		}
+		return true;
 		
 	}
 	
@@ -81,7 +92,9 @@ public class ClientHandler extends Thread {
 			
 			@Override
 			public void run() {
-				dispatch();
+				if (!dispatch()) {
+					kill();
+				}
 			}
 		};
 		
