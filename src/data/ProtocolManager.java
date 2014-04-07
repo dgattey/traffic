@@ -153,7 +153,7 @@ public class ProtocolManager {
 					Double.parseDouble(lineArray[1]));
 			return toReturn;
 		} catch (final NumberFormatException e) {
-			throw new ParseException("Invalid LLP Data Format");
+			throw new ParseException("Invalid Number Format");
 		}
 	}
 	
@@ -273,6 +273,7 @@ public class ProtocolManager {
 			build.append("\n");
 		}
 		build.append(CLOSE_TAG); // Closes list
+		build.append("\n");
 		return build.toString();
 	}
 	

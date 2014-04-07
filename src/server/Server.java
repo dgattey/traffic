@@ -24,6 +24,9 @@ public class Server extends Thread {
 		if (serverPort <= 1024) {
 			throw new IllegalArgumentException("<Server> Ports under 1025 are reserved.");
 		}
+		if (Utils.anyNullOrEmpty(ways, nodes, index, hostName)) {
+			throw new IllegalArgumentException("<Server> Non-null, non-empty arguments expected.");
+		}
 		
 		_port = serverPort;
 		_socket = new ServerSocket(_port);

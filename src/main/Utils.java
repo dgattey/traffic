@@ -7,7 +7,7 @@ package main;
  */
 public abstract class Utils {
 	
-	public static final String	APP_NAME			= "Traffic";
+	public static final String	APP_NAME		= "Traffic";
 	public static final String	APP_ABOUT		= "aiguha and dgattey";
 	public static final String	USAGE_CLIENT	= "Usage: trafficClient hostname serverport";
 	public static final String	USAGE_SERVER	= "Usage: trafficServer ways nodes index hostname trafficport serverport";
@@ -77,4 +77,30 @@ public abstract class Utils {
 		}
 		return min;
 	}
+	
+	/**
+	 * Checks if a string is null or empty
+	 * 
+	 * @param s
+	 * @return true if either
+	 */
+	public static boolean isNullOrEmpty(final String s) {
+		return s == null || s.isEmpty();
+	}
+	
+	/**
+	 * Checks if any of the passed in strings is null or empty
+	 * 
+	 * @param args
+	 * @return
+	 */
+	public static boolean anyNullOrEmpty(final String... args) {
+		for (final String s : args) {
+			if (isNullOrEmpty(s)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }
