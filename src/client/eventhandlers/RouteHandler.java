@@ -35,7 +35,7 @@ public class RouteHandler implements ActionListener, MouseListener {
 	public void actionPerformed(final ActionEvent e) {
 		final ViewController controller = app.getViewController();
 		final HubController hub = app.getHub();
-		controller.setLabel(ViewController.DEFAULT_LABEL_TEXT);
+		controller.setLabel(ViewController.DEFAULT_STATUS);
 		if (thread != null) {
 			thread.interrupt();
 		}

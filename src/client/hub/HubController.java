@@ -32,9 +32,7 @@ import data.ProtocolManager;
  */
 public class HubController implements Controllable {
 	
-	private static final LatLongPoint	APP_LOAD_POINT		= new LatLongPoint(41.827196, -71.400369);
-	private static final String			MSG_CONNECTED		= "Connected to server";
-	private static final String			MSG_DISCONNECTED	= "Disconnected from server";
+	private static final LatLongPoint	APP_LOAD_POINT	= new LatLongPoint(41.827196, -71.400369);
 	
 	private final ClientApp				app;
 	private final String				hostName;
@@ -72,12 +70,11 @@ public class HubController implements Controllable {
 	 */
 	protected void updateConnection() {
 		final boolean previous = connected;
-		final boolean newConnected = CommController.checkConnection(hostName, serverPort);
-		app.getViewController().setConnectionLabel(newConnected ? MSG_CONNECTED : MSG_DISCONNECTED);
-		if (!previous && newConnected || app.getViewController().getChunks().isEmpty()) {
+		connected = CommController.checkConnection(hostName, serverPort);
+		app.getViewController().setConnectionLabel(connected);
+		if (!previous && connected || app.getViewController().getChunks().isEmpty()) {
 			app.getViewController().chunk();
 		}
-		connected = newConnected;
 	}
 	
 	/**

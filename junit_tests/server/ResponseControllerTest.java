@@ -13,7 +13,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import server.core.ResponseController;
-
 import data.MapException;
 import data.ProtocolManager;
 
@@ -50,11 +49,11 @@ public class ResponseControllerTest {
 	public void routeNamesTest() {
 		try {
 			final String req = "Thayer Street\nCushing Street\nThayer Street\nWaterman Street\n"
-					+ ProtocolManager.FOOTER;
+				+ ProtocolManager.FOOTER;
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final StringWriter w = new StringWriter();
 			final String ans = "";
-			ResponseController.routeFromNamesResponse(r, w);
+			res.routeFromNamesResponse(r, w);
 			System.out.println("Response:\n" + w.toString());
 		} catch (final IOException e) {
 			fail("Threw Exception");

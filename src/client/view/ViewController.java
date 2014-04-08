@@ -45,12 +45,15 @@ public class ViewController {
 	private final ClientApp						app;
 	
 	// Constants
+	static final String							FONT				= "Arial";
+	public static final Color					COLOR_WINDOW		= new Color(50, 55, 70);
 	private static final Color					COLOR_BG			= Color.black;
 	private static final Color					COLOR_FG			= Color.white;
-	public static final Color					COLOR_WINDOW		= new Color(50, 55, 70);
-	static final String							FONT				= "Arial";
-	
-	public static final String					DEFAULT_LABEL_TEXT	= "Click any two points on the map or enter two intersections and press the button to find a route";
+	private static final Color					COLOR_CONNECTED		= new Color(0, 150, 0);
+	private static final Color					COLOR_DISCONNECTED	= new Color(150, 0, 0);
+	private static final String					MSG_CONNECTED		= "Connected to server";
+	private static final String					MSG_DISCONNECTED	= "Disconnected from server";
+	public static final String					DEFAULT_STATUS		= "Click any two points on the map or enter two intersections and press the button to find a route";
 	
 	// View stuff
 	private JFrame								window;
@@ -59,6 +62,7 @@ public class ViewController {
 	private final List<JComboBox<String>>		fields				= new ArrayList<>();
 	private MapView								mapView;
 	private JLabel								connectionLabel;
+	private JPanel								connectionPanel;
 	
 	// Data
 	private final ExecutorService				chunkerPool			= Executors.newFixedThreadPool(10);
@@ -107,8 +111,8 @@ public class ViewController {
 	public void create() {
 		window = new JFrame(Utils.APP_NAME);
 		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		window.setMinimumSize(new Dimension(400, 500));
-		window.setResizable(false);
+		window.setMinimumSize(new Dimension(780, 600));
+		window.setResizable(true);
 		
 		// Add content
 		window.getContentPane().add(createTopPanel(), BorderLayout.NORTH);
@@ -146,16 +150,16 @@ public class ViewController {
 	 * @return a new JPanel for the connection
 	 */
 	private JPanel createConnectionBar() {
-		final JPanel bar = new JPanel();
-		connectionLabel = new JLabel("Connected to server!");
+		connectionPanel = new JPanel();
+		connectionLabel = new JLabel("Connecting...");
 		connectionLabel.setFont(new Font(FONT, Font.BOLD, 10));
 		theme(connectionLabel);
-		theme(bar);
-		addPadding(bar, 0, 2);
-		bar.setAlignmentY(SwingConstants.CENTER);
-		bar.setAlignmentX(SwingConstants.CENTER);
-		bar.add(connectionLabel);
-		return bar;
+		theme(connectionPanel);
+		addPadding(connectionPanel, 0, 2);
+		connectionPanel.setAlignmentY(SwingConstants.CENTER);
+		connectionPanel.setAlignmentX(SwingConstants.CENTER);
+		connectionPanel.add(connectionLabel);
+		return connectionPanel;
 	}
 	
 	/**
@@ -228,7 +232,7 @@ public class ViewController {
 	private JPanel createStatusPanel() {
 		final JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		statusLabel = new JLabel(DEFAULT_LABEL_TEXT);
+		statusLabel = new JLabel(DEFAULT_STATUS);
 		panel.add(Box.createHorizontalGlue());
 		panel.add(statusLabel);
 		statusLabel.setFont(new Font(FONT, Font.BOLD, 12));
@@ -440,7 +444,7 @@ public class ViewController {
 	 */
 	public void setLabel(final String message) {
 		if (connectionLabel.getText().toLowerCase().contains("dis")) {
-			statusLabel.setText(DEFAULT_LABEL_TEXT);
+			statusLabel.setText(DEFAULT_STATUS);
 		} else {
 			statusLabel.setText(message);
 		}
@@ -491,11 +495,12 @@ public class ViewController {
 	/**
 	 * Sets the connectionLabel
 	 * 
-	 * @param message the message to set in the connection handler
+	 * @param connected if the label should be connected
 	 */
-	public void setConnectionLabel(final String message) {
-		if (connectionLabel != null) {
-			connectionLabel.setText(message);
+	public void setConnectionLabel(final boolean connected) {
+		if (connectionLabel != null && connectionPanel != null) {
+			connectionLabel.setText(connected ? MSG_CONNECTED : MSG_DISCONNECTED);
+			connectionPanel.setBackground(connected ? COLOR_CONNECTED : COLOR_DISCONNECTED);
 		}
 	}
 	
