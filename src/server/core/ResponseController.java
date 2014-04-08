@@ -143,11 +143,11 @@ public class ResponseController {
 	}
 	
 	/**
-	 * Returns
+	 * Parses request and produces a map chunk
 	 * 
-	 * @param r
-	 * @param w
-	 * @throws IOException
+	 * @param r client reader
+	 * @param w client writer
+	 * @throws IOException if reading or writing failed
 	 */
 	public synchronized void mapDataResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
@@ -177,6 +177,13 @@ public class ResponseController {
 		
 	}
 	
+	/**
+	 * Responds with error message
+	 * 
+	 * @param w writer
+	 * @param e exception that was thrown somewhere down the chain
+	 * @throws IOException if writing failed
+	 */
 	public synchronized void errorResponse(final Writer w, final Exception e) throws IOException {
 		if (!isReady()) {
 			return;
