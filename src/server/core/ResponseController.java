@@ -22,7 +22,6 @@ public class ResponseController {
 	ACController		_autocorrect;
 	KDTreeController	_kdtree;
 	
-	// TODO: These synchronized?
 	public ResponseController(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) throws MapException, IOException {
 		IOController.setup(ways, nodes, index);
@@ -38,7 +37,7 @@ public class ResponseController {
 	 * @param w writer
 	 * @throws IOException failed to read or write
 	 */
-	public synchronized void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
+	public void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
 			return;
 		}
@@ -71,7 +70,7 @@ public class ResponseController {
 	 * @param w writer
 	 * @throws IOException if reading or writing failed
 	 */
-	public synchronized void routeFromNamesResponse(final BufferedReader r, final Writer w) throws IOException {
+	public void routeFromNamesResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
 			return;
 		}
@@ -111,7 +110,7 @@ public class ResponseController {
 	 * @param w writer
 	 * @throws IOException if reading or writing failed
 	 */
-	public synchronized void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
+	public void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
 			return;
 		}
@@ -149,7 +148,7 @@ public class ResponseController {
 	 * @param w client writer
 	 * @throws IOException if reading or writing failed
 	 */
-	public synchronized void mapDataResponse(final BufferedReader r, final Writer w) throws IOException {
+	public void mapDataResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
 			return;
 		}

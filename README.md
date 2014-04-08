@@ -3,8 +3,16 @@ Traffic
 
 A project for CS032 to draw maps to screen, calculate shortest paths and give directions.
 
-##IDEAS##
-Executables have string pass through that show client or server, main takes that and deals appropriately
+##TODO##
+- BufferedWriter not PrintWriter so sending traffic will cancel closed clients
+- First time traffic data
+- Protocol for sending list of traffic data
+- Coloring
+- Route being null in front end?
+- Hashmap for traffic data (for the routes too)
+- ID thing for routing (ID already exists in the header)
+- Error checking!!!
+- Testing
 
 ##Authors##
 aiguha
