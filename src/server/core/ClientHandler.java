@@ -16,11 +16,11 @@ import data.ProtocolManager;
  */
 public class ClientHandler extends Thread {
 	
-	private final Socket				_client;
-	private final BufferedReader		_input;
-	private final PrintWriter			_output;
+	private final Socket			_client;
+	private final BufferedReader	_input;
+	private final PrintWriter		_output;
 	
-	private final ResponseController	_response;
+	private final Server			_server;
 	
 	/**
 	 * Constructs a ClientHandler on the given client
@@ -29,7 +29,7 @@ public class ClientHandler extends Thread {
 	 * @throws IOException if the client socket is invalid
 	 * @throws IllegalArgumentException if client is null
 	 */
-	public ClientHandler(final Socket client, final ResponseController response) throws IOException {
+	public ClientHandler(final Socket client, final Server server) throws IOException {
 		if (client == null) {
 			throw new IllegalArgumentException("Cannot accept null arguments.");
 		}
@@ -37,7 +37,7 @@ public class ClientHandler extends Thread {
 		_client = client;
 		_input = new BufferedReader(new InputStreamReader(_client.getInputStream()));
 		_output = new PrintWriter(_client.getOutputStream(), true);
-		_response = response;
+		_server = server;
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class ClientHandler extends Thread {
 		try {
 			
 			// Stops the hanging issue
-			if (!_response.isReady()) {
+			if (!_server.getRC().isReady()) {
 				return false;
 			}
 			
@@ -57,11 +57,11 @@ public class ClientHandler extends Thread {
 			if (req_start == null) {
 				ResponseController.errorResponse(_output, null);
 			} else if (req_start.startsWith(ProtocolManager.AC_Q)) {
-				_response.autocorrectResponse(_input, _output);
+				_server.getRC().autocorrectResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.RS_Q)) {
 				ResponseController.routeFromNamesResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.RP_Q)) {
-				_response.routeFromClicksResponse(_input, _output);
+				_server.getRC().routeFromClicksResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.MC_Q)) {
 				ResponseController.mapDataResponse(_input, _output);
 			} else {

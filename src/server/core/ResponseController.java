@@ -19,8 +19,8 @@ import data.ProtocolManager;
 
 public class ResponseController {
 	
-	private final ACController		_autocorrect;
-	private final KDTreeController	_kdtree;
+	static ACController		_autocorrect;
+	static KDTreeController	_kdtree;
 	
 	// TODO: These synchronized?
 	public ResponseController(final String ways, final String nodes, final String index, final String hostName,
@@ -32,11 +32,13 @@ public class ResponseController {
 	}
 	
 	/**
+	 * Parses request and produces autocorrect response
+	 * 
 	 * @param r
 	 * @param w
 	 * @throws IOException
 	 */
-	public synchronized void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
+	public synchronized static void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Get street name
 			final String input = ProtocolManager.parseStreetName(r);
@@ -60,7 +62,7 @@ public class ResponseController {
 	}
 	
 	/**
-	 * Parse client request and perform response
+	 * Parse request and produces routes from names
 	 * 
 	 * @param c
 	 * @throws IOException
@@ -100,7 +102,7 @@ public class ResponseController {
 	 * @param w
 	 * @throws IOException
 	 */
-	public synchronized void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
+	public synchronized static void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
 		try {
 			// Parse two points
 			final LatLongPoint p1 = ProtocolManager.parseLatLongPoint(r);

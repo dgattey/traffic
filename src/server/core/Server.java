@@ -15,9 +15,10 @@ import data.MapException;
 public class Server extends Thread {
 	
 	private final int					_port;
-	private final ServerSocket			_socket;
 	private boolean						_running;
+	private final ServerSocket			_socket;
 	private final ResponseController	_response;
+	private final TrafficController		_traffic;
 	
 	public Server(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) throws IOException, MapException {
@@ -31,6 +32,11 @@ public class Server extends Thread {
 		_port = serverPort;
 		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, _port);
 		_socket = new ServerSocket(_port);
+		_traffic = new TrafficController(hostName, serverPort);
+	}
+	
+	public ResponseController getRC() {
+		return _response;
 	}
 	
 	@Override
@@ -40,7 +46,7 @@ public class Server extends Thread {
 			try {
 				final Socket clientConnection = _socket.accept();
 				System.out.println("Connected to a client!");
-				final ClientHandler c = new ClientHandler(clientConnection, _response);
+				final ClientHandler c = new ClientHandler(clientConnection, this);
 				c.start();
 			} catch (final IOException e) {
 				Utils.printError("<Server> Failed to accept clients.");
@@ -48,6 +54,10 @@ public class Server extends Thread {
 			}
 			
 		}
+	}
+	
+	public void addClientToTrafficPool(final ClientHandler c) {
+		_traffic.getPool().add(c);
 	}
 	
 	/**
