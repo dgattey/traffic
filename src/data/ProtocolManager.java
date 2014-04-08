@@ -38,19 +38,20 @@ public class ProtocolManager {
 	public static final String	TYPE_ERROR			= "er";
 	public static final String	TYPE_HEARTBEAT		= "hb";
 	
-	public static final String	AC_Q				= HEADER_QUERY + DELIM + TYPE_AUTOCORRECT + DELIM;
-	public static final String	RS_Q				= HEADER_QUERY + DELIM + TYPE_ROUTE_STREET + DELIM;
-	public static final String	RP_Q				= HEADER_QUERY + DELIM + TYPE_ROUTE_POINT + DELIM;
-	public static final String	MC_Q				= HEADER_QUERY + DELIM + TYPE_CHUNK + DELIM;
-	public static final String	TR_Q				= HEADER_QUERY + DELIM + TYPE_TRAFFIC + DELIM;
-	public static final String	HB_Q				= HEADER_QUERY + DELIM + TYPE_HEARTBEAT + DELIM;
+	public static final String	Q_AC				= HEADER_QUERY + DELIM + TYPE_AUTOCORRECT + DELIM;
+	public static final String	Q_RS				= HEADER_QUERY + DELIM + TYPE_ROUTE_STREET + DELIM;
+	public static final String	Q_RP				= HEADER_QUERY + DELIM + TYPE_ROUTE_POINT + DELIM;
+	public static final String	Q_MC				= HEADER_QUERY + DELIM + TYPE_CHUNK + DELIM;
+	public static final String	Q_TR				= HEADER_QUERY + DELIM + TYPE_TRAFFIC + DELIM;
+	public static final String	Q_TR_F				= HEADER_QUERY + DELIM + TYPE_TRAFFIC + DELIM;
+	public static final String	Q_HB				= HEADER_QUERY + DELIM + TYPE_HEARTBEAT + DELIM;
 	
-	public static final String	AC_R				= HEADER_RESPONSE + DELIM + TYPE_AUTOCORRECT + DELIM;
-	public static final String	RS_R				= HEADER_RESPONSE + DELIM + TYPE_ROUTE_STREET + DELIM;
-	public static final String	RP_R				= HEADER_RESPONSE + DELIM + TYPE_ROUTE_POINT + DELIM;
-	public static final String	MC_R				= HEADER_RESPONSE + DELIM + TYPE_CHUNK + DELIM;
-	public static final String	ER_R				= HEADER_RESPONSE + DELIM + TYPE_ERROR + DELIM;
-	public static final String	TR_R				= HEADER_RESPONSE + DELIM + TYPE_TRAFFIC + DELIM;
+	public static final String	R_AC				= HEADER_RESPONSE + DELIM + TYPE_AUTOCORRECT + DELIM;
+	public static final String	R_RS				= HEADER_RESPONSE + DELIM + TYPE_ROUTE_STREET + DELIM;
+	public static final String	R_RP				= HEADER_RESPONSE + DELIM + TYPE_ROUTE_POINT + DELIM;
+	public static final String	R_MC				= HEADER_RESPONSE + DELIM + TYPE_CHUNK + DELIM;
+	public static final String	R_ER				= HEADER_RESPONSE + DELIM + TYPE_ERROR + DELIM;
+	public static final String	R_TR				= HEADER_RESPONSE + DELIM + TYPE_TRAFFIC + DELIM;
 	
 	/**
 	 * Takes a string and returns the number of lines that it says will be coming
@@ -91,7 +92,7 @@ public class ProtocolManager {
 	 * @return if there was an error found
 	 */
 	public static boolean hasErrorTag(final String line) {
-		return line.startsWith(ER_R);
+		return line.startsWith(R_ER);
 	}
 	
 	/**

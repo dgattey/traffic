@@ -58,18 +58,18 @@ public class ClientHandler extends Thread {
 			req_start = _input.readLine();
 			if (req_start == null) {
 				_server.getRC().errorResponse(_output, null);
-			} else if (req_start.startsWith(ProtocolManager.HB_Q)) {
+			} else if (req_start.startsWith(ProtocolManager.Q_HB)) {
 				
-			} else if (req_start.startsWith(ProtocolManager.TR_Q)) {
-				_server.addClientToTrafficPool(this);
+			} else if (req_start.startsWith(ProtocolManager.Q_TR)) {
+				_server.subscribeToTraffic(this);
 				return false;
-			} else if (req_start.startsWith(ProtocolManager.AC_Q)) {
+			} else if (req_start.startsWith(ProtocolManager.Q_AC)) {
 				_server.getRC().autocorrectResponse(_input, _output);
-			} else if (req_start.startsWith(ProtocolManager.RS_Q)) {
+			} else if (req_start.startsWith(ProtocolManager.Q_RS)) {
 				_server.getRC().routeFromNamesResponse(_input, _output);
-			} else if (req_start.startsWith(ProtocolManager.RP_Q)) {
+			} else if (req_start.startsWith(ProtocolManager.Q_RP)) {
 				_server.getRC().routeFromClicksResponse(_input, _output);
-			} else if (req_start.startsWith(ProtocolManager.MC_Q)) {
+			} else if (req_start.startsWith(ProtocolManager.Q_MC)) {
 				_server.getRC().mapDataResponse(_input, _output);
 			} else {
 				_server.getRC().errorResponse(_output, null);

@@ -52,7 +52,7 @@ public class ResponseController {
 			
 			// Build Response
 			final StringBuilder response = new StringBuilder(256);
-			response.append(ProtocolManager.AC_R);
+			response.append(ProtocolManager.R_AC);
 			response.append("\n");
 			response.append(ProtocolManager.encodeSuggestions(sugg));
 			response.append(ProtocolManager.FOOTER);
@@ -91,7 +91,7 @@ public class ResponseController {
 			final List<MapWay> path = GraphController.getShortestPathWays(inter1, inter2);
 			// Build Response according to protocol
 			final StringBuilder response = new StringBuilder(256);
-			response.append(ProtocolManager.RS_R);
+			response.append(ProtocolManager.R_RS);
 			response.append("\n");
 			response.append(ProtocolManager.encodeMapWayList(path));
 			response.append(ProtocolManager.FOOTER);
@@ -129,7 +129,7 @@ public class ResponseController {
 			
 			// Build Response
 			final StringBuilder response = new StringBuilder(256);
-			response.append(ProtocolManager.RP_R);
+			response.append(ProtocolManager.R_RP);
 			response.append("\n");
 			response.append(ProtocolManager.encodeMapWayList(route));
 			response.append(ProtocolManager.FOOTER);
@@ -164,7 +164,7 @@ public class ResponseController {
 			
 			// Build Response
 			final StringBuilder response = new StringBuilder(256);
-			response.append(ProtocolManager.MC_R);
+			response.append(ProtocolManager.R_MC);
 			response.append("\n");
 			response.append(ProtocolManager.encodeMapWayList(chunk));
 			response.append(ProtocolManager.FOOTER);
@@ -183,7 +183,7 @@ public class ResponseController {
 		}
 		// Build Response
 		final StringBuilder response = new StringBuilder(256);
-		response.append(ProtocolManager.ER_R);
+		response.append(ProtocolManager.R_ER);
 		response.append(ProtocolManager.encodeError(e == null ? "No message" : e.getMessage()));
 		response.append(ProtocolManager.FOOTER);
 		response.append("\n");

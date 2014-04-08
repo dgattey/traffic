@@ -192,7 +192,7 @@ public class CommController {
 		try {
 			final Socket testSocket = new Socket(host, sPort);
 			final PrintWriter writer = new PrintWriter(testSocket.getOutputStream());
-			writer.write(ProtocolManager.HB_Q);
+			writer.write(ProtocolManager.Q_HB);
 			writer.flush();
 			testSocket.close();
 			writer.close();

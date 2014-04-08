@@ -1,14 +1,14 @@
 package client.hub;
 
-import static data.ProtocolManager.AC_Q;
-import static data.ProtocolManager.AC_R;
+import static data.ProtocolManager.Q_AC;
+import static data.ProtocolManager.R_AC;
 import static data.ProtocolManager.FOOTER;
-import static data.ProtocolManager.MC_Q;
-import static data.ProtocolManager.MC_R;
-import static data.ProtocolManager.RP_Q;
-import static data.ProtocolManager.RP_R;
-import static data.ProtocolManager.RS_Q;
-import static data.ProtocolManager.RS_R;
+import static data.ProtocolManager.Q_MC;
+import static data.ProtocolManager.R_MC;
+import static data.ProtocolManager.Q_RP;
+import static data.ProtocolManager.R_RP;
+import static data.ProtocolManager.Q_RS;
+import static data.ProtocolManager.R_RS;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -93,7 +93,7 @@ public class HubController implements Controllable {
 					}
 					final CommController trafficC = new CommController(hostName, serverPort);
 					trafficC.connect();
-					trafficC.writeWithNL(ProtocolManager.TR_Q);
+					trafficC.writeWithNL(ProtocolManager.Q_TR);
 					final BufferedReader reader = trafficC.getReader();
 					String line;
 					while ((line = reader.readLine()) != null && !Thread.interrupted()) {
@@ -139,13 +139,13 @@ public class HubController implements Controllable {
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(RP_Q + hubID.toString());
+						comm.writeWithNL(Q_RP + hubID.toString());
 						comm.write(a);
 						comm.write(b);
 						comm.writeWithNL(FOOTER);
 						
 						final BufferedReader reader = comm.getReader();
-						comm.checkForResponseHeader(RP_R);
+						comm.checkForResponseHeader(R_RP);
 						final List<ClientMapWay> ret = ProtocolManager.parseWayList(reader);
 						comm.checkForResponseFooter();
 						return ret;
@@ -180,7 +180,7 @@ public class HubController implements Controllable {
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(RS_Q + hubID.toString());
+						comm.writeWithNL(Q_RS + hubID.toString());
 						comm.writeWithNL(streetA1);
 						comm.writeWithNL(streetA2);
 						comm.writeWithNL(streetB1);
@@ -188,7 +188,7 @@ public class HubController implements Controllable {
 						comm.writeWithNL(FOOTER);
 						
 						final BufferedReader reader = comm.getReader();
-						comm.checkForResponseHeader(RS_R);
+						comm.checkForResponseHeader(R_RS);
 						final List<ClientMapWay> ret = ProtocolManager.parseWayList(reader);
 						comm.checkForResponseFooter();
 						return ret;
@@ -215,12 +215,12 @@ public class HubController implements Controllable {
 					@Override
 					protected List<String> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(AC_Q);
+						comm.writeWithNL(Q_AC);
 						comm.writeWithNL(input);
 						comm.writeWithNL(FOOTER);
 						
 						final BufferedReader reader = comm.getReader();
-						comm.checkForResponseHeader(AC_R);
+						comm.checkForResponseHeader(R_AC);
 						final List<String> ret = ProtocolManager.parseStreetList(reader);
 						comm.checkForResponseFooter();
 						return ret;
@@ -244,13 +244,13 @@ public class HubController implements Controllable {
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(MC_Q);
+						comm.writeWithNL(Q_MC);
 						comm.write(min);
 						comm.write(max);
 						comm.writeWithNL(FOOTER);
 						
 						final BufferedReader reader = comm.getReader();
-						comm.checkForResponseHeader(MC_R);
+						comm.checkForResponseHeader(R_MC);
 						final List<ClientMapWay> ret = ProtocolManager.parseWayList(reader);
 						comm.checkForResponseFooter();
 						return ret;
