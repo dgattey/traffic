@@ -56,6 +56,8 @@ public class ClientHandler extends Thread {
 			req_start = _input.readLine();
 			if (req_start == null) {
 				_server.getRC().errorResponse(_output, null);
+			} else if (req_start.startsWith(ProtocolManager.TR_Q)) {
+				_server.addClientToTrafficPool(this);
 			} else if (req_start.startsWith(ProtocolManager.AC_Q)) {
 				_server.getRC().autocorrectResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.RS_Q)) {

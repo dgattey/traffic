@@ -36,7 +36,7 @@ public class ResponseController {
 	 * 
 	 * @param r reader
 	 * @param w writer
-	 * @throws IOException
+	 * @throws IOException failed to read or write
 	 */
 	public synchronized void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {

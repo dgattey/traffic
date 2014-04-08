@@ -33,6 +33,7 @@ public class Server extends Thread {
 		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, _port);
 		_socket = new ServerSocket(_port);
 		_traffic = new TrafficController(hostName, serverPort);
+		_traffic.startGettingTraffic();
 	}
 	
 	public ResponseController getRC() {
