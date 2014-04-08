@@ -137,7 +137,7 @@ public class ClientHandler extends Thread {
 	 * @throws IOException
 	 */
 	public void sendWithoutClosing(final String message) throws IOException {
-		_output.write(message);
+		_output.write(message + "\n");
 		_output.flush();
 	}
 	

@@ -31,7 +31,17 @@ public class Server extends Thread {
 		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, serverPort);
 		_socket = new ServerSocket(serverPort);
 		_traffic = new TrafficController(hostName, trafficPort);
-		_traffic.startGettingTraffic();
+		new Thread() {
+			
+			@Override
+			public void run() {
+				try {
+					_traffic.startGettingTraffic();
+				} catch (final IOException e) {
+					Utils.printError("<Server> Error Starting Traffic");
+				}
+			}
+		}.start();
 	}
 	
 	public ResponseController getRC() {

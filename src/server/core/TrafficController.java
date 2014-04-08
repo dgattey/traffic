@@ -58,8 +58,10 @@ public class TrafficController {
 	public void startGettingTraffic() throws IOException {
 		String line;
 		while ((line = input.readLine()) != null) {
+			clients.broadcast("heartbeat");
+			System.out.println("Received from traffic server: " + line);
 			parseAndUpdateMap(line);
-			clients.broadcast(line + "\n");
+			clients.broadcast(line);
 		}
 	}
 }

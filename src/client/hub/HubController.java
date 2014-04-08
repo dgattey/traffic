@@ -39,7 +39,7 @@ public class HubController implements Controllable {
 	private final int					serverPort;
 	private boolean						connected;
 	private final UUID					hubID;
-	private CommController				traffic;
+	CommController						traffic;
 	
 	/**
 	 * Main Constructor for HubController
@@ -64,15 +64,14 @@ public class HubController implements Controllable {
 					traffic = new CommController(hostName, serverPort);
 					traffic.connect();
 					traffic.writeWithNL(ProtocolManager.TR_Q);
-					final BufferedReader reader = traffic.getReader();
+					final BufferedReader reader = traffic.getReaderWithoutShutdownOutput();
 					
-					System.out.println("Got the reader, about to get traffic data");
+					System.out.println("Initialized Traffic Socket");
 					String line;
 					while ((line = reader.readLine()) != null) {
-						System.out.println("Here?");
-						System.out.println(line);
+						System.out.println("Received traffic line:" + line);
 					}
-					System.out.println("Here!!!!");
+					System.out.println("Left traffic loop");
 					traffic.disconnect();
 				} catch (final IOException e) {
 					// TODO Auto-generated catch block
@@ -163,7 +162,7 @@ public class HubController implements Controllable {
 		
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
-			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
+				|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
 			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		

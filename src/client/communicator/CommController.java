@@ -118,6 +118,21 @@ public class CommController {
 	}
 	
 	/**
+	 * Opens the reader to get the response from the server
+	 * 
+	 * @return the reader
+	 * @throws IOException if the socket is closed or if the input stream get failed
+	 */
+	public BufferedReader getReaderWithoutShutdownOutput() throws IOException {
+		if (sock == null || sock.isClosed()) {
+			throw new IOException("<ClientServerWriter> Socket is closed - can't open reader");
+		}
+		writer.flush();
+		reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		return reader;
+	}
+	
+	/**
 	 * Writes some sort of convertible object to the server
 	 * 
 	 * @param obj the object to write to server

@@ -46,8 +46,8 @@ public class ClientPool {
 	public synchronized void broadcast(final String message) {
 		for (final ClientHandler client : _clients) {
 			try {
-				client.send(message);
-				System.out.println("Broadcasted message: " + message);
+				client.sendWithoutClosing(message);
+				System.out.println("Broadcasted message to " + _clients.size() + " clients: " + message);
 			} catch (final IOException e) {
 				remove(client);
 			}
