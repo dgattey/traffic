@@ -55,24 +55,24 @@ public class ClientHandler extends Thread {
 			// Do stuff!
 			req_start = _input.readLine();
 			if (req_start == null) {
-				ResponseController.errorResponse(_output, null);
+				_server.getRC().errorResponse(_output, null);
 			} else if (req_start.startsWith(ProtocolManager.AC_Q)) {
 				_server.getRC().autocorrectResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.RS_Q)) {
-				ResponseController.routeFromNamesResponse(_input, _output);
+				_server.getRC().routeFromNamesResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.RP_Q)) {
 				_server.getRC().routeFromClicksResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.MC_Q)) {
-				ResponseController.mapDataResponse(_input, _output);
+				_server.getRC().mapDataResponse(_input, _output);
 			} else {
-				ResponseController.errorResponse(_output, null);
+				_server.getRC().errorResponse(_output, null);
 			}
 		} catch (final IOException e) {
 			// It's possible that the IOException was caused by writing to a closed socket, in which case trying
 			// to write again doesn't make a whole lot of sense. I suppose we just try responsding and then "kill" the
 			// client
 			try {
-				ResponseController.errorResponse(_output, e);
+				_server.getRC().errorResponse(_output, e);
 			} catch (final IOException e1) {
 				kill();
 			}

@@ -19,8 +19,8 @@ import data.ProtocolManager;
 
 public class ResponseController {
 	
-	static ACController		_autocorrect;
-	static KDTreeController	_kdtree;
+	ACController		_autocorrect;
+	KDTreeController	_kdtree;
 	
 	// TODO: These synchronized?
 	public ResponseController(final String ways, final String nodes, final String index, final String hostName,
@@ -34,11 +34,14 @@ public class ResponseController {
 	/**
 	 * Parses request and produces autocorrect response
 	 * 
-	 * @param r
-	 * @param w
+	 * @param r reader
+	 * @param w writer
 	 * @throws IOException
 	 */
-	public synchronized static void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
+	public synchronized void autocorrectResponse(final BufferedReader r, final Writer w) throws IOException {
+		if (!isReady()) {
+			return;
+		}
 		try {
 			// Get street name
 			final String input = ProtocolManager.parseStreetName(r);
@@ -64,10 +67,14 @@ public class ResponseController {
 	/**
 	 * Parse request and produces routes from names
 	 * 
-	 * @param c
-	 * @throws IOException
+	 * @param r reader
+	 * @param w writer
+	 * @throws IOException haands
 	 */
-	public synchronized static void routeFromNamesResponse(final BufferedReader r, final Writer w) throws IOException {
+	public synchronized void routeFromNamesResponse(final BufferedReader r, final Writer w) throws IOException {
+		if (!isReady()) {
+			return;
+		}
 		try {
 			// Get four street names
 			final String street1 = ProtocolManager.parseStreetName(r);
@@ -98,11 +105,14 @@ public class ResponseController {
 	}
 	
 	/**
-	 * @param r
-	 * @param w
+	 * @param r reader
+	 * @param w writer
 	 * @throws IOException
 	 */
-	public synchronized static void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
+	public synchronized void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
+		if (!isReady()) {
+			return;
+		}
 		try {
 			// Parse two points
 			final LatLongPoint p1 = ProtocolManager.parseLatLongPoint(r);
@@ -130,7 +140,10 @@ public class ResponseController {
 		
 	}
 	
-	public synchronized static void mapDataResponse(final BufferedReader r, final Writer w) throws IOException {
+	public synchronized void mapDataResponse(final BufferedReader r, final Writer w) throws IOException {
+		if (!isReady()) {
+			return;
+		}
 		try {
 			// Find min LatLongPoint of mapchunk to be generated
 			final LatLongPoint p1 = ProtocolManager.parseLatLongPoint(r);
@@ -155,7 +168,10 @@ public class ResponseController {
 		
 	}
 	
-	public static void errorResponse(final Writer w, final Exception e) throws IOException {
+	public synchronized void errorResponse(final Writer w, final Exception e) throws IOException {
+		if (!isReady()) {
+			return;
+		}
 		// Build Response
 		final StringBuilder response = new StringBuilder(256);
 		response.append(ProtocolManager.ER_R);
