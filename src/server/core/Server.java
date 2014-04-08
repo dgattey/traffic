@@ -17,7 +17,7 @@ public class Server extends Thread {
 	private boolean						_running;
 	private final ServerSocket			_socket;
 	private final ResponseController	_response;
-	private final TrafficController		_traffic;
+	final TrafficController				_traffic;
 	
 	public Server(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) throws IOException, MapException {
@@ -44,6 +44,9 @@ public class Server extends Thread {
 		}.start();
 	}
 	
+	/**
+	 * @return returns the response controller
+	 */
 	public ResponseController getRC() {
 		return _response;
 	}
@@ -65,7 +68,12 @@ public class Server extends Thread {
 		}
 	}
 	
-	public void addClientToTrafficPool(final ClientHandler c) {
+	/**
+	 * Adds a client to subs
+	 * 
+	 * @param c the client to be added
+	 */
+	public void subscribeToTraffic(final ClientHandler c) {
 		_traffic.getPool().add(c);
 	}
 	

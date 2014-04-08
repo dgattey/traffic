@@ -69,7 +69,7 @@ public class ResponseController {
 	 * 
 	 * @param r reader
 	 * @param w writer
-	 * @throws IOException haands
+	 * @throws IOException if reading or writing failed
 	 */
 	public synchronized void routeFromNamesResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
@@ -105,9 +105,11 @@ public class ResponseController {
 	}
 	
 	/**
+	 * Parses request and produces routes from clicks
+	 * 
 	 * @param r reader
 	 * @param w writer
-	 * @throws IOException
+	 * @throws IOException if reading or writing failed
 	 */
 	public synchronized void routeFromClicksResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
@@ -140,6 +142,13 @@ public class ResponseController {
 		
 	}
 	
+	/**
+	 * Returns
+	 * 
+	 * @param r
+	 * @param w
+	 * @throws IOException
+	 */
 	public synchronized void mapDataResponse(final BufferedReader r, final Writer w) throws IOException {
 		if (!isReady()) {
 			return;
