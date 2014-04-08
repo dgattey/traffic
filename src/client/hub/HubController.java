@@ -39,6 +39,7 @@ public class HubController implements Controllable {
 	private final int					serverPort;
 	private boolean						connected;
 	private final UUID					hubID;
+	private CommController				traffic;
 	
 	/**
 	 * Main Constructor for HubController
@@ -53,6 +54,32 @@ public class HubController implements Controllable {
 		this.serverPort = serverPort;
 		this.app = app;
 		hubID = UUID.randomUUID();
+		
+		// Set up traffic
+		new Thread() {
+			
+			@Override
+			public void run() {
+				try {
+					traffic = new CommController(hostName, serverPort);
+					traffic.connect();
+					traffic.writeWithNL(ProtocolManager.TR_Q);
+					final BufferedReader reader = traffic.getReader();
+					
+					System.out.println("Got the reader, about to get traffic data");
+					String line;
+					while ((line = reader.readLine()) != null) {
+						System.out.println("Here?");
+						System.out.println(line);
+					}
+					System.out.println("Here!!!!");
+					traffic.disconnect();
+				} catch (final IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			};
+		}.start();
 		
 		// Constant thread checking connection - will also update the label
 		new Timer().scheduleAtFixedRate(new TimerTask() {

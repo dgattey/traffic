@@ -14,7 +14,6 @@ import data.MapException;
  */
 public class Server extends Thread {
 	
-	private final int					_port;
 	private boolean						_running;
 	private final ServerSocket			_socket;
 	private final ResponseController	_response;
@@ -29,10 +28,9 @@ public class Server extends Thread {
 			throw new IllegalArgumentException("<Server> Non-null, non-empty arguments expected.");
 		}
 		
-		_port = serverPort;
-		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, _port);
-		_socket = new ServerSocket(_port);
-		_traffic = new TrafficController(hostName, serverPort);
+		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, serverPort);
+		_socket = new ServerSocket(serverPort);
+		_traffic = new TrafficController(hostName, trafficPort);
 		_traffic.startGettingTraffic();
 	}
 	

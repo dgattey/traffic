@@ -54,9 +54,11 @@ public class ClientHandler extends Thread {
 			
 			// Do stuff!
 			req_start = _input.readLine();
+			System.out.println("GOT: " + req_start);
 			if (req_start == null) {
 				_server.getRC().errorResponse(_output, null);
 			} else if (req_start.startsWith(ProtocolManager.TR_Q)) {
+				System.out.println("Adding this client");
 				_server.addClientToTrafficPool(this);
 			} else if (req_start.startsWith(ProtocolManager.AC_Q)) {
 				_server.getRC().autocorrectResponse(_input, _output);
@@ -126,6 +128,17 @@ public class ClientHandler extends Thread {
 		_output.write(message);
 		_output.flush();
 		_client.shutdownOutput();
+	}
+	
+	/**
+	 * Sends without closing
+	 * 
+	 * @param message
+	 * @throws IOException
+	 */
+	public void sendWithoutClosing(final String message) throws IOException {
+		_output.write(message);
+		_output.flush();
 	}
 	
 	/**

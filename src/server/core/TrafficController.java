@@ -12,7 +12,7 @@ import main.Utils;
 
 public class TrafficController {
 	
-	Map<String, Integer>			trafficMap;
+	Map<String, Double>				trafficMap;
 	private final Socket			trafficSock;
 	private final BufferedReader	input;
 	private final ClientPool		clients;
@@ -47,7 +47,11 @@ public class TrafficController {
 		if (arr.length != 2) {
 			return; // Ignore bad data quietly
 		}
-		trafficMap.put(arr[0], Integer.parseInt(arr[1]));
+		try {
+			trafficMap.put(arr[0], Double.parseDouble(arr[1]));
+		} catch (final NumberFormatException e) {
+			Utils.printError("<TrafficController> received bad input: " + data);
+		}
 		
 	}
 	
@@ -55,7 +59,7 @@ public class TrafficController {
 		String line;
 		while ((line = input.readLine()) != null) {
 			parseAndUpdateMap(line);
-			clients.broadcast(line);
+			clients.broadcast(line + "\n");
 		}
 	}
 }

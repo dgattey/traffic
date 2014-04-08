@@ -52,7 +52,7 @@ public class CommController {
 	 * @param hostName the string name of the host
 	 * @param serverPort the port where the socket should connect
 	 */
-	CommController(final String hostName, final int serverPort) {
+	public CommController(final String hostName, final int serverPort) {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
 	}
@@ -62,7 +62,7 @@ public class CommController {
 	 * 
 	 * @throws IOException if the server or writer failed to open
 	 */
-	void connect() throws IOException {
+	public void connect() throws IOException {
 		if (sock != null) {
 			sock.close();
 		}
@@ -84,7 +84,6 @@ public class CommController {
 		final String line = reader.readLine();
 		if (ProtocolManager.hasErrorTag(line)) {
 			throw new ParseException("<ClientServerWriter> Server returned an error");
-			// TODO: More information here?
 		}
 		ProtocolManager.checkForOpeningTag(line, tag);
 	}
@@ -160,7 +159,7 @@ public class CommController {
 	 * 
 	 * @throws IOException if something went wrong in closing everything
 	 */
-	void disconnect() throws IOException {
+	public void disconnect() throws IOException {
 		sock.shutdownInput();
 		sock.close();
 		reader.close();

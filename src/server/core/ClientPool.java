@@ -24,6 +24,7 @@ public class ClientPool {
 	 */
 	public synchronized void add(final ClientHandler client) {
 		_clients.add(client);
+		System.out.println("Added client: " + client);
 	}
 	
 	/**
@@ -46,6 +47,7 @@ public class ClientPool {
 		for (final ClientHandler client : _clients) {
 			try {
 				client.send(message);
+				System.out.println("Broadcasted message: " + message);
 			} catch (final IOException e) {
 				remove(client);
 			}
