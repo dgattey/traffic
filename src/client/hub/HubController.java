@@ -39,7 +39,7 @@ public class HubController implements Controllable {
 	private final int					serverPort;
 	private boolean						connected;
 	private final UUID					hubID;
-	CommController						traffic;
+	private Thread						traffic;
 	
 	/**
 	 * Main Constructor for HubController
@@ -54,31 +54,6 @@ public class HubController implements Controllable {
 		this.serverPort = serverPort;
 		this.app = app;
 		hubID = UUID.randomUUID();
-		
-		// Set up traffic
-		new Thread() {
-			
-			@Override
-			public void run() {
-				try {
-					traffic = new CommController(hostName, serverPort);
-					traffic.connect();
-					traffic.writeWithNL(ProtocolManager.TR_Q);
-					final BufferedReader reader = traffic.getReaderWithoutShutdownOutput();
-					
-					System.out.println("Initialized Traffic Socket");
-					String line;
-					while ((line = reader.readLine()) != null) {
-						System.out.println("Received traffic line:" + line);
-					}
-					System.out.println("Left traffic loop");
-					traffic.disconnect();
-				} catch (final IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			};
-		}.start();
 		
 		// Constant thread checking connection - will also update the label
 		new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -100,7 +75,37 @@ public class HubController implements Controllable {
 		app.getViewController().setConnectionLabel(connected);
 		if (!previous && connected || app.getViewController().getChunks().isEmpty()) {
 			app.getViewController().chunk();
+			restartTrafficLoop();
 		}
+	}
+	
+	private void restartTrafficLoop() {
+		if (traffic != null) {
+			traffic.interrupt();
+		}
+		traffic = new Thread() {
+			
+			@Override
+			public void run() {
+				try {
+					if (Thread.interrupted()) {
+						return;
+					}
+					final CommController trafficC = new CommController(hostName, serverPort);
+					trafficC.connect();
+					trafficC.writeWithNL(ProtocolManager.TR_Q);
+					final BufferedReader reader = trafficC.getReader();
+					String line;
+					while ((line = reader.readLine()) != null && !Thread.interrupted()) {
+						System.out.println("Received traffic line:" + line);
+					}
+					trafficC.disconnect();
+				} catch (final IOException e) {
+					return; // Shouldn't matter since it'll be restarted when the connection returns
+				}
+			};
+		};
+		traffic.start();
 	}
 	
 	/**
@@ -162,7 +167,7 @@ public class HubController implements Controllable {
 		
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
-				|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
+			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
 			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		

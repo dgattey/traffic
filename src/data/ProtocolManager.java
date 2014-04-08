@@ -36,12 +36,14 @@ public class ProtocolManager {
 	public static final String	TYPE_POINT			= "pt";
 	public static final String	TYPE_TRAFFIC		= "tr";
 	public static final String	TYPE_ERROR			= "er";
+	public static final String	TYPE_HEARTBEAT		= "hb";
 	
 	public static final String	AC_Q				= HEADER_QUERY + DELIM + TYPE_AUTOCORRECT + DELIM;
 	public static final String	RS_Q				= HEADER_QUERY + DELIM + TYPE_ROUTE_STREET + DELIM;
 	public static final String	RP_Q				= HEADER_QUERY + DELIM + TYPE_ROUTE_POINT + DELIM;
 	public static final String	MC_Q				= HEADER_QUERY + DELIM + TYPE_CHUNK + DELIM;
 	public static final String	TR_Q				= HEADER_QUERY + DELIM + TYPE_TRAFFIC + DELIM;
+	public static final String	HB_Q				= HEADER_QUERY + DELIM + TYPE_HEARTBEAT + DELIM;
 	
 	public static final String	AC_R				= HEADER_RESPONSE + DELIM + TYPE_AUTOCORRECT + DELIM;
 	public static final String	RS_R				= HEADER_RESPONSE + DELIM + TYPE_ROUTE_STREET + DELIM;

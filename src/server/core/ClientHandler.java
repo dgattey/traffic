@@ -41,7 +41,9 @@ public class ClientHandler extends Thread {
 	}
 	
 	/**
-	 * @return tells whether the response handler was ready
+	 * Returns false when we don't want to kill the socket
+	 * 
+	 * @return if the socket should be killed
 	 */
 	boolean dispatch() {
 		String req_start = "";
@@ -49,17 +51,18 @@ public class ClientHandler extends Thread {
 			
 			// Stops the hanging issue
 			if (!_server.getRC().isReady()) {
-				return false;
+				return true;
 			}
 			
 			// Do stuff!
 			req_start = _input.readLine();
-			System.out.println("GOT: " + req_start);
 			if (req_start == null) {
 				_server.getRC().errorResponse(_output, null);
+			} else if (req_start.startsWith(ProtocolManager.HB_Q)) {
+				
 			} else if (req_start.startsWith(ProtocolManager.TR_Q)) {
-				System.out.println("Adding this client");
 				_server.addClientToTrafficPool(this);
+				return false;
 			} else if (req_start.startsWith(ProtocolManager.AC_Q)) {
 				_server.getRC().autocorrectResponse(_input, _output);
 			} else if (req_start.startsWith(ProtocolManager.RS_Q)) {
@@ -86,32 +89,13 @@ public class ClientHandler extends Thread {
 	}
 	
 	/**
-	 * 
+	 * Dispatches a request, kills if it should (most cases)
 	 */
 	@Override
 	public void run() {
-		// The worker thread is created so the main client thread may listen to heartbeats from
-		// the client end, to know when a client hangs up unexpectedly
-		final Thread worker = new Thread() {
-			
-			@Override
-			public void run() {
-				if (!dispatch()) {
-					kill();
-				}
-			}
-		};
-		
-		worker.start();
-		try {
-			Thread.sleep(2000);
-			
-			while (worker.isAlive()) {
-				// Check if peer connection still exists
-			}
-		} catch (final InterruptedException e) {}
-		kill();
-		
+		if (dispatch()) {
+			kill();
+		}
 	}
 	
 	public BufferedReader getReader() {

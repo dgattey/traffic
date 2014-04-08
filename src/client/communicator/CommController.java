@@ -191,7 +191,11 @@ public class CommController {
 	public static boolean checkConnection(final String host, final int sPort) {
 		try {
 			final Socket testSocket = new Socket(host, sPort);
+			final PrintWriter writer = new PrintWriter(testSocket.getOutputStream());
+			writer.write(ProtocolManager.HB_Q);
+			writer.flush();
 			testSocket.close();
+			writer.close();
 			return true;
 		} catch (final IOException e) {
 			return false;
