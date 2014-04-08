@@ -47,8 +47,7 @@ public class TrafficController {
 		String line;
 		while ((line = input.readLine()) != null) {
 			parseAndUpdateMap(line);
-			
+			clients.broadcast(line);
 		}
-		
 	}
 }

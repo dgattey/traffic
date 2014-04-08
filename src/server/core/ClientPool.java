@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 /**
- * A group of {@link ClientHandler}s representing the a group of sockets
+ * A group of ClientHandlers representing the a group of sockets
  */
 public class ClientPool {
 	
 	private final LinkedList<ClientHandler>	_clients;
 	
 	/**
-	 * Initialize a new {@link ClientPool}.
+	 * Initialize a new ClientPool
 	 */
 	public ClientPool() {
 		_clients = new LinkedList<ClientHandler>();
