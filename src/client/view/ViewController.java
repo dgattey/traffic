@@ -512,6 +512,5 @@ public class ViewController {
 	public void removeChunk(final LatLongPoint min) {
 		final int sz = chunks.size();
 		chunks.remove(min);
-		System.out.println("Removed chunk for " + min + " with old size of " + sz + " and new " + chunks.size());
 	}
 }

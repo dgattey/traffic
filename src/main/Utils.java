@@ -52,8 +52,8 @@ public abstract class Utils {
 	/**
 	 * Removes trailing new line characters from the string
 	 * 
-	 * @param s
-	 * @return
+	 * @param s a string
+	 * @return the string s without new lines
 	 */
 	public static String removeTrailingNewlines(String s) {
 		if (s.charAt(s.length() - 1) == '\n') {
@@ -79,10 +79,34 @@ public abstract class Utils {
 	}
 	
 	/**
+	 * Returns whether a number's in range of two others (exclusive)
+	 * 
+	 * @param num a number to check
+	 * @param min a minimum
+	 * @param max a maximum
+	 * @return whether num is < min and > max
+	 */
+	public static boolean inRange(final Number num, final Number min, final Number max) {
+		return num.doubleValue() > min.doubleValue() && num.doubleValue() < max.doubleValue();
+	}
+	
+	/**
+	 * Returns whether a number's in range of two others (inclusive)
+	 * 
+	 * @param num a number to check
+	 * @param min a minimum
+	 * @param max a maximum
+	 * @return whether num is <= min and >= max
+	 */
+	public static boolean inRangeInclusive(final Number num, final Number min, final Number max) {
+		return num.doubleValue() >= min.doubleValue() && num.doubleValue() <= max.doubleValue();
+	}
+	
+	/**
 	 * Checks if a string is null or empty
 	 * 
-	 * @param s
-	 * @return true if either
+	 * @param s a string that exists
+	 * @return true if either empty or null
 	 */
 	public static boolean isNullOrEmpty(final String s) {
 		return s == null || s.isEmpty();
@@ -91,8 +115,8 @@ public abstract class Utils {
 	/**
 	 * Checks if any of the passed in strings is null or empty
 	 * 
-	 * @param args
-	 * @return
+	 * @param args a list of strings
+	 * @return true if anything is empty or null
 	 */
 	public static boolean anyNullOrEmpty(final String... args) {
 		for (final String s : args) {

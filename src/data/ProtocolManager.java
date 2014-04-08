@@ -2,8 +2,12 @@ package data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+
+import main.Utils;
 
 /**
  * Protocol Manager <br>
@@ -236,6 +240,29 @@ public class ProtocolManager {
 		}
 		checkForClosingTag(reader.readLine());
 		return strings;
+	}
+	
+	/**
+	 * Parses traffic data into an entry set
+	 * 
+	 * @param data a line that may represent traffic data
+	 * @return a new Entry for placement into a map
+	 */
+	public static Entry<String, Double> parseTrafficData(final String data) {
+		if (data == null) {
+			throw new IllegalArgumentException("<TrafficController> (internal) argument should not be null");
+		}
+		final String[] arr = data.split("\\t");
+		if (arr.length != 2) {
+			return null; // Ignore bad data quietly
+		}
+		try {
+			return new AbstractMap.SimpleEntry<>(arr[0], Double.parseDouble(arr[1]));
+		} catch (final NumberFormatException e) {
+			Utils.printError("<TrafficController> received bad input: " + data);
+			return null;
+		}
+		
 	}
 	
 	/**

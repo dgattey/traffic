@@ -7,8 +7,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import main.Utils;
+import data.ProtocolManager;
 
 public class TrafficController {
 	
@@ -39,29 +41,16 @@ public class TrafficController {
 		return clients;
 	}
 	
-	public void parseAndUpdateMap(final String data) {
-		if (data == null) {
-			throw new IllegalArgumentException("<TrafficController> (internal) argument should not be null");
-		}
-		final String[] arr = data.split("\\t");
-		if (arr.length != 2) {
-			return; // Ignore bad data quietly
-		}
-		try {
-			trafficMap.put(arr[0], Double.parseDouble(arr[1]));
-		} catch (final NumberFormatException e) {
-			Utils.printError("<TrafficController> received bad input: " + data);
-		}
-		
-	}
-	
 	public void startGettingTraffic() throws IOException {
 		String line;
 		while ((line = input.readLine()) != null) {
-			clients.broadcast("heartbeat");
-			System.out.println("Received from traffic server: " + line);
-			parseAndUpdateMap(line);
-			clients.broadcast(line);
+			// System.out.println("Received from traffic server: " + line);
+			final Entry<String, Double> traffic = ProtocolManager.parseTrafficData(line);
+			if (traffic != null) {
+				trafficMap.put(traffic.getKey(), traffic.getValue());
+				clients.broadcast(line);
+			}
+			
 		}
 	}
 }

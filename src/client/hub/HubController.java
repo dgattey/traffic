@@ -1,19 +1,22 @@
 package client.hub;
 
-import static data.ProtocolManager.Q_AC;
-import static data.ProtocolManager.R_AC;
 import static data.ProtocolManager.FOOTER;
+import static data.ProtocolManager.Q_AC;
 import static data.ProtocolManager.Q_MC;
-import static data.ProtocolManager.R_MC;
 import static data.ProtocolManager.Q_RP;
-import static data.ProtocolManager.R_RP;
 import static data.ProtocolManager.Q_RS;
+import static data.ProtocolManager.R_AC;
+import static data.ProtocolManager.R_MC;
+import static data.ProtocolManager.R_RP;
 import static data.ProtocolManager.R_RS;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -39,7 +42,8 @@ public class HubController implements Controllable {
 	private final int					serverPort;
 	private boolean						connected;
 	private final UUID					hubID;
-	private Thread						traffic;
+	private Thread						trafficThread;
+	private final Map<String, Double>	trafficMap;
 	
 	/**
 	 * Main Constructor for HubController
@@ -53,6 +57,7 @@ public class HubController implements Controllable {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
 		this.app = app;
+		trafficMap = new HashMap<>();
 		hubID = UUID.randomUUID();
 		
 		// Constant thread checking connection - will also update the label
@@ -63,7 +68,7 @@ public class HubController implements Controllable {
 				updateConnection();
 			}
 			
-		}, new Date(), 2000);
+		}, new Date(), 1800);
 	}
 	
 	/**
@@ -79,11 +84,14 @@ public class HubController implements Controllable {
 		}
 	}
 	
+	/**
+	 * Updates traffic data in client by starting a new loop of traffic getting whenever necessary
+	 */
 	private void restartTrafficLoop() {
-		if (traffic != null) {
-			traffic.interrupt();
+		if (trafficThread != null) {
+			trafficThread.interrupt();
 		}
-		traffic = new Thread() {
+		trafficThread = new Thread() {
 			
 			@Override
 			public void run() {
@@ -97,7 +105,12 @@ public class HubController implements Controllable {
 					final BufferedReader reader = trafficC.getReader();
 					String line;
 					while ((line = reader.readLine()) != null && !Thread.interrupted()) {
-						System.out.println("Received traffic line:" + line);
+						final Entry<String, Double> trafficData = ProtocolManager.parseTrafficData(line);
+						if (trafficData == null) {
+							return;
+						}
+						trafficMap.put(trafficData.getKey(), trafficData.getValue());
+						app.getViewController().repaintMap();
 					}
 					trafficC.disconnect();
 				} catch (final IOException e) {
@@ -105,7 +118,17 @@ public class HubController implements Controllable {
 				}
 			};
 		};
-		traffic.start();
+		trafficThread.start();
+	}
+	
+	/**
+	 * Returns a value for a street name from the traffic map - returns null if nothing found for that street
+	 * 
+	 * @param street a possible name of a street for traffic data
+	 * @return a value for the street's traffic
+	 */
+	public Double getTrafficValue(final String street) {
+		return trafficMap.get(street);
 	}
 	
 	/**

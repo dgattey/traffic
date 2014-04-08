@@ -11,10 +11,13 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JComponent;
 
+import main.Utils;
 import client.ClientApp;
 import data.ClientMapWay;
 import data.LatLongPoint;
@@ -26,24 +29,27 @@ import data.LatLongPoint;
  */
 public class MapView extends JComponent {
 	
-	private static final long		serialVersionUID	= 3037328084114829389L;
+	private static final long		serialVersionUID		= 3037328084114829389L;
 	private final ClientApp			app;
 	
 	// Constants
-	private static final Color		COLOR_WAY			= new Color(240, 240, 240);
-	private static final Color		COLOR_POINT			= new Color(30, 30, 170);
-	private static final Color		COLOR_ROUTE			= new Color(80, 150, 80);
-	private static final double		MIN_SCALE			= 10000.0;
-	private static final double		MAX_SCALE			= 180000.0;
-	private static final double		SIZE_POINT			= 15;
+	private static final Color		COLOR_WAY				= new Color(240, 240, 240);
+	private static final Color		COLOR_POINT				= new Color(30, 30, 170);
+	private static final Color		COLOR_ROUTE				= new Color(80, 150, 80);
+	private static final Color		COLOR_TRAFFIC_LOW		= Color.yellow;
+	private static final Color		COLOR_TRAFFIC_MEDIUM	= Color.orange;
+	private static final Color		COLOR_TRAFFIC_HIGH		= Color.red;
+	private static final double		MIN_SCALE				= 10000.0;
+	private static final double		MAX_SCALE				= 180000.0;
+	private static final double		SIZE_POINT				= 15;
 	
 	// Information for translation and scale
-	private final Point2D.Double	currTranslation		= new Point2D.Double(0, 0);
-	private double					currScale			= 60000.0;
+	private final Point2D.Double	currTranslation			= new Point2D.Double(0, 0);
+	private double					currScale				= 60000.0;
 	private int						screenWidth;
 	private int						screenHeight;
 	private final LatLongPoint		centerPoint;
-	private double					centerScale			= 1.0;
+	private double					centerScale				= 1.0;
 	
 	/**
 	 * Constructor for a Canvas
@@ -87,6 +93,25 @@ public class MapView extends JComponent {
 	}
 	
 	/**
+	 * Returns a color for a street that deals with traffic data
+	 * 
+	 * @param street a street name that may exist
+	 * @return a Color representing this street
+	 */
+	private Color getStreetColor(final String street) {
+		final Double value = app.getHub().getTrafficValue(street);
+		if (value == null) {
+			return COLOR_WAY;
+		} else if (Utils.inRangeInclusive(value, 1, 2)) {
+			return COLOR_TRAFFIC_LOW;
+		} else if (Utils.inRange(value, 2, 4)) {
+			return COLOR_TRAFFIC_MEDIUM;
+		} else {
+			return COLOR_TRAFFIC_HIGH;
+		}
+	}
+	
+	/**
 	 * Draws our representation of the map to screen by drawing the roads, route, and points user has clicked
 	 * 
 	 * @param content the Graphics2D object representing the map
@@ -98,16 +123,23 @@ public class MapView extends JComponent {
 		final LatLongPoint screenMax = screenToLatLong(new Point2D.Double(screenWidth + delta, screenHeight * 2 + delta));
 		
 		// Draw all chunks that are currently within view (by checking intersections)
-		content.setColor(COLOR_WAY);
+		final Set<String> drawnWays = new HashSet<>();
 		for (final LatLongPoint p : app.getViewController().getChunks().keySet()) {
 			if (LatLongPoint.intersectChunk(p, p.plus(MapChunk.CHUNKSIZE, MapChunk.CHUNKSIZE), screenMax, screenMin)) {
 				final List<ClientMapWay> allWays = app.getViewController().getChunks().get(p).getWays();
 				for (final ClientMapWay w : allWays) {
 					
+					// Make sure ways that span two chunks don't get drawn twice
+					if (drawnWays.contains(w.getID())) {
+						continue;
+					}
+					
 					// Only draws lines that are big enough to make a difference for the user
 					final Line2D line = makeLine2D(w);
 					if (line.getP2().distanceSq(line.getP1()) > 10) {
+						content.setColor(getStreetColor(w.getName()));
 						content.draw(line);
+						drawnWays.add(w.getID());
 					}
 				}
 			}

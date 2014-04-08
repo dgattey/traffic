@@ -16,7 +16,7 @@ class Sender:
     print "Starting sender thread"
     while run:
       dead_socks = []
-      sleep(uniform(0, 3))
+      sleep(uniform(0, 0.6))
       data = "{0}\t{1}\n".format(choice(ways),uniform(1,5))
       with lock:
         for s,addr in sockets:
