@@ -1,4 +1,4 @@
-package server;
+package server.core;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,10 +13,12 @@ import main.Utils;
 public class TrafficController {
 	
 	Map<String, Integer>	trafficMap;
-	Socket					sock;
+	Socket					trafficSock;
 	BufferedReader			input;
+	ClientPool				clients;
 	
-	public TrafficController(final String hostname, final int port) throws UnknownHostException, IOException {
+	public TrafficController(final String hostname, final int port, final ClientPool clients)
+			throws UnknownHostException, IOException {
 		if (port < 1025) {
 			throw new IllegalArgumentException("<TrafficController> Ports under 1025 are reserved");
 		}
@@ -24,8 +26,9 @@ public class TrafficController {
 			throw new IllegalArgumentException("<TrafficController> Non-null, non-empty hostname required");
 		}
 		trafficMap = new HashMap<>();
-		sock = new Socket(hostname, port);
-		input = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		trafficSock = new Socket(hostname, port);
+		input = new BufferedReader(new InputStreamReader(trafficSock.getInputStream()));
+		this.clients = clients;
 	}
 	
 	public void parseAndUpdateMap(final String data) {
@@ -43,6 +46,7 @@ public class TrafficController {
 	public void startGettingTraffic() throws IOException {
 		String line;
 		while ((line = input.readLine()) != null) {
+			parseAndUpdateMap(line);
 			
 		}
 		
