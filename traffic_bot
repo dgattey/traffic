@@ -16,7 +16,7 @@ class Sender:
     print "Starting sender thread"
     while run:
       dead_socks = []
-      sleep(uniform(0, 0.6))
+      sleep(uniform(0, float(sys.argv[3])))
       data = "{0}\t{1}\n".format(choice(ways),uniform(1,5))
       with lock:
         for s,addr in sockets:
@@ -33,8 +33,8 @@ class Sender:
       for s,addr in sockets:
         s.close()
 
-if len(sys.argv) != 3:
-  print "usage:",sys.argv[0],"<port> <index>"
+if len(sys.argv) != 4:
+  print "usage:",sys.argv[0],"<port> <index> <max_time_to_wait>"
   sys.exit(1)
 
 HOST,PORT = "",int(sys.argv[1])
