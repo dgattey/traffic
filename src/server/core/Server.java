@@ -29,8 +29,8 @@ public class Server extends Thread {
 		}
 		
 		_port = serverPort;
+		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, _port);
 		_socket = new ServerSocket(_port);
-		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, serverPort);
 	}
 	
 	@Override

@@ -332,6 +332,13 @@ public class ViewController {
 	 * @param ne the NE point of the view to page in
 	 */
 	void chunkInVisible(final LatLongPoint nw, final LatLongPoint se, final LatLongPoint sw, final LatLongPoint ne) {
+		
+		// Gets around constant addition/removal issue
+		if (!app.getHub().isConnected()) {
+			return;
+		}
+		
+		// Chunk!
 		final double widthToChunk = (Math.abs(nw.distance(ne)) * 100.0) + 2;
 		final double heightToChunk = (Math.abs(nw.distance(sw)) * 100.0) + 2;
 		// Longitude
@@ -453,7 +460,7 @@ public class ViewController {
 	 * 
 	 * @return a map of min points to mapChunks to use to draw
 	 */
-	Map<LatLongPoint, MapChunk> getChunks() {
+	public Map<LatLongPoint, MapChunk> getChunks() {
 		return chunks;
 	}
 	
@@ -498,6 +505,8 @@ public class ViewController {
 	 * @param min the minimum point of the chunk
 	 */
 	public void removeChunk(final LatLongPoint min) {
+		final int sz = chunks.size();
 		chunks.remove(min);
+		System.out.println("Removed chunk for " + min + " with old size of " + sz + " and new " + chunks.size());
 	}
 }

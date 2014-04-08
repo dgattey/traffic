@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import server.autocorrect.ACController;
 import server.graph.GraphController;
@@ -20,22 +19,16 @@ import data.ProtocolManager;
 
 public class ResponseController {
 	
-	private ACController		_autocorrect;
-	private KDTreeController	_kdtree;
+	private final ACController		_autocorrect;
+	private final KDTreeController	_kdtree;
 	
 	// TODO: These synchronized?
 	public ResponseController(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) throws MapException, IOException {
-		new Callable<Object>() {
-			
-			@Override
-			public Object call() throws IOException, MapException {
-				IOController.setup(ways, nodes, index);
-				_kdtree = new KDTreeController();
-				_autocorrect = new ACController();
-				return "Success";
-			};
-		}.call();
+		IOController.setup(ways, nodes, index);
+		_kdtree = new KDTreeController();
+		_autocorrect = new ACController();
+		System.out.println("Loaded server!");
 	}
 	
 	/**

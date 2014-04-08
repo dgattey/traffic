@@ -43,7 +43,7 @@ public class MapChunk implements Runnable {
 	 * 
 	 * @return a list of MapWays
 	 */
-	public synchronized List<ClientMapWay> getWays() {
+	public List<ClientMapWay> getWays() {
 		if (!isAdding) {
 			return ways;
 		}

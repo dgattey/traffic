@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 import main.Utils;
 import client.ClientApp;
@@ -39,6 +40,7 @@ public class HubController implements Controllable {
 	private final String				hostName;
 	private final int					serverPort;
 	private boolean						connected;
+	private final UUID					hubID;
 	
 	/**
 	 * Main Constructor for HubController
@@ -52,6 +54,7 @@ public class HubController implements Controllable {
 		this.hostName = hostName;
 		this.serverPort = serverPort;
 		this.app = app;
+		hubID = UUID.randomUUID();
 		
 		// Constant thread checking connection - will also update the label
 		new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -71,7 +74,7 @@ public class HubController implements Controllable {
 		final boolean previous = connected;
 		final boolean newConnected = CommController.checkConnection(hostName, serverPort);
 		app.getViewController().setConnectionLabel(newConnected ? MSG_CONNECTED : MSG_DISCONNECTED);
-		if (!previous && newConnected) {
+		if (!previous && newConnected || app.getViewController().getChunks().isEmpty()) {
 			app.getViewController().chunk();
 		}
 		connected = newConnected;
@@ -108,7 +111,7 @@ public class HubController implements Controllable {
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(RP_Q + "2");
+						comm.writeWithNL(RP_Q + hubID.toString());
 						comm.write(a);
 						comm.write(b);
 						comm.writeWithNL(FOOTER);
@@ -149,7 +152,7 @@ public class HubController implements Controllable {
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(RS_Q + "4");
+						comm.writeWithNL(RS_Q + hubID.toString());
 						comm.writeWithNL(streetA1);
 						comm.writeWithNL(streetA2);
 						comm.writeWithNL(streetB1);
@@ -184,7 +187,7 @@ public class HubController implements Controllable {
 					@Override
 					protected List<String> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(AC_Q + "2");
+						comm.writeWithNL(AC_Q);
 						comm.writeWithNL(input);
 						comm.writeWithNL(FOOTER);
 						
@@ -213,7 +216,7 @@ public class HubController implements Controllable {
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(MC_Q + "2");
+						comm.writeWithNL(MC_Q);
 						comm.write(min);
 						comm.write(max);
 						comm.writeWithNL(FOOTER);
