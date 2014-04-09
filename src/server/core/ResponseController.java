@@ -27,8 +27,17 @@ public class ResponseController {
 		IOController.setup(ways, nodes, index);
 		_kdtree = new KDTreeController();
 		_autocorrect = new ACController();
-		GraphController.setTrafficMap((t != null) ? t.getMap() : null);
+		setTrafficController(t);
 		System.out.println("Loaded server!");
+	}
+	
+	/**
+	 * Attempts to set a traffic controller for the graph
+	 * 
+	 * @param t a Traffic Controller
+	 */
+	public void setTrafficController(final TrafficController t) {
+		GraphController.setTrafficMap((t != null) ? t.getMap() : null);
 	}
 	
 	/**

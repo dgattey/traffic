@@ -81,12 +81,13 @@ public class HubController implements Controllable {
 	 */
 	protected void updateConnection() {
 		final boolean previous = connected;
-		connected = CommController.checkConnection(hostName, serverPort);
+		connected = Utils.checkConnection(hostName, serverPort);
 		app.getViewController().setConnectionLabel(connected);
 		
 		// Connection again after being disconnected
 		if (!previous && connected) {
 			app.getViewController().clearChunks();
+			app.getViewController().clearRoute();
 			restartTrafficLoop();
 			app.getViewController().repaintMap();
 		}
@@ -198,7 +199,7 @@ public class HubController implements Controllable {
 		
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
-				|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
+			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
 			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		
@@ -308,14 +309,15 @@ public class HubController implements Controllable {
 	}
 	
 	/**
-	 * Gives the current max traffic value
-	 * 
-	 * @return
+	 * @return the max traffic val
 	 */
 	public Double getMaxTrafficValue() {
 		return trafficMax;
 	}
 	
+	/**
+	 * @return the min traffic value
+	 */
 	public Double getMinTrafficValue() {
 		return trafficMin;
 	}

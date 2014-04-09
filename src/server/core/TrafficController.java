@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,8 +13,7 @@ import data.ProtocolManager;
 public class TrafficController {
 	
 	ConcurrentHashMap<String, Double>	trafficMap;
-	private final Socket				trafficSock;
-	private final BufferedReader		input;
+	private Socket						trafficSock;
 	private final ClientPool			clients;
 	
 	/**
@@ -23,10 +21,8 @@ public class TrafficController {
 	 * 
 	 * @param hostname the name of the traffic host
 	 * @param port the port of the traffic host
-	 * @throws UnknownHostException if the host didn't exist
-	 * @throws IOException if the socket didn't open correctly
 	 */
-	public TrafficController(final String hostname, final int port) throws UnknownHostException, IOException {
+	public TrafficController(final String hostname, final int port) {
 		if (port < 1025) {
 			throw new IllegalArgumentException("<TrafficController> Ports under 1025 are reserved");
 		}
@@ -34,9 +30,29 @@ public class TrafficController {
 			throw new IllegalArgumentException("<TrafficController> Non-null, non-empty hostname required");
 		}
 		trafficMap = new ConcurrentHashMap<>();
-		trafficSock = new Socket(hostname, port);
-		input = new BufferedReader(new InputStreamReader(trafficSock.getInputStream()));
 		clients = new ClientPool();
+		
+		connectToServer(hostname, port);
+	}
+	
+	/**
+	 * @param hostName
+	 * @param trafficPort
+	 */
+	private void connectToServer(final String hostName, final int trafficPort) {
+		new Thread() {
+			
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(4000);
+						trafficSock = new Socket(hostName, trafficPort);
+						startGettingTraffic();
+					} catch (final IOException | InterruptedException e) {}
+				}
+			}
+		}.start();
 	}
 	
 	/**
@@ -57,8 +73,9 @@ public class TrafficController {
 		return trafficMap;
 	}
 	
-	public void startGettingTraffic() throws IOException {
+	private void startGettingTraffic() throws IOException {
 		String line;
+		final BufferedReader input = new BufferedReader(new InputStreamReader(trafficSock.getInputStream()));
 		while ((line = input.readLine()) != null) {
 			// System.out.println("Received from traffic server: " + line);
 			final Entry<String, Double> traffic = ProtocolManager.parseTrafficData(line);
@@ -66,7 +83,6 @@ public class TrafficController {
 				trafficMap.put(traffic.getKey(), traffic.getValue());
 				clients.broadcast(line);
 			}
-			
 		}
 	}
 	

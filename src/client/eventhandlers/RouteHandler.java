@@ -89,7 +89,6 @@ public class RouteHandler implements ActionListener, MouseListener {
 	public void mouseClicked(final MouseEvent e) {
 		final ViewController controller = app.getViewController();
 		final HubController hub = app.getHub();
-		controller.setLabel("Click another point to route between the intersections");
 		if (thread != null) {
 			thread.interrupt();
 		}
@@ -97,7 +96,11 @@ public class RouteHandler implements ActionListener, MouseListener {
 		controller.clearRoute();
 		
 		// If there's only one point in the user points or a route existed, just return
-		if (routeExisted || !controller.updateUserPoints(new Point2D.Double(e.getX(), e.getY()))) {
+		if (routeExisted) {
+			controller.setLabel(ViewController.DEFAULT_STATUS);
+			return;
+		} else if (!controller.updateUserPoints(new Point2D.Double(e.getX(), e.getY()))) {
+			controller.setLabel("Click another point to route between the intersections");
 			return;
 		}
 		

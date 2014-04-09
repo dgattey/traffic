@@ -1,5 +1,12 @@
 package main;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
+
+import data.ProtocolManager;
+
 /**
  * Constants class to package up strings used in multiple classes
  * 
@@ -11,6 +18,7 @@ public abstract class Utils {
 	public static final String	APP_ABOUT		= "aiguha and dgattey";
 	public static final String	USAGE_CLIENT	= "Usage: trafficClient hostname serverport";
 	public static final String	USAGE_SERVER	= "Usage: trafficServer ways nodes index hostname trafficport serverport";
+	private static Socket		testSocket;
 	
 	/**
 	 * Calculates minimum of many ints
@@ -137,6 +145,28 @@ public abstract class Utils {
 	 */
 	public static double normalize(final double min, final double max, final double percent) {
 		return ((max - min) * percent) + min;
+	}
+	
+	/**
+	 * Tries connecting to a host on a port to see whether there's a connection
+	 * 
+	 * @param host the host name to connect on
+	 * @param port the port to connect on
+	 * @return if there was a connection using the given host and port
+	 */
+	public static boolean checkConnection(final String host, final int port) {
+		try {
+			if (testSocket == null) {
+				testSocket = new Socket(host, port);
+			}
+			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(testSocket.getOutputStream()));
+			writer.write(ProtocolManager.Q_HB);
+			writer.flush();
+			return true;
+		} catch (final IOException e) {
+			testSocket = null;
+			return false;
+		}
 	}
 	
 }

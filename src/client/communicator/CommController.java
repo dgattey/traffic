@@ -27,7 +27,6 @@ public class CommController {
 	private final String					hostName;
 	private final int						serverPort;
 	private final static ExecutorService	executor	= Executors.newFixedThreadPool(20);
-	private static Socket					testSocket;
 	
 	/**
 	 * Executes a callable and returns a V representing what the server returned
@@ -181,27 +180,5 @@ public class CommController {
 		sock.close();
 		reader.close();
 		writer.close();
-	}
-	
-	/**
-	 * Tries connecting to a host on a port to see whether there's a connection
-	 * 
-	 * @param host the host name to connect on
-	 * @param port the port to connect on
-	 * @return if there was a connection using the given host and port
-	 */
-	public static boolean checkConnection(final String host, final int port) {
-		try {
-			if (testSocket == null) {
-				testSocket = new Socket(host, port);
-			}
-			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(testSocket.getOutputStream()));
-			writer.write(ProtocolManager.Q_HB);
-			writer.flush();
-			return true;
-		} catch (final IOException e) {
-			testSocket = null;
-			return false;
-		}
 	}
 }

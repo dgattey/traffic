@@ -39,7 +39,7 @@ public class MapView extends JComponent {
 	private static final Color		COLOR_ROUTE			= new Color(80, 150, 80);
 	private static final Color		COLOR_TRAFFIC_MAX	= Color.red.darker();
 	private static final Color		COLOR_TRAFFIC_MIN	= Color.yellow;
-	private static final double		MIN_SCALE			= 10000.0;
+	private static final double		MIN_SCALE			= 5000.0;
 	private static final double		MAX_SCALE			= 180000.0;
 	private static final double		SIZE_POINT			= 15;
 	
@@ -282,9 +282,9 @@ public class MapView extends JComponent {
 	 */
 	public Point2D.Double latLongToScreen(final LatLongPoint p) {
 		final double finalX = ((p.getX() - centerPoint.getX()) * currScale) + (screenWidth / 2.0)
-				- (currTranslation.getX() * centerScale);
+			- (currTranslation.getX() * centerScale);
 		final double finalY = ((-p.getY() + centerPoint.getY()) * currScale) + (screenHeight / 2.0)
-				- (currTranslation.getY() * centerScale);
+			- (currTranslation.getY() * centerScale);
 		return new Point2D.Double(finalX, finalY);
 	}
 	
@@ -296,9 +296,9 @@ public class MapView extends JComponent {
 	 */
 	public LatLongPoint screenToLatLong(final Point2D.Double p) {
 		final double finalLong = (p.getX() - screenWidth / 2.0 + (currTranslation.getX() * centerScale)) / currScale
-				+ centerPoint.getX();
+			+ centerPoint.getX();
 		final double finalLat = (-p.getY() + screenHeight / 2.0 - (currTranslation.getY() * centerScale)) / currScale
-				+ centerPoint.getY();
+			+ centerPoint.getY();
 		return new LatLongPoint(finalLat, finalLong);
 	}
 	
@@ -330,7 +330,7 @@ public class MapView extends JComponent {
 	public void translateBy(final Point2D.Double p) {
 		final double scalar = currScale / MAX_SCALE * 50.0;
 		currTranslation.setLocation(currTranslation.getX() + p.getX() / scalar, currTranslation.getY() + p.getY()
-				/ scalar);
+			/ scalar);
 		repaint();
 	}
 	

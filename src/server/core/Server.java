@@ -29,17 +29,6 @@ public class Server extends Thread {
 		}
 		
 		_traffic = new TrafficController(hostName, trafficPort);
-		new Thread() {
-			
-			@Override
-			public void run() {
-				try {
-					_traffic.startGettingTraffic();
-				} catch (final IOException e) {
-					Utils.printError("<Server> Error Starting Traffic");
-				}
-			}
-		}.start();
 		_response = new ResponseController(ways, nodes, index, _traffic);
 		_socket = new ServerSocket(serverPort);
 	}
@@ -57,7 +46,6 @@ public class Server extends Thread {
 		while (_running) {
 			try {
 				final Socket clientConnection = _socket.accept();
-				System.out.println("Connected to a client!");
 				final ClientHandler c = new ClientHandler(clientConnection, this);
 				c.start();
 			} catch (final IOException e) {

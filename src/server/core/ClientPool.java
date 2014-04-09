@@ -27,7 +27,6 @@ public class ClientPool {
 	 */
 	public synchronized void add(final ClientHandler client) {
 		_clients.add(client);
-		System.out.println("Added client: " + client);
 	}
 	
 	/**
@@ -46,7 +45,6 @@ public class ClientPool {
 	 * @param message to send
 	 */
 	public synchronized void broadcast(final String message) {
-		System.out.println("Broadcasted message to " + _clients.size() + " clients: " + message);
 		final List<ClientHandler> dead = new LinkedList<>();
 		for (final ClientHandler client : _clients) {
 			try {
