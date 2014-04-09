@@ -36,7 +36,7 @@ public class GraphTest extends IOController {
 	@Test
 	public void oneHopPath() {
 		try {
-			final MapsDataProvider prov = new MapsDataProvider();
+			final MapsDataProvider prov = new MapsDataProvider(null);
 			// Thayer St
 			final MapNode s = IOController.getMapNode("/n/4182.7140.1955940297");
 			final MapNode e = IOController.getMapNode("/n/4182.7140.1957915158");
@@ -57,7 +57,7 @@ public class GraphTest extends IOController {
 	@Test
 	public void twoHopPath() {
 		try {
-			final MapsDataProvider prov = new MapsDataProvider();
+			final MapsDataProvider prov = new MapsDataProvider(null);
 			// Thayer St
 			final MapNode s = IOController.getMapNode("/n/4182.7140.1955940297");
 			final MapNode e = IOController.getMapNode("/n/4182.7140.1957915190");
@@ -78,7 +78,7 @@ public class GraphTest extends IOController {
 	@Test
 	public void zeroHopPath() {
 		try {
-			final MapsDataProvider prov = new MapsDataProvider();
+			final MapsDataProvider prov = new MapsDataProvider(null);
 			// Thayer St
 			final MapNode s = IOController.getMapNode("/n/4182.7140.1955940297");
 			final MapNode e = IOController.getMapNode("/n/4182.7140.1955940297");

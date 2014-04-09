@@ -48,6 +48,15 @@ public class TrafficController {
 		return clients;
 	}
 	
+	/**
+	 * Returns the traffic map
+	 * 
+	 * @return the traffic map
+	 */
+	public synchronized ConcurrentHashMap<String, Double> getMap() {
+		return trafficMap;
+	}
+	
 	public void startGettingTraffic() throws IOException {
 		String line;
 		while ((line = input.readLine()) != null) {

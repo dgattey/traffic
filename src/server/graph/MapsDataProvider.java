@@ -4,29 +4,28 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
-import data.MapNode;
-import data.MapWay;
 import server.io.DataSetException;
 import server.io.IOController;
+import data.MapNode;
+import data.MapWay;
 
 public class MapsDataProvider implements DataProvider<MapNode, MapWay> {
 	
 	// Stored objects to avoid re-reading files
 	private final HashMap<String, GraphNode<MapNode, MapWay>>	graphNodeStore;
+	private final ConcurrentHashMap<String, Double>				trafficMap;
 	
 	/**
 	 * Constructs a MapsDataProvider that can be used to access the large datasets and dynamically construct the Maps
 	 * graph
 	 * 
-	 * @param waysFile
-	 * @param nodesFile
-	 * @param indexFile
-	 * @throws DataSetException
-	 * @throws IOException
+	 * @param trafficMap the map of traffic data
 	 */
-	public MapsDataProvider() {
+	public MapsDataProvider(final ConcurrentHashMap<String, Double> trafficMap) {
 		graphNodeStore = new HashMap<>();
+		this.trafficMap = trafficMap;
 		
 	}
 	
@@ -44,6 +43,17 @@ public class MapsDataProvider implements DataProvider<MapNode, MapWay> {
 		return toReturn;
 	}
 	
+	/**
+	 * Updates traffic if trafficMap is non-null
+	 * 
+	 * @param way the way to update
+	 */
+	public void updateWayTraffic(final MapWay way) {
+		if (trafficMap != null) {
+			way.updateTraffic(trafficMap.get(way.getName()));
+		}
+	}
+	
 	@Override
 	public List<GraphEdge<MapNode, MapWay>> getNeighborVertices(final GraphNode<MapNode, MapWay> cur)
 			throws DataProviderException, IOException {
@@ -57,6 +67,8 @@ public class MapsDataProvider implements DataProvider<MapNode, MapWay> {
 				if (way == null) {
 					continue;
 				}
+				
+				updateWayTraffic(way);
 				final MapNode curDest = way.getEnd();
 				// Should not connect to itself
 				if (curDest == cur.getValue()) {

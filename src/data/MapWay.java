@@ -10,6 +10,7 @@ public class MapWay implements Weighable<MapWay>, Convertible<MapWay> {
 	private final String	id;
 	private final MapNode	start;
 	private final MapNode	end;
+	private double			curTraffic;
 	
 	public static MapWay create(final String name, final String id, final MapNode start, final MapNode end) {
 		if (name == null || id == null || start == null || end == null) {
@@ -23,6 +24,7 @@ public class MapWay implements Weighable<MapWay>, Convertible<MapWay> {
 		this.id = id;
 		this.start = start;
 		this.end = end;
+		curTraffic = 1.0;
 	}
 	
 	@Override
@@ -37,7 +39,7 @@ public class MapWay implements Weighable<MapWay>, Convertible<MapWay> {
 	
 	@Override
 	public double getWeight() {
-		return start.distanceFrom(end);
+		return start.distanceFrom(end) * curTraffic;
 	}
 	
 	public MapNode getStart() {
@@ -46,6 +48,12 @@ public class MapWay implements Weighable<MapWay>, Convertible<MapWay> {
 	
 	public MapNode getEnd() {
 		return end;
+	}
+	
+	public void updateTraffic(final Double newTraffic) {
+		if (newTraffic != null) {
+			curTraffic = newTraffic;
+		}
 	}
 	
 	@Override

@@ -3,10 +3,11 @@ package server.graph;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
+import data.MapException;
 import data.MapNode;
 import data.MapWay;
-import data.MapException;
 
 /**
  * Controls interaction with the Graph
@@ -15,20 +16,26 @@ import data.MapException;
  */
 public class GraphController {
 	
+	private static ConcurrentHashMap<String, Double>	trafficMap;
+	
+	public static void setTrafficMap(final ConcurrentHashMap<String, Double> t) {
+		trafficMap = t;
+	}
+	
 	/**
 	 * Returns the shortest path between s and e Creates a new Graph object, which reuses the class variable
 	 * DataProvider to construct the graph and calculate shortest paths using A*
 	 * 
-	 * @param s
-	 * @param e
-	 * @return
-	 * @throws IOException
-	 * @throws GraphException
-	 * @throws MapException
+	 * @param s the starting node
+	 * @param e the end node
+	 * @return returns the shortest path in GraphEdges
+	 * @throws IOException thrown internally
+	 * @throws GraphException thrown internally
+	 * @throws MapException if a DataProviderException was encountered
 	 */
 	private static List<GraphEdge<MapNode, MapWay>> getShortestPathEdges(final MapNode s, final MapNode e)
 			throws IOException, GraphException, MapException {
-		final MapsDataProvider provider = new MapsDataProvider();
+		final MapsDataProvider provider = new MapsDataProvider(trafficMap);
 		final GraphNode<MapNode, MapWay> start = provider.getNode(s);
 		final GraphNode<MapNode, MapWay> end = provider.getNode(e);
 		Graph<MapNode, MapWay> g;
@@ -40,6 +47,16 @@ public class GraphController {
 		}
 	}
 	
+	/**
+	 * Returns the shortest path between s and e Creates a new Graph object, which reuses the class variable
+	 * DataProvider to construct the graph and calculate shortest paths using A*
+	 * 
+	 * @param s the starting node
+	 * @param e the end node
+	 * @return returns the shortest path in MapWays
+	 * @throws IOException thrown internally
+	 * @throws MapException if a DataProviderException was encountered
+	 */
 	public static List<MapWay> getShortestPathWays(final MapNode s, final MapNode e) throws IOException, MapException {
 		List<GraphEdge<MapNode, MapWay>> path;
 		try {

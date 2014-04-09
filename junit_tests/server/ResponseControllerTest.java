@@ -26,7 +26,7 @@ public class ResponseControllerTest {
 	
 	@Before
 	public void setUp() throws MapException, IOException {
-		res = new ResponseController("info/ways.tsv", "info/nodes.tsv", "info/index.tsv", "traffic-server", 3011, 8080);
+		res = new ResponseController("info/ways.tsv", "info/nodes.tsv", "info/index.tsv", null);
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class ResponseControllerTest {
 	public void routeNamesTest() {
 		try {
 			final String req = "Thayer Street\nCushing Street\nThayer Street\nWaterman Street\n"
-				+ ProtocolManager.FOOTER;
+					+ ProtocolManager.FOOTER;
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final StringWriter w = new StringWriter();
 			final String ans = "";

@@ -319,11 +319,11 @@ public class IOController {
 	}
 	
 	/**
-	 * @param street1
-	 * @param street2
-	 * @return
-	 * @throws MapException
-	 * @throws IOException
+	 * @param street1 first street name
+	 * @param street2 second street name
+	 * @return the intersecting mapnode, if any
+	 * @throws MapException thrown internally if dataset exception occurs
+	 * @throws IOException thrown internally because of file io
 	 */
 	public static MapNode findIntersection(final String street1, final String street2) throws MapException, IOException {
 		if (street1 == null || street2 == null) {
@@ -357,8 +357,8 @@ public class IOController {
 	/**
 	 * Returns first four digits of double as a string Assumes valid input
 	 * 
-	 * @param l
-	 * @return
+	 * @param l a double
+	 * @return the first four digits
 	 */
 	public static String firstFourDigits(final double l) {
 		final double num = Math.round((Math.abs(l) * 100.0));
@@ -372,11 +372,11 @@ public class IOController {
 	/**
 	 * Returns a block of ways. Does not reuse objects from the MapsDataProvider mapWayStore.
 	 * 
-	 * @param p1
-	 * @param p2
-	 * @return
-	 * @throws DataSetException
-	 * @throws IOException
+	 * @param p1 the first point
+	 * @param p2 the second point
+	 * @return the list of mapways within the bounding box
+	 * @throws DataSetException if data was invalid
+	 * @throws IOException if file io failed
 	 */
 	public static List<MapWay> getChunkOfWays(final LatLongPoint p1, final LatLongPoint p2) throws DataSetException,
 			IOException {
@@ -401,7 +401,7 @@ public class IOController {
 			}
 		}
 		if (start1.equals(end1) || start1.equals(end2) || start1.equals(start2) || start2.equals(end1)
-			|| start2.equals(end2) || end1.equals(end2)) {
+				|| start2.equals(end2) || end1.equals(end2)) {
 			System.out.println(String.format(
 					"Received (%s, %s). \n\t chunking between: (%s, %s, %s, %s) \n\t blocksize: %d chunksize: %d ", p1,
 					p2, start1, end1, start2, end2, blockData.size(), chunk.size()));
@@ -417,6 +417,6 @@ public class IOController {
 	 */
 	public static boolean isSetup() {
 		return !(waysFile == null || nodesFile == null || indexFile == null || allMapNodes == null
-			|| mapWayStore == null || waysHeaderMap == null || indexHeaderMap == null || nodesHeaderMap == null);
+				|| mapWayStore == null || waysHeaderMap == null || indexHeaderMap == null || nodesHeaderMap == null);
 	}
 }

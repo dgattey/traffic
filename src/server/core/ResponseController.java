@@ -22,11 +22,12 @@ public class ResponseController {
 	ACController		_autocorrect;
 	KDTreeController	_kdtree;
 	
-	public ResponseController(final String ways, final String nodes, final String index, final String hostName,
-			final int trafficPort, final int serverPort) throws MapException, IOException {
+	public ResponseController(final String ways, final String nodes, final String index, final TrafficController t)
+			throws MapException, IOException {
 		IOController.setup(ways, nodes, index);
 		_kdtree = new KDTreeController();
 		_autocorrect = new ACController();
+		GraphController.setTrafficMap((t != null) ? t.getMap() : null);
 		System.out.println("Loaded server!");
 	}
 	

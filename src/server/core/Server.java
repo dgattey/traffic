@@ -28,8 +28,6 @@ public class Server extends Thread {
 			throw new IllegalArgumentException("<Server> Non-null, non-empty arguments expected.");
 		}
 		
-		_response = new ResponseController(ways, nodes, index, hostName, trafficPort, serverPort);
-		_socket = new ServerSocket(serverPort);
 		_traffic = new TrafficController(hostName, trafficPort);
 		new Thread() {
 			
@@ -42,6 +40,8 @@ public class Server extends Thread {
 				}
 			}
 		}.start();
+		_response = new ResponseController(ways, nodes, index, _traffic);
+		_socket = new ServerSocket(serverPort);
 	}
 	
 	/**
