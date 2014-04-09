@@ -23,9 +23,11 @@ import data.MapWay;
 @SuppressWarnings("static-method")
 public class GraphTest extends IOController {
 	
+	public static final String	DATA_FOLDER	= "info";
+	
 	@Before
 	public void setUp() throws Exception {
-		IOController.setup("data/ways.tsv", "data/nodes.tsv", "data/index.tsv");
+		IOController.setup(DATA_FOLDER + "/ways.tsv", DATA_FOLDER + "/nodes.tsv", DATA_FOLDER + "/index.tsv");
 	}
 	
 	@After

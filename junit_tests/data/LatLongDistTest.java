@@ -1,4 +1,4 @@
-package hub;
+package data;
 
 import static org.junit.Assert.assertTrue;
 

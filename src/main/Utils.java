@@ -58,19 +58,6 @@ public abstract class Utils {
 	}
 	
 	/**
-	 * Removes trailing new line characters from the string
-	 * 
-	 * @param s a string
-	 * @return the string s without new lines
-	 */
-	public static String removeTrailingNewlines(String s) {
-		if (s.charAt(s.length() - 1) == '\n') {
-			s = s.substring(0, s.length() - 1);
-		}
-		return s;
-	}
-	
-	/**
 	 * Gets the minimum element of an int array
 	 * 
 	 * @param arr the array to search
@@ -84,30 +71,6 @@ public abstract class Utils {
 			}
 		}
 		return min;
-	}
-	
-	/**
-	 * Returns whether a number's in range of two others (exclusive)
-	 * 
-	 * @param num a number to check
-	 * @param min a minimum
-	 * @param max a maximum
-	 * @return whether num is < min and > max
-	 */
-	public static boolean inRange(final Number num, final Number min, final Number max) {
-		return num.doubleValue() > min.doubleValue() && num.doubleValue() < max.doubleValue();
-	}
-	
-	/**
-	 * Returns whether a number's in range of two others (inclusive)
-	 * 
-	 * @param num a number to check
-	 * @param min a minimum
-	 * @param max a maximum
-	 * @return whether num is <= min and >= max
-	 */
-	public static boolean inRangeInclusive(final Number num, final Number min, final Number max) {
-		return num.doubleValue() >= min.doubleValue() && num.doubleValue() <= max.doubleValue();
 	}
 	
 	/**

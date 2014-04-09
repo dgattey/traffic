@@ -2,6 +2,7 @@ package kdtree;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import graph.GraphTest;
 
 import java.io.IOException;
 
@@ -17,9 +18,13 @@ import data.MapException;
 @SuppressWarnings("static-method")
 public class KDTreeControllerTest {
 	
+	private static final String	WAYS	= GraphTest.DATA_FOLDER + "/ways.tsv";
+	private static final String	NODES	= GraphTest.DATA_FOLDER + "/nodes.tsv";
+	private static final String	INDEX	= GraphTest.DATA_FOLDER + "/index.tsv";
+	
 	@Before
 	public void setUp() throws Exception {
-		IOController.setup("data/ways.tsv", "data/nodes.tsv", "data/index.tsv");
+		IOController.setup(WAYS, NODES, INDEX);
 	}
 	
 	@After

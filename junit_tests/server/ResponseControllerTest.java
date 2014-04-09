@@ -35,7 +35,6 @@ public class ResponseControllerTest {
 			final String req = "Thaye\n" + ProtocolManager.FOOTER;
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final StringWriter w = new StringWriter();
-			final String ans = "";
 			res.autocorrectResponse(r, w);
 			final String exp = "@r:ac:\n<list:string:7\nThayer Street\nThayer St\nThayer Court\nThayer Drive\nThayer Place\nThayer Road\nThayers Court\n>\n@x\n";
 			assertTrue(w.toString().equals(exp));
@@ -49,10 +48,9 @@ public class ResponseControllerTest {
 	public void routeNamesTest() {
 		try {
 			final String req = "Thayer Street\nCushing Street\nThayer Street\nWaterman Street\n"
-					+ ProtocolManager.FOOTER;
+				+ ProtocolManager.FOOTER;
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final StringWriter w = new StringWriter();
-			final String ans = "";
 			res.routeFromNamesResponse(r, w);
 			System.out.println("Response:\n" + w.toString());
 		} catch (final IOException e) {

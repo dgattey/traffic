@@ -28,13 +28,14 @@ public class ProtocolManagerTest {
 		} catch (final IOException | ParseException e) {
 			fail("Threw Exception: " + e.getMessage());
 		}
+		LatLongPoint p = null;
 		try {
 			final String req = "#llp:41.72 longitude";
 			final BufferedReader r = new BufferedReader(new StringReader(req));
-			final LatLongPoint p = ProtocolManager.parseLatLongPoint(r);
+			p = ProtocolManager.parseLatLongPoint(r);
 			fail("Should have thrown exception");
 		} catch (final IOException | ParseException e) {
-			assertTrue(true);
+			assertTrue(p == null);
 		}
 	}
 	
@@ -42,7 +43,7 @@ public class ProtocolManagerTest {
 	public void parseCMWTest() {
 		try {
 			final String req = "<way:\n" + "/w/00001\n" + "The Street\n" + "/n/0002\n" + "#llp:41.72 -51.12\n"
-					+ "/n/0003\n" + "#llp:-1.1 -2.2\n" + ">\n";
+				+ "/n/0003\n" + "#llp:-1.1 -2.2\n" + ">\n";
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final ClientMapWay m = ProtocolManager.parseClientMapWay(r);
 			assertTrue(m != null);

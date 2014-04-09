@@ -1,13 +1,10 @@
-package frontend;
+package main;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import main.Main;
-import main.Utils;
 
 import org.junit.Test;
 
@@ -19,7 +16,7 @@ import client.ArgParser;
  * 
  * @author dgattey
  */
-public class PublicStaticTest {
+public class UtilsTest {
 	
 	/**
 	 * Test that checks the command line parser - checks each flag and an object if exists
@@ -53,10 +50,10 @@ public class PublicStaticTest {
 	}
 	
 	/**
-	 * Checks the utilities class
+	 * Checks the min methods of the utilities class
 	 */
 	@Test
-	public void checkUtilities() {
+	public void checkMinUtilities() {
 		// Checks signs and different conditions
 		assertTrue(Utils.min(5, 12, 0) == 0);
 		assertTrue(Utils.min(23, -34, -34) == -34);
@@ -66,6 +63,34 @@ public class PublicStaticTest {
 		assertTrue(Utils.getMinOfArray(new int[] { 4, 5, 1, 2, 8, 1 }) == 1);
 		assertTrue(Utils.getMinOfArray(new int[] { -1, -2, 0, 123 }) == -2);
 		assertTrue(Utils.getMinOfArray(new int[] { 84 }) == 84);
+	}
+	
+	/**
+	 * Checks the max methods of the utilities class
+	 */
+	@Test
+	public void checkMaxUtilities() {
+		// Checks signs and different conditions
+		assertTrue(Utils.max(5, 12, 0) == 12);
+		assertTrue(Utils.max(23, -34, 23) == 23);
+		assertTrue(Utils.max(3, 3, 6) == 6);
+		assertTrue(Utils.max(-12, -12, -2) == -2);
+	}
+	
+	/*
+	 * Checks null tests
+	 */
+	@Test
+	public void checkNulls() {
+		assertFalse(Utils.anyNullOrEmpty("hello"));
+		assertTrue(Utils.anyNullOrEmpty(""));
+		assertTrue(Utils.anyNullOrEmpty((String) null));
+		assertTrue(Utils.anyNullOrEmpty((String) null, "asdfa", "NOT"));
+		assertFalse(Utils.anyNullOrEmpty("asdfasda", "asdfasda", "NOT"));
+		
+		assertFalse(Utils.isNullOrEmpty("hello"));
+		assertTrue(Utils.isNullOrEmpty(""));
+		assertTrue(Utils.isNullOrEmpty((String) null));
 	}
 	
 	/**

@@ -9,10 +9,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import data.LatLongPoint;
-import data.MapNode;
 import server.kdtree.KDTree;
 import server.kdtree.KDTreeException;
+import data.LatLongPoint;
+import data.MapNode;
 
 @SuppressWarnings("static-method")
 public class KDTreeTest {
@@ -20,7 +20,8 @@ public class KDTreeTest {
 	@Test
 	public void invalidInit1() {
 		try {
-			new KDTree<MapNode>(3, null, null);
+			final KDTree<MapNode> kdTree = new KDTree<>(3, null, null);
+			assertTrue(kdTree != null);
 			fail("Should have thrown an Exception");
 		} catch (final KDTreeException e) {
 			assertTrue(e.getMessage().contains("null"));
@@ -30,7 +31,8 @@ public class KDTreeTest {
 	@Test
 	public void invalidInit2() {
 		try {
-			new KDTree<MapNode>(3, new ArrayList<MapNode>(), null);
+			final KDTree<MapNode> kdTree = new KDTree<>(3, new ArrayList<MapNode>(), null);
+			assertTrue(kdTree != null);
 			fail("Should have thrown an Exception");
 		} catch (final KDTreeException e) {
 			assertTrue(e.getMessage().contains("null"));
@@ -47,6 +49,7 @@ public class KDTreeTest {
 		} catch (final KDTreeException e) {
 			fail("KDTree threw exception");
 		}
+		assertTrue(t != null);
 		assertTrue(t.getRoot() == null);
 	}
 	
@@ -62,6 +65,7 @@ public class KDTreeTest {
 		} catch (final KDTreeException e) {
 			fail("KDTree threw exception");
 		}
+		assertTrue(t != null);
 		assertTrue(t.getRoot().getLocation() == dummy);
 	}
 	
@@ -80,6 +84,7 @@ public class KDTreeTest {
 		} catch (final KDTreeException e) {
 			fail("KDTree threw exception");
 		}
+		assertTrue(t != null);
 		assertTrue(t.getRoot() != null);
 		assertTrue(t.getRoot().getLocation() == m1);
 		assertTrue(t.lookup(m1).getLocation() == m1);
@@ -104,6 +109,7 @@ public class KDTreeTest {
 		} catch (final KDTreeException e) {
 			fail("KDTree threw exception");
 		}
+		assertTrue(t != null);
 		assertTrue(t.getRoot() != null);
 		assertTrue(t.getRoot().getLocation() == m1);
 		assertTrue(t.lookup(m1).getLocation() == m1);
@@ -118,11 +124,11 @@ public class KDTreeTest {
 			final MapNode m1 = MapNode.create("0", new LatLongPoint(0.0, 0.0), null);
 			final MapNode m2 = MapNode.create("1", new LatLongPoint(3.0, 3.0), null);
 			final MapNode m3 = MapNode.create("2", new LatLongPoint(-5.0, 5.0), null);
-			final ArrayList<MapNode> list = new ArrayList<MapNode>();
+			final ArrayList<MapNode> list = new ArrayList<>();
 			list.add(m1);
 			list.add(m2);
 			list.add(m3);
-			final KDTree<MapNode> t = new KDTree<MapNode>(m1.getValidDimensions(), list, list.get(0).getComparators());
+			final KDTree<MapNode> t = new KDTree<>(m1.getValidDimensions(), list, list.get(0).getComparators());
 			final MapNode searchVal = MapNode.create("-99", new LatLongPoint(1.0, 1.0), null);
 			assertTrue(t.nNearestNeighbors(1, searchVal).get(0) == m1);
 			assertTrue(t.nNearestNeighbors(2, searchVal).get(1) == m2);
