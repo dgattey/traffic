@@ -183,7 +183,7 @@ public class ResponseController {
 	 * @param e exception that was thrown somewhere down the chain
 	 * @throws IOException if writing failed
 	 */
-	public synchronized void errorResponse(final Writer w, final Exception e) throws IOException {
+	public void errorResponse(final Writer w, final Exception e) throws IOException {
 		if (!isReady()) {
 			return;
 		}

@@ -17,12 +17,14 @@ public class ServerApp extends App {
 	private Server	server;
 	
 	/**
-	 * @param ways
-	 * @param nodes
-	 * @param index
-	 * @param hostName
-	 * @param trafficPort
-	 * @param serverPort
+	 * Starts a new Server App
+	 * 
+	 * @param ways the filename for ways
+	 * @param nodes the filename for nodes
+	 * @param index the filename for index
+	 * @param hostName the host name for traffic
+	 * @param trafficPort the traffic port
+	 * @param serverPort the server port
 	 */
 	public ServerApp(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) {
@@ -36,9 +38,13 @@ public class ServerApp extends App {
 		}
 	}
 	
+	/**
+	 * Just runs the server on another thread and listens for a quit line
+	 */
 	@Override
 	public void start() {
 		server.start();
+		
 		// Listen for any commandline input; quit on "exit" or emptyline
 		final Scanner scanner = new Scanner(System.in);
 		String line = null;

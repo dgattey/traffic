@@ -1,9 +1,10 @@
 package client.communicator;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -21,11 +22,12 @@ import data.ProtocolManager;
 public class CommController {
 	
 	private Socket							sock;
-	private PrintWriter						writer;
+	private BufferedWriter					writer;
 	private BufferedReader					reader;
 	private final String					hostName;
 	private final int						serverPort;
 	private final static ExecutorService	executor	= Executors.newFixedThreadPool(20);
+	private static Socket					testSocket;
 	
 	/**
 	 * Executes a callable and returns a V representing what the server returned
@@ -67,7 +69,7 @@ public class CommController {
 			sock.close();
 		}
 		sock = new Socket(hostName, serverPort);
-		writer = new PrintWriter(sock.getOutputStream());
+		writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 	}
 	
 	/**
@@ -185,19 +187,20 @@ public class CommController {
 	 * Tries connecting to a host on a port to see whether there's a connection
 	 * 
 	 * @param host the host name to connect on
-	 * @param sPort the port to connect on
+	 * @param port the port to connect on
 	 * @return if there was a connection using the given host and port
 	 */
-	public static boolean checkConnection(final String host, final int sPort) {
+	public static boolean checkConnection(final String host, final int port) {
 		try {
-			final Socket testSocket = new Socket(host, sPort);
-			final PrintWriter writer = new PrintWriter(testSocket.getOutputStream());
+			if (testSocket == null) {
+				testSocket = new Socket(host, port);
+			}
+			final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(testSocket.getOutputStream()));
 			writer.write(ProtocolManager.Q_HB);
 			writer.flush();
-			testSocket.close();
-			writer.close();
 			return true;
 		} catch (final IOException e) {
+			testSocket = null;
 			return false;
 		}
 	}

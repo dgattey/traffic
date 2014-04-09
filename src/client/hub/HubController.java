@@ -78,9 +78,17 @@ public class HubController implements Controllable {
 		final boolean previous = connected;
 		connected = CommController.checkConnection(hostName, serverPort);
 		app.getViewController().setConnectionLabel(connected);
+		
+		// Connection after being disconnected for awhile
 		if (!previous && connected || app.getViewController().getChunks().isEmpty()) {
 			app.getViewController().chunk();
 			restartTrafficLoop();
+		}
+		
+		// Lost connection
+		if (previous && !connected) {
+			trafficMap.clear();
+			app.getViewController().repaintMap();
 		}
 	}
 	
@@ -96,9 +104,6 @@ public class HubController implements Controllable {
 			@Override
 			public void run() {
 				try {
-					if (Thread.interrupted()) {
-						return;
-					}
 					final CommController trafficC = new CommController(hostName, serverPort);
 					trafficC.connect();
 					trafficC.writeWithNL(ProtocolManager.Q_TR);
@@ -106,6 +111,7 @@ public class HubController implements Controllable {
 					String line;
 					while ((line = reader.readLine()) != null && !Thread.interrupted()) {
 						final Entry<String, Double> trafficData = ProtocolManager.parseTrafficData(line);
+						System.out.println("Traffic data is: " + trafficData);
 						if (trafficData == null) {
 							return;
 						}
@@ -150,43 +156,36 @@ public class HubController implements Controllable {
 	}
 	
 	@Override
-	public List<ClientMapWay> getRoute(final LatLongPoint a, final LatLongPoint b) {
+	public List<ClientMapWay> getRoute(final LatLongPoint a, final LatLongPoint b) throws IOException, ParseException {
 		if (a == null || b == null) {
 			throw new IllegalArgumentException("<HubController> null points to route find not allowed");
 		}
 		List<ClientMapWay> ret = null;
 		if (isConnected()) {
-			try {
-				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
+			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
+				
+				@Override
+				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
+						ParseException {
+					comm.writeWithNL(Q_RP + hubID.toString());
+					comm.write(a);
+					comm.write(b);
+					comm.writeWithNL(FOOTER);
 					
-					@Override
-					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
-							ParseException {
-						comm.writeWithNL(Q_RP + hubID.toString());
-						comm.write(a);
-						comm.write(b);
-						comm.writeWithNL(FOOTER);
-						
-						final BufferedReader reader = comm.getReader();
-						comm.checkForResponseHeader(R_RP);
-						final List<ClientMapWay> ret = ProtocolManager.parseWayList(reader);
-						comm.checkForResponseFooter();
-						return ret;
-					}
-				});
-			} catch (final IOException | ParseException e) {
-				handleError(e);
-			}
-		}
-		if (ret == null) {
-			throw new IllegalArgumentException("<HubController> route was null");
+					final BufferedReader reader = comm.getReader();
+					comm.checkForResponseHeader(R_RP);
+					final List<ClientMapWay> ret = ProtocolManager.parseWayList(reader);
+					comm.checkForResponseFooter();
+					return ret;
+				}
+			});
 		}
 		return ret;
 	}
 	
 	@Override
 	public List<ClientMapWay> getRoute(final String streetA1, final String streetA2, final String streetB1,
-			final String streetB2) {
+			final String streetB2) throws IOException, ParseException {
 		
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
@@ -194,38 +193,29 @@ public class HubController implements Controllable {
 			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		
-		// TODO: throw illegal exception for no intersections to display (from backend)
 		List<ClientMapWay> ret = null;
 		if (isConnected()) {
-			try {
-				ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
+			ret = CommController.getFromServer(new ServerCallable<List<ClientMapWay>>(hostName, serverPort) {
+				
+				@Override
+				protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
+						ParseException {
+					comm.writeWithNL(Q_RS + hubID.toString());
+					comm.writeWithNL(streetA1);
+					comm.writeWithNL(streetA2);
+					comm.writeWithNL(streetB1);
+					comm.writeWithNL(streetB2);
+					comm.writeWithNL(FOOTER);
 					
-					@Override
-					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
-							ParseException {
-						comm.writeWithNL(Q_RS + hubID.toString());
-						comm.writeWithNL(streetA1);
-						comm.writeWithNL(streetA2);
-						comm.writeWithNL(streetB1);
-						comm.writeWithNL(streetB2);
-						comm.writeWithNL(FOOTER);
-						
-						final BufferedReader reader = comm.getReader();
-						comm.checkForResponseHeader(R_RS);
-						final List<ClientMapWay> ret = ProtocolManager.parseWayList(reader);
-						comm.checkForResponseFooter();
-						return ret;
-					}
-				});
-			} catch (final IOException | ParseException e) {
-				handleError(e);
-			}
-		}
-		if (ret == null) {
-			throw new IllegalArgumentException("<HubController> route was null");
+					final BufferedReader reader = comm.getReader();
+					comm.checkForResponseHeader(R_RS);
+					final List<ClientMapWay> retin = ProtocolManager.parseWayList(reader);
+					comm.checkForResponseFooter();
+					return retin;
+				}
+			});
 		}
 		return ret;
-		
 	}
 	
 	@Override
@@ -293,6 +283,8 @@ public class HubController implements Controllable {
 	 * @param e an exception
 	 */
 	private static void handleError(final Exception e) {
-		Utils.printError("<HubController> Communication failed: " + e.getMessage());
+		if (e.getMessage() != null) {
+			Utils.printError("<HubController> Communication failed: " + e.getMessage());
+		}
 	}
 }

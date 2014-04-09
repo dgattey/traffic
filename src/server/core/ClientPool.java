@@ -14,7 +14,7 @@ public class ClientPool {
 	 * Initialize a new ClientPool
 	 */
 	public ClientPool() {
-		_clients = new LinkedList<ClientHandler>();
+		_clients = new LinkedList<>();
 	}
 	
 	/**
@@ -41,13 +41,12 @@ public class ClientPool {
 	 * Send a message to clients in the pool
 	 * 
 	 * @param message to send
-	 * @param sender the client _not_ to send the message to (send to everyone if null)
 	 */
 	public synchronized void broadcast(final String message) {
 		for (final ClientHandler client : _clients) {
 			try {
 				client.sendWithoutClosing(message);
-				System.out.println("Broadcasted message to " + _clients.size() + " clients: " + message);
+				// System.out.println("Broadcasted message to " + _clients.size() + " clients: " + message);
 			} catch (final IOException e) {
 				remove(client);
 			}

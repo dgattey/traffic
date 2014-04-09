@@ -47,7 +47,6 @@ public class ProtocolManager {
 	public static final String	Q_RP				= HEADER_QUERY + DELIM + TYPE_ROUTE_POINT + DELIM;
 	public static final String	Q_MC				= HEADER_QUERY + DELIM + TYPE_CHUNK + DELIM;
 	public static final String	Q_TR				= HEADER_QUERY + DELIM + TYPE_TRAFFIC + DELIM;
-	public static final String	Q_TR_F				= HEADER_QUERY + DELIM + TYPE_TRAFFIC + DELIM;
 	public static final String	Q_HB				= HEADER_QUERY + DELIM + TYPE_HEARTBEAT + DELIM;
 	
 	public static final String	R_AC				= HEADER_RESPONSE + DELIM + TYPE_AUTOCORRECT + DELIM;

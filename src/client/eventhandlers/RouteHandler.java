@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.List;
 
 import client.ClientApp;
@@ -12,6 +13,7 @@ import client.hub.HubController;
 import client.view.ViewController;
 import data.ClientMapWay;
 import data.LatLongPoint;
+import data.ParseException;
 
 /**
  * Deals with finding a route given four fields representing intersections or two points representing clicks
@@ -53,8 +55,10 @@ public class RouteHandler implements ActionListener, MouseListener {
 				List<ClientMapWay> route;
 				try {
 					route = hub.getRoute(streets.get(0), streets.get(1), streets.get(2), streets.get(3));
-				} catch (final IllegalArgumentException e) {
-					controller.setLabel("Oops! Street names can't be empty");
+				} catch (final IllegalArgumentException | IOException | ParseException e) {
+					if (e.getMessage() != null) {
+						controller.setLabel(e.getMessage());
+					}
 					return;
 				}
 				
@@ -65,8 +69,7 @@ public class RouteHandler implements ActionListener, MouseListener {
 				
 				// Refresh frontend
 				controller.clearPoints();
-				controller.setLabel((route != null && !route.isEmpty()) ? "Route found!"
-						: "No route found between those intersections");
+				controller.setLabel((!route.isEmpty()) ? "Route found!" : "No route found between those intersections");
 				controller.setRoute(route);
 				controller.repaintMap();
 			}
@@ -101,7 +104,15 @@ public class RouteHandler implements ActionListener, MouseListener {
 				// Update status and get data
 				controller.setLabel("Finding a route...");
 				final List<LatLongPoint> pts = controller.getUserPoints();
-				final List<ClientMapWay> route = hub.getRoute(pts.get(0), pts.get(1));
+				List<ClientMapWay> route = null;
+				try {
+					route = hub.getRoute(pts.get(0), pts.get(1));
+				} catch (IOException | ParseException e) {
+					if (e.getMessage() != null) {
+						controller.setLabel(e.getMessage());
+					}
+					return;
+				}
 				
 				// Someone else wanted a route, so just return
 				if (Thread.currentThread().isInterrupted()) {
@@ -111,8 +122,11 @@ public class RouteHandler implements ActionListener, MouseListener {
 				// Refresh frontend
 				controller.clearFields();
 				controller.clearPoints();
-				controller.setLabel((route != null && !route.isEmpty()) ? "Route found!"
-						: "No route found between those points");
+				if (route == null) {
+					controller.setLabel(ViewController.DEFAULT_STATUS);
+				} else {
+					controller.setLabel((!route.isEmpty()) ? "Route found!" : "No route found between those points");
+				}
 				controller.setRoute(route);
 				controller.repaintMap();
 				

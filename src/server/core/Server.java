@@ -72,8 +72,10 @@ public class Server extends Thread {
 	 * Adds a client to subs
 	 * 
 	 * @param c the client to be added
+	 * @throws IOException if sending failed
 	 */
-	public void subscribeToTraffic(final ClientHandler c) {
+	public void subscribeToTraffic(final ClientHandler c) throws IOException {
+		_traffic.sendAll(c);
 		_traffic.getPool().add(c);
 	}
 	
