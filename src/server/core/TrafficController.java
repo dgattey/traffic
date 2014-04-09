@@ -70,8 +70,8 @@ public class TrafficController {
 	public void sendAll(final ClientHandler c) throws IOException {
 		for (final String street : trafficMap.keySet()) {
 			final Double val = trafficMap.get(street);
-			c.sendWithoutClosing(street + "\\t" + val);
+			final String fullString = street + "\t" + val + "\n";
+			c.sendWithoutClosing(fullString);
 		}
-		System.out.println("Done sending all previous data!");
 	}
 }

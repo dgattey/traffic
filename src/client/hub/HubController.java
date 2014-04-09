@@ -111,9 +111,8 @@ public class HubController implements Controllable {
 					String line;
 					while ((line = reader.readLine()) != null && !Thread.interrupted()) {
 						final Entry<String, Double> trafficData = ProtocolManager.parseTrafficData(line);
-						System.out.println("Traffic data is: " + trafficData);
 						if (trafficData == null) {
-							return;
+							continue; // discard bad data but it shouldn't happen
 						}
 						trafficMap.put(trafficData.getKey(), trafficData.getValue());
 						app.getViewController().repaintMap();
