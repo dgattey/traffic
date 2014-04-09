@@ -22,10 +22,10 @@ public class BinaryFileSearcher {
 	 * Reads the next valid record from a given pointer location, middle in the file r Side effect: places r's file
 	 * pointer at the start of the found record (if the record is found)
 	 * 
-	 * @param r
-	 * @param middle
+	 * @param r the file
+	 * @param middle the file pointer from which the next valid record should be found
 	 * @return the string representation of the next valid record, or null if there isn't one
-	 * @throws IOException
+	 * @throws IOException if the file io failed
 	 */
 	public static String readNextValidRecord(final RandomAccessFile r, final long middle) throws IOException {
 		r.seek(middle);
@@ -55,15 +55,17 @@ public class BinaryFileSearcher {
 	}
 	
 	/**
-	 * Searches forward from the current spot in r for all
+	 * Searches forward from the current spot in r for all matches
 	 * 
-	 * @param r
-	 * @param search
-	 * @param searchIndex
-	 * @param delimiter
-	 * @return
-	 * @throws IOException
-	 * @throws DataSetException
+	 * @param r the file
+	 * @param search the search key
+	 * @param searchIndex the index of the record
+	 * @param delimiter the delimiter of the records
+	 * @param onlyEqual only equal keys will be considered
+	 * @param matchPartial use startsWith rather than exact matching
+	 * @return the list of matches
+	 * @throws IOException if file io failed
+	 * @throws DataSetException if bad data was encountered
 	 */
 	private static List<String> searchForward(final RandomAccessFile r, final String search, final int searchIndex,
 			final String delimiter, final boolean onlyEqual, final boolean matchPartial) throws IOException,
@@ -104,6 +106,19 @@ public class BinaryFileSearcher {
 		
 	}
 	
+	/**
+	 * Finds a block of data in the file between the start and end search keys as best possible
+	 * 
+	 * @param r the file
+	 * @param start the starting search key
+	 * @param end the ending search key (pass start if necessary)
+	 * @param searchIndex the index here the search keys are found (file is sorted on this)
+	 * @param delimiter the delimite
+	 * @param matchPartial should the method match partials or identical keys
+	 * @return the list of data records matching the specs
+	 * @throws IOException file io failed
+	 * @throws DataSetException bad data
+	 */
 	private static List<String> jumpBackwardAndSearchForward(final RandomAccessFile r, final String start,
 			final String end, final int searchIndex, final String delimiter, final boolean matchPartial)
 			throws IOException, DataSetException {
@@ -156,14 +171,14 @@ public class BinaryFileSearcher {
 	 * Binary Search Helper Performs binary search inside this random access file. <br>
 	 * Wrap all calls to this method with the opening and closing of the random access file (along with other effects)
 	 * 
-	 * @param r
-	 * @param search
-	 * @param searchIndex
-	 * @param delimiter
+	 * @param r the file
+	 * @param search the search key
+	 * @param searchIndex its index
+	 * @param delimiter the delimiter of the file
 	 * @param matchPartial true if the searcher should try to make partial matches between record and search
-	 * @return
-	 * @throws DataSetException
-	 * @throws IOException
+	 * @return the record if found, without affecting the randomaccessfile
+	 * @throws DataSetException bad data encountered
+	 * @throws IOException file io failed
 	 */
 	public static String binarySearchHelper(final RandomAccessFile r, final String search, final int searchIndex,
 			final String delimiter, final boolean matchPartial) throws DataSetException, IOException {
@@ -198,11 +213,11 @@ public class BinaryFileSearcher {
 	 * 
 	 * @param filename the filename
 	 * @param search the value to be searched for
-	 * @param hIndex the index within the record containing the value of interest
+	 * @param searchIndex the index within the record containing the value of interest
 	 * @param delimiter the splitter to use
 	 * @return the entire record as a string or null
-	 * @throws IOException
-	 * @throws DataSetException
+	 * @throws IOException file io failed
+	 * @throws DataSetException bad data
 	 */
 	public static String simpleBinarySearch(final String filename, final String search, final int searchIndex,
 			final String delimiter) throws IOException, DataSetException {
@@ -218,13 +233,13 @@ public class BinaryFileSearcher {
 	/**
 	 * Find all matching records using binarySearch rather than just one record
 	 * 
-	 * @param filename
-	 * @param search
-	 * @param searchIndex
-	 * @param delimiter
-	 * @return
-	 * @throws DataSetException
-	 * @throws IOException
+	 * @param filename the file to search in
+	 * @param search the key
+	 * @param searchIndex the index it can be found at
+	 * @param delimiter the delimiter of each record
+	 * @return the entire block of matching records
+	 * @throws DataSetException bad data
+	 * @throws IOException failed file io
 	 */
 	public static List<String> findMatchingRecords(final String filename, final String search, final int searchIndex,
 			final String delimiter) throws DataSetException, IOException {
@@ -239,6 +254,18 @@ public class BinaryFileSearcher {
 		return records;
 	}
 	
+	/**
+	 * Get a page of data from the start to end search keys
+	 * 
+	 * @param filename the file
+	 * @param start the start search key
+	 * @param end the end search key
+	 * @param searchIndex the index they can be found at
+	 * @param delimiter the delimiter of each record
+	 * @return the page of data within (including) these search keys
+	 * @throws DataSetException bad data
+	 * @throws IOException failed file io
+	 */
 	public static List<String> getPage(final String filename, String start, String end, final int searchIndex,
 			final String delimiter) throws DataSetException, IOException {
 		if (filename == null || start == null || searchIndex < 0 || end == null || delimiter == null) {

@@ -4,7 +4,7 @@ package server.graph;
  * Classes implementing this interface can be used as "values" within GraphNodes in this package's graph implementation
  * 
  * @author aiguha
- * @param <T>
+ * @param <T> the node type
  */
 public interface Graphable<T> {
 	
@@ -18,14 +18,14 @@ public interface Graphable<T> {
 	/**
 	 * T must have a non-null, unique, non-empty UID
 	 * 
-	 * @return
+	 * @return the id
 	 */
 	public String getID();
 	
 	/**
 	 * Specifies conditions for having edges connecting GraphNodes containing T
 	 * 
-	 * @param other
+	 * @param other the other T
 	 * @return true, if this object and other are valid neighbors in the graph
 	 */
 	public boolean canConnectTo(T other);

@@ -19,6 +19,7 @@ import javax.swing.JComponent;
 
 import main.Utils;
 import client.ClientApp;
+import client.hub.HubController;
 import data.ClientMapWay;
 import data.LatLongPoint;
 
@@ -56,7 +57,7 @@ public class MapView extends JComponent {
 	 * @param app the app representing this run
 	 */
 	public MapView(final ClientApp app) {
-		centerPoint = app.getHub().getAppLoadPoint();
+		centerPoint = HubController.getAppLoadPoint();
 		this.app = app;
 	}
 	
@@ -281,9 +282,9 @@ public class MapView extends JComponent {
 	 */
 	public Point2D.Double latLongToScreen(final LatLongPoint p) {
 		final double finalX = ((p.getX() - centerPoint.getX()) * currScale) + (screenWidth / 2.0)
-			- (currTranslation.getX() * centerScale);
+				- (currTranslation.getX() * centerScale);
 		final double finalY = ((-p.getY() + centerPoint.getY()) * currScale) + (screenHeight / 2.0)
-			- (currTranslation.getY() * centerScale);
+				- (currTranslation.getY() * centerScale);
 		return new Point2D.Double(finalX, finalY);
 	}
 	
@@ -295,9 +296,9 @@ public class MapView extends JComponent {
 	 */
 	public LatLongPoint screenToLatLong(final Point2D.Double p) {
 		final double finalLong = (p.getX() - screenWidth / 2.0 + (currTranslation.getX() * centerScale)) / currScale
-			+ centerPoint.getX();
+				+ centerPoint.getX();
 		final double finalLat = (-p.getY() + screenHeight / 2.0 - (currTranslation.getY() * centerScale)) / currScale
-			+ centerPoint.getY();
+				+ centerPoint.getY();
 		return new LatLongPoint(finalLat, finalLong);
 	}
 	
@@ -329,7 +330,7 @@ public class MapView extends JComponent {
 	public void translateBy(final Point2D.Double p) {
 		final double scalar = currScale / MAX_SCALE * 50.0;
 		currTranslation.setLocation(currTranslation.getX() + p.getX() / scalar, currTranslation.getY() + p.getY()
-			/ scalar);
+				/ scalar);
 		repaint();
 	}
 	

@@ -28,8 +28,8 @@ public interface DataProvider<T extends Graphable<T>, S extends Weighable<S>> {
 	 * 
 	 * @param cur the node being considered
 	 * @return the list of GraphEdges
-	 * @throws DataProviderException
-	 * @throws IOException
+	 * @throws DataProviderException if data could not be found
+	 * @throws IOException if file io failed
 	 */
 	public List<GraphEdge<T, S>> getNeighborVertices(GraphNode<T, S> cur) throws DataProviderException, IOException;
 	

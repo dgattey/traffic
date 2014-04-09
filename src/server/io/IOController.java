@@ -19,7 +19,7 @@ import data.MapWay;
 /**
  * Controller for all file searching and parsing. Used by Autocorrect, KDtree and Graphs
  * 
- * @author Advik & dgattey
+ * @author aiguha & dgattey
  */
 public class IOController {
 	
@@ -60,11 +60,11 @@ public class IOController {
 	/**
 	 * Sets up the full class
 	 * 
-	 * @param ways
-	 * @param nodes
-	 * @param index
-	 * @throws MapException
-	 * @throws IOException
+	 * @param ways the ways file
+	 * @param nodes the nodes file
+	 * @param index the index file
+	 * @throws MapException any internal map issue
+	 * @throws IOException file or user io
 	 */
 	public synchronized static void setup(final String ways, final String nodes, final String index)
 			throws MapException, IOException {
@@ -118,9 +118,9 @@ public class IOController {
 	 * Constructs a MapWay object using the key values in the parsedLine Map Parses node specific to the four headers:
 	 * id, name, start, end
 	 * 
-	 * @param parsedLine
+	 * @param parsedLine the parsed line
 	 * @return the MapWay object or null
-	 * @throws DataSetException
+	 * @throws DataSetException internal contract violation
 	 */
 	static MapWay parseWay(final Map<String, String> parsedLine) throws DataSetException {
 		final String id = parsedLine.get("id");
@@ -239,8 +239,8 @@ public class IOController {
 	 * 
 	 * @param wayName name of the street
 	 * @return the id of the node that starts this street
-	 * @throws IOException
-	 * @throws DataSetException
+	 * @throws IOException file io
+	 * @throws DataSetException bad or missing data
 	 */
 	static String getStartOfWay(final String wayName) throws IOException, DataSetException {
 		if (wayName == null) {
@@ -264,8 +264,8 @@ public class IOController {
 	 * 
 	 * @param nodeID the id of the node to be created
 	 * @return the MapNode, or null
-	 * @throws IOException
-	 * @throws MapException
+	 * @throws IOException file io
+	 * @throws MapException interal map issues
 	 */
 	protected static MapNode getMapNode(final String nodeID) throws IOException, MapException {
 		if (nodeID == null) {
@@ -277,10 +277,10 @@ public class IOController {
 	/**
 	 * Constructs a MapWay using the wayID to seach the waysFile
 	 * 
-	 * @param wayID
+	 * @param wayID the id to be searched for
 	 * @return the MapWay, o null
-	 * @throws IOException
-	 * @throws DataSetException
+	 * @throws IOException file io
+	 * @throws DataSetException bad or missing data
 	 */
 	static MapWay searchMapWay(final String wayID) throws IOException, DataSetException {
 		if (wayID == null) {
@@ -301,8 +301,8 @@ public class IOController {
 	 * 
 	 * @param wayID the id to be found
 	 * @return the MapWay or null
-	 * @throws IOException
-	 * @throws DataSetException
+	 * @throws IOException file io
+	 * @throws DataSetException bad or missing data
 	 */
 	public static MapWay getMapWay(final String wayID) throws IOException, DataSetException {
 		if (wayID == null) {

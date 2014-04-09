@@ -2,6 +2,9 @@ package server.core;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
+
+import main.Utils;
 
 /**
  * A group of ClientHandlers representing the a group of sockets
@@ -43,13 +46,18 @@ public class ClientPool {
 	 * @param message to send
 	 */
 	public synchronized void broadcast(final String message) {
+		System.out.println("Broadcasted message to " + _clients.size() + " clients: " + message);
+		final List<ClientHandler> dead = new LinkedList<>();
 		for (final ClientHandler client : _clients) {
 			try {
 				client.sendWithoutClosing(message);
-				// System.out.println("Broadcasted message to " + _clients.size() + " clients: " + message);
 			} catch (final IOException e) {
-				remove(client);
+				Utils.printError("Failed to write to socket" + client);
+				dead.add(client);
 			}
+		}
+		for (final ClientHandler client : dead) {
+			remove(client);
 		}
 	}
 	

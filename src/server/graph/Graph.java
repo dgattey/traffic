@@ -11,8 +11,8 @@ import java.util.PriorityQueue;
  * Implementation of Graphs, containing functionality to perform shortest path searches
  * 
  * @author aiguha
- * @param <T>
- * @param <S>
+ * @param <T> the node type
+ * @param <S> the edge type
  */
 public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 	
@@ -49,9 +49,9 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 	 * connecting edges
 	 * 
 	 * @param cur the node whose adjacent vertices are to be constructed
-	 * @throws GraphException
-	 * @throws DataProviderException
-	 * @throws IOException
+	 * @throws GraphException cur's graphedges list was null
+	 * @throws DataProviderException internal
+	 * @throws IOException internal
 	 */
 	public void buildLevel(final GraphNode<T, S> cur) throws GraphException, DataProviderException, IOException {
 		final List<GraphEdge<T, S>> vertices = provider.getNeighborVertices(cur);
@@ -65,9 +65,9 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 	 * Performs Dijkstra's Algorithm, until shortest path to end is found Allows dynamic graph construction using
 	 * DataProvider
 	 * 
-	 * @throws GraphException
-	 * @throws DataProviderException
-	 * @throws IOException
+	 * @throws GraphException internal
+	 * @throws DataProviderException internal
+	 * @throws IOException internal
 	 */
 	private void calculatePaths() throws GraphException, DataProviderException, IOException {
 		// Set distance of start of zero
@@ -120,9 +120,9 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 	 * path (if a path exists)
 	 * 
 	 * @return list of GraphEdges, representing the shortest path
-	 * @throws GraphException
-	 * @throws DataProviderException
-	 * @throws IOException
+	 * @throws GraphException internal
+	 * @throws DataProviderException internal
+	 * @throws IOException internal
 	 */
 	public List<GraphEdge<T, S>> shortestPath() throws GraphException, DataProviderException, IOException {
 		calculatePaths();
@@ -139,7 +139,7 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 		}
 		// Path was not found in this case
 		if (Thread.currentThread().isInterrupted()
-			|| (!path.isEmpty() && !path.get(path.size() - 1).getSource().equals(start))) {
+				|| (!path.isEmpty() && !path.get(path.size() - 1).getSource().equals(start))) {
 			return null;
 		}
 		Collections.reverse(path);

@@ -1,12 +1,15 @@
 package server.core;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.Socket;
 
 import main.Utils;
+import data.Pair;
 import data.ProtocolManager;
 
 /**
@@ -18,7 +21,7 @@ public class ClientHandler extends Thread {
 	
 	private final Socket			_client;
 	private final BufferedReader	_input;
-	private final PrintWriter		_output;
+	private final Writer			_output;
 	
 	private final Server			_server;
 	
@@ -37,7 +40,8 @@ public class ClientHandler extends Thread {
 		
 		_client = client;
 		_input = new BufferedReader(new InputStreamReader(_client.getInputStream()));
-		_output = new PrintWriter(_client.getOutputStream(), true);
+		// _output = new PrintWriter(_client.getOutputStream(), true);
+		_output = new BufferedWriter(new OutputStreamWriter(_client.getOutputStream()));
 		_server = server;
 	}
 	
@@ -47,34 +51,37 @@ public class ClientHandler extends Thread {
 	 * @return if the socket should be killed
 	 */
 	boolean dispatch() {
-		String req_start = "";
 		try {
 			
-			// Stops the hanging issue
+			// Let Response Controller Load before anything else
 			if (!_server.getRC().isReady()) {
 				return true;
 			}
 			
-			// Do stuff!
-			req_start = _input.readLine();
-			if (req_start == null) {
-				_server.getRC().errorResponse(_output, null);
-			} else if (req_start.startsWith(ProtocolManager.Q_HB)) {
+			final Pair<String, String> reqHeader = ProtocolManager.parseRequestHeader(_input);
+			switch (reqHeader.getLeft()) {
+			case ProtocolManager.Q_HB:
 				return false;
-			} else if (req_start.startsWith(ProtocolManager.Q_TR)) {
+			case ProtocolManager.Q_TR:
 				_server.subscribeToTraffic(this);
 				return false;
-			} else if (req_start.startsWith(ProtocolManager.Q_AC)) {
+			case ProtocolManager.Q_AC:
 				_server.getRC().autocorrectResponse(_input, _output);
-			} else if (req_start.startsWith(ProtocolManager.Q_RS)) {
+				break;
+			case ProtocolManager.Q_RS:
 				_server.getRC().routeFromNamesResponse(_input, _output);
-			} else if (req_start.startsWith(ProtocolManager.Q_RP)) {
+				break;
+			case ProtocolManager.Q_RP:
 				_server.getRC().routeFromClicksResponse(_input, _output);
-			} else if (req_start.startsWith(ProtocolManager.Q_MC)) {
+				break;
+			case ProtocolManager.Q_MC:
 				_server.getRC().mapDataResponse(_input, _output);
-			} else {
+				break;
+			default:
 				_server.getRC().errorResponse(_output, null);
+				
 			}
+			
 		} catch (final IOException e) {
 			// Possible the socket is closed, so try responding and then kill the client
 			try {

@@ -18,8 +18,8 @@ public class ParserTools {
 	 * @param filename the file to be searched
 	 * @param delimiter the delimiter used to split the columns
 	 * @return A list of the headers
-	 * @throws IOException
-	 * @throws DataSetException
+	 * @throws IOException file io
+	 * @throws DataSetException bad or missing data
 	 */
 	public static List<String> getHeadersList(final String filename, final String delimiter) throws IOException,
 			DataSetException {
@@ -43,8 +43,8 @@ public class ParserTools {
 	 * @param reqHeaders the list of headers that are required and relevant
 	 * @param delimiter the String used to delimit fields
 	 * @return Map of headers to the indices they can be accessed at
-	 * @throws DataSetException
-	 * @throws IOException
+	 * @throws DataSetException data contract violation
+	 * @throws IOException file io or standard io
 	 */
 	public static Map<String, Integer> findHeaders(final String filename, final List<String> reqHeaders,
 			final String delimiter) throws DataSetException, IOException {
@@ -91,8 +91,10 @@ public class ParserTools {
 	}
 	
 	/**
-	 * @param headerIndices
-	 * @return
+	 * Gets the highest index in the map
+	 * 
+	 * @param headerIndices the map
+	 * @return the highest index
 	 */
 	public static int getHighestIndex(final Map<String, Integer> headerIndices) {
 		return Collections.max(headerIndices.values());
@@ -103,9 +105,9 @@ public class ParserTools {
 	 * 
 	 * @param line the line to be parsed
 	 * @param minLength the minimum number of columns in the line to be valid
-	 * @param delimiter
+	 * @param delimiter the record delimiter
 	 * @return array of the line columns
-	 * @throws DataSetException
+	 * @throws DataSetException bad or missing data
 	 */
 	public static String[] parseLine(final String line, final int minLength, final String delimiter)
 			throws DataSetException {
@@ -120,11 +122,13 @@ public class ParserTools {
 	}
 	
 	/**
-	 * @param line
-	 * @param headerMap
-	 * @param delimiter
-	 * @return
-	 * @throws DataSetException
+	 * Parses a line
+	 * 
+	 * @param line string of the line
+	 * @param headerMap map of important headers
+	 * @param delimiter file delimiter
+	 * @return the map of headers to values
+	 * @throws DataSetException bad or missing data
 	 */
 	public static Map<String, String> parseLine(final String line, final Map<String, Integer> headerMap,
 			final String delimiter) throws DataSetException {
@@ -144,10 +148,10 @@ public class ParserTools {
 	 * Returns a particular column of a line record
 	 * 
 	 * @param lineArr the line record (already split to ensure user can specify validity)
-	 * @param headerMap
-	 * @param header
+	 * @param headerMap the map of header indices
+	 * @param header the important header
 	 * @return the column value for this record
-	 * @throws DataSetException
+	 * @throws DataSetException bad or missing data
 	 */
 	public static String getColumn(final String[] lineArr, final Map<String, Integer> headerMap, final String header)
 			throws DataSetException {

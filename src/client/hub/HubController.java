@@ -37,10 +37,11 @@ public class HubController implements Controllable {
 	
 	private static final LatLongPoint	APP_LOAD_POINT	= new LatLongPoint(41.827196, -71.400369);
 	
-	private final ClientApp				app;
-	private final String				hostName;
-	private final int					serverPort;
+	final ClientApp						app;
+	final String						hostName;
+	final int							serverPort;
 	private boolean						connected;
+	
 	private final UUID					hubID;
 	
 	// Traffic information
@@ -114,8 +115,9 @@ public class HubController implements Controllable {
 					trafficMap.clear();
 					final CommController trafficControl = new CommController(hostName, serverPort);
 					trafficControl.connect();
-					trafficControl.writeWithNL(ProtocolManager.Q_TR);
+					trafficControl.writeWithNL(ProtocolManager.Q_TR + hubID.toString());
 					final BufferedReader reader = trafficControl.getReader();
+					
 					String line;
 					while ((line = reader.readLine()) != null && !Thread.interrupted()) {
 						final Entry<String, Double> trafficData = ProtocolManager.parseTrafficData(line);
@@ -158,7 +160,7 @@ public class HubController implements Controllable {
 	 * 
 	 * @return the center point of the app
 	 */
-	public LatLongPoint getAppLoadPoint() {
+	public static LatLongPoint getAppLoadPoint() {
 		return APP_LOAD_POINT;
 	}
 	
@@ -196,7 +198,7 @@ public class HubController implements Controllable {
 		
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
-			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
+				|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
 			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		
@@ -235,7 +237,7 @@ public class HubController implements Controllable {
 					@Override
 					protected List<String> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(Q_AC);
+						comm.writeWithNL(Q_AC + hubID.toString());
 						comm.writeWithNL(input);
 						comm.writeWithNL(FOOTER);
 						
@@ -264,7 +266,7 @@ public class HubController implements Controllable {
 					@Override
 					protected List<ClientMapWay> writeAndGetInfo(final CommController comm) throws IOException,
 							ParseException {
-						comm.writeWithNL(Q_MC);
+						comm.writeWithNL(Q_MC + hubID.toString());
 						comm.write(min);
 						comm.write(max);
 						comm.writeWithNL(FOOTER);

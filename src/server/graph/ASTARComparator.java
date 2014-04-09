@@ -6,8 +6,8 @@ import java.util.Comparator;
  * A comparator class for use in doing A* for GraphNodes
  * 
  * @author dgattey
- * @param <T>
- * @param <S>
+ * @param <T> the node type
+ * @param <S> the edge type
  */
 public class ASTARComparator<T extends Graphable<T>, S extends Weighable<S>> implements Comparator<GraphNode<T, S>> {
 	
@@ -30,13 +30,20 @@ public class ASTARComparator<T extends Graphable<T>, S extends Weighable<S>> imp
 	/**
 	 * Calculates a heuristic for use in Dijkstra's - Euclidean distance here
 	 * 
-	 * @param node
-	 * @return
+	 * @param node the node to be calculated for
+	 * @return the node's heuristic
 	 */
 	private int heuristic(final GraphNode<T, S> node) {
 		return calcDistance(node.getValue().getCoords(), target.getValue().getCoords());
 	}
 	
+	/**
+	 * calculates distance between two sets of coords
+	 * 
+	 * @param c1 coords 1
+	 * @param c2 coords 2
+	 * @return the distance between them
+	 */
 	private static int calcDistance(final double[] c1, final double[] c2) {
 		double dist = 0;
 		for (int i = 0; i < c1.length; i++) {

@@ -10,6 +10,7 @@ import java.io.StringReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+@SuppressWarnings("static-method")
 public class ProtocolManagerTest {
 	
 	@BeforeClass
@@ -53,4 +54,27 @@ public class ProtocolManagerTest {
 			fail("Threw Exception: " + e.getMessage());
 		}
 	}
+	
+	@Test
+	public void parseReqHeaderTest() {
+		try {
+			final String req = ProtocolManager.Q_TR + "00001";
+			final BufferedReader r = new BufferedReader(new StringReader(req));
+			final Pair<String, String> p = ProtocolManager.parseRequestHeader(r);
+			System.out.println(p);
+			
+		} catch (final IOException e) {
+			fail("Threw Exception: " + e.getMessage());
+		}
+		try {
+			final String req = ProtocolManager.Q_TR;
+			final BufferedReader r = new BufferedReader(new StringReader(req));
+			final Pair<String, String> p = ProtocolManager.parseRequestHeader(r);
+			System.out.println(p);
+			
+		} catch (final IOException e) {
+			fail("Threw Exception: " + e.getMessage());
+		}
+	}
+	
 }

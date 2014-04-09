@@ -123,6 +123,22 @@ public class ProtocolManager {
 	}
 	
 	/**
+	 * Parses a request header
+	 * 
+	 * @param r the reader
+	 * @return the pair of req type and sock id
+	 * @throws IOException if io failed
+	 */
+	public static Pair<String, String> parseRequestHeader(final BufferedReader r) throws IOException {
+		final String req = r.readLine();
+		final String reqType = req.substring(0, req.lastIndexOf(DELIM) + 1);
+		final String reqID = req.substring(req.lastIndexOf(DELIM) + 1);
+		final Pair<String, String> p = new Pair<>(reqType, reqID);
+		return p;
+		
+	}
+	
+	/**
 	 * Parses a buffered reader representing a server's stream to a street name
 	 * 
 	 * @param r the reader
