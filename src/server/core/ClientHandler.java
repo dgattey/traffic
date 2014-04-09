@@ -145,7 +145,7 @@ public class ClientHandler extends Thread {
 			_input.close();
 			_output.close();
 		} catch (final IOException e) {
-			Utils.printError("<ClientHandler> Unrecoverable IO error in client");
+			// Doesn't matter if this happens since all we care about is that we try!
 		}
 		
 	}

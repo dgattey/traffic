@@ -24,6 +24,7 @@ public class ResponseController {
 	
 	public ResponseController(final String ways, final String nodes, final String index, final TrafficController t)
 			throws MapException, IOException {
+		System.out.println("Server is loading...");
 		IOController.setup(ways, nodes, index);
 		_kdtree = new KDTreeController();
 		_autocorrect = new ACController();

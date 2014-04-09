@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
+import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -84,6 +85,15 @@ public class ViewController {
 	 */
 	public ViewController(final ClientApp app) {
 		this.app = app;
+	}
+
+	/**
+	 * Cancels all current route requests
+	 */
+	public void cancelRequests() {
+		if (routeHandler != null) {
+			routeHandler.cancelRequests();
+		}
 	}
 	
 	/**
@@ -270,8 +280,18 @@ public class ViewController {
 		routeButton = new JButton("Find Route");
 		routeButton.setEnabled(false);
 		routeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JButton clearButton = new JButton("Clear");
+		clearButton.setEnabled(true);
+		clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				clearFields();
+			}
+		});
 		
 		parent.setLayout(new BoxLayout(parent, BoxLayout.Y_AXIS));
+		parent.add(clearButton);
 		parent.add(Box.createVerticalStrut(10));
 		parent.add(routeButton);
 		return parent;

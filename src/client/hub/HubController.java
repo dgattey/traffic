@@ -87,7 +87,6 @@ public class HubController implements Controllable {
 		// Connection again after being disconnected
 		if (!previous && connected) {
 			app.getViewController().clearChunks();
-			app.getViewController().clearRoute();
 			restartTrafficLoop();
 			app.getViewController().repaintMap();
 		}
@@ -95,6 +94,8 @@ public class HubController implements Controllable {
 		// Lost connection
 		if (previous && !connected) {
 			trafficMap.clear();
+			app.getViewController().cancelRequests();
+			app.getViewController().clearRoute();
 			app.getViewController().repaintMap();
 		}
 	}
@@ -140,7 +141,7 @@ public class HubController implements Controllable {
 					}
 					trafficControl.disconnect();
 				} catch (final IOException e) {
-					return; // Shouldn't matter since it'll be restarted when the connection returns
+					// Shouldn't matter since it'll be restarted when the connection returns
 				}
 			};
 		};
@@ -250,7 +251,9 @@ public class HubController implements Controllable {
 					}
 					
 				});
-			} catch (final IOException | ParseException e) {
+			} catch (final IOException e) {
+				// We don't care if this happened!
+			} catch (final ParseException e) {
 				handleError(e);
 			}
 		}
@@ -280,7 +283,9 @@ public class HubController implements Controllable {
 					}
 					
 				});
-			} catch (final IOException | ParseException e) {
+			} catch (final IOException e) {
+				// We don't care if this happened!
+			} catch (final ParseException e) {
 				handleError(e);
 			}
 		}

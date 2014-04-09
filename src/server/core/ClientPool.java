@@ -50,7 +50,7 @@ public class ClientPool {
 			try {
 				client.sendWithoutClosing(message);
 			} catch (final IOException e) {
-				Utils.printError("Failed to write to socket" + client);
+				// Fine, we don't care since it just means we should kill it!
 				dead.add(client);
 			}
 		}

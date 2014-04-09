@@ -28,6 +28,15 @@ public class RouteHandler implements ActionListener, MouseListener {
 	public RouteHandler(final ClientApp app) {
 		this.app = app;
 	}
+
+	/**
+	 * Removes all current requests by cancelling
+	 */
+	public void cancelRequests() {
+		if (thread != null) {
+			thread.interrupt();
+		}
+	}
 	
 	/**
 	 * Does route finding by taking the fields, parsing the text into nodes, and getting the route between those nodes.
@@ -38,9 +47,7 @@ public class RouteHandler implements ActionListener, MouseListener {
 		final ViewController controller = app.getViewController();
 		final HubController hub = app.getHub();
 		controller.setLabel(ViewController.DEFAULT_STATUS);
-		if (thread != null) {
-			thread.interrupt();
-		}
+		cancelRequests();		
 		controller.clearRoute();
 		controller.clearPoints();
 		
@@ -58,7 +65,7 @@ public class RouteHandler implements ActionListener, MouseListener {
 				} catch (final IllegalArgumentException | IOException | ParseException e) {
 					if (e.getMessage() != null) {
 						controller.setLabel(e.getMessage());
-					}
+					} else controller.setLabel(ViewController.DEFAULT_STATUS);
 				}
 				
 				// Someone else wanted a route, so just return
@@ -89,18 +96,18 @@ public class RouteHandler implements ActionListener, MouseListener {
 	public void mouseClicked(final MouseEvent e) {
 		final ViewController controller = app.getViewController();
 		final HubController hub = app.getHub();
-		if (thread != null) {
-			thread.interrupt();
-		}
+		cancelRequests();
 		final boolean routeExisted = controller.getRoute() != null && !controller.getRoute().isEmpty();
 		controller.clearRoute();
 		
 		// If there's only one point in the user points or a route existed, just return
 		if (routeExisted) {
 			controller.setLabel(ViewController.DEFAULT_STATUS);
+			controller.repaintMap();
 			return;
 		} else if (!controller.updateUserPoints(new Point2D.Double(e.getX(), e.getY()))) {
 			controller.setLabel("Click another point to route between the intersections");
+			controller.repaintMap();
 			return;
 		}
 		
