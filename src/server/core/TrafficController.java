@@ -48,6 +48,7 @@ public class TrafficController {
 					try {
 						Thread.sleep(4000);
 						trafficSock = new Socket(hostName, trafficPort);
+						System.out.println("Connected to the traffic server\n");
 						startGettingTraffic();
 					} catch (final IOException | InterruptedException e) {}
 				}
@@ -77,13 +78,13 @@ public class TrafficController {
 		String line;
 		final BufferedReader input = new BufferedReader(new InputStreamReader(trafficSock.getInputStream()));
 		while ((line = input.readLine()) != null) {
-			// System.out.println("Received from traffic server: " + line);
 			final Entry<String, Double> traffic = ProtocolManager.parseTrafficData(line);
 			if (traffic != null) {
 				trafficMap.put(traffic.getKey(), traffic.getValue());
 				clients.broadcast(line);
 			}
 		}
+		System.out.println("Disconnected from the traffic server\n");
 	}
 	
 	/**

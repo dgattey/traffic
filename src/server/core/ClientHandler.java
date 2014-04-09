@@ -40,7 +40,6 @@ public class ClientHandler extends Thread {
 		
 		_client = client;
 		_input = new BufferedReader(new InputStreamReader(_client.getInputStream()));
-		// _output = new PrintWriter(_client.getOutputStream(), true);
 		_output = new BufferedWriter(new OutputStreamWriter(_client.getOutputStream()));
 		_server = server;
 	}
@@ -61,6 +60,7 @@ public class ClientHandler extends Thread {
 			final Pair<String, String> reqHeader = ProtocolManager.parseRequestHeader(_input);
 			switch (reqHeader.getLeft()) {
 			case ProtocolManager.Q_HB:
+				System.out.println("New client connected!\n");
 				return false;
 			case ProtocolManager.Q_TR:
 				_server.subscribeToTraffic(this);

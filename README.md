@@ -4,7 +4,6 @@ Traffic
 A project for CS032 to draw maps to screen, calculate shortest paths and give directions.
 
 ##TODO##
-- Take out error print lines
 - Error checking!!!
 	- Make sure empty index files work (junit tests)
 - JUnit tests

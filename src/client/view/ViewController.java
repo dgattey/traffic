@@ -477,7 +477,6 @@ public class ViewController {
 		} else {
 			clearPoints();
 		}
-		repaintMap();
 		return userPoints[1] != null;
 	}
 	
