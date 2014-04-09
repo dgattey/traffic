@@ -4,8 +4,6 @@ Traffic
 A project for CS032 to draw maps to screen, calculate shortest paths and give directions.
 
 ##TODO##
-- BufferedWriter not PrintWriter so sending traffic will cancel closed clients
-- Hashmap for traffic data (for the routes too)
 - Traffic connecting statically (not just constructor)
 - ID thing for routing (ID already exists in the header)
 - Error checking!!!

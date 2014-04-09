@@ -22,7 +22,7 @@ class Sender:
         for s,addr in sockets:
           try:
             s.send(data)
-            print "Sent to socket at",addr
+            #print "Sent to socket at",addr
           except:
             dead_socks.append((s,addr))
             print "Could not send to socket at",addr
