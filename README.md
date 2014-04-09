@@ -4,10 +4,16 @@ Traffic
 A project for CS032 to draw maps to screen, calculate shortest paths and give directions.
 
 ##TODO##
-- Traffic connecting statically (not just constructor)
-- ID thing for routing (ID already exists in the header)
+- Take out error print lines
 - Error checking!!!
-- Testing
+	- Make sure empty index files work (junit tests)
+- JUnit tests
+- System tests
+- README
+- Commenting
+- Server status print - if connected to traffic, num clients, host name/port num, num threads?
+- Heartbeat ID in Server to have actual clients print out?
+- Other REPL stuff for Server??
 
 ##Authors##
 aiguha

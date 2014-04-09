@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Window;
 import java.awt.geom.Point2D;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,6 +87,22 @@ public class ViewController {
 	}
 	
 	/**
+	 * For a given JFrame, tries to use Apple APIs to enable native fullscreen mode
+	 * 
+	 * @param window a JFrame window
+	 */
+	public static void tryEnableFullScreenMode(final Window window) {
+		final String className = "com.apple.eawt.FullScreenUtilities";
+		final String methodName = "setWindowCanFullScreen";
+		
+		try {
+			final Class<?> clazz = Class.forName(className);
+			final Method method = clazz.getMethod(methodName, new Class<?>[] { Window.class, boolean.class });
+			method.invoke(null, window, true);
+		} catch (final Throwable t) {} // We don't care if it didn't work (just means non-Apple)
+	}
+	
+	/**
 	 * Sets background and foreground color of this panel
 	 * 
 	 * @param panel the panel to apply it to
@@ -113,6 +131,7 @@ public class ViewController {
 		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		window.setMinimumSize(new Dimension(780, 600));
 		window.setResizable(true);
+		tryEnableFullScreenMode(window);
 		
 		// Add content
 		window.getContentPane().add(createTopPanel(), BorderLayout.NORTH);
