@@ -49,8 +49,8 @@ public class ViewController {
 	public static final Color					COLOR_WINDOW		= new Color(50, 55, 70);
 	private static final Color					COLOR_BG			= Color.black;
 	private static final Color					COLOR_FG			= Color.white;
-	private static final Color					COLOR_CONNECTED		= new Color(0, 150, 0);
-	private static final Color					COLOR_DISCONNECTED	= new Color(150, 0, 0);
+	private static final Color					COLOR_CONNECTED		= new Color(0, 150, 0, 200);
+	private static final Color					COLOR_DISCONNECTED	= new Color(150, 0, 0, 200);
 	private static final String					MSG_CONNECTED		= "Connected to server";
 	private static final String					MSG_DISCONNECTED	= "Disconnected from server";
 	public static final String					DEFAULT_STATUS		= "Click any two points on the map or enter two intersections and press the button to find a route";
@@ -153,6 +153,7 @@ public class ViewController {
 		connectionPanel = new JPanel();
 		connectionLabel = new JLabel("Connecting...");
 		connectionLabel.setFont(new Font(FONT, Font.BOLD, 10));
+		connectionPanel.setOpaque(false);
 		theme(connectionLabel);
 		theme(connectionPanel);
 		addPadding(connectionPanel, 0, 2);
