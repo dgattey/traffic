@@ -1,2 +1,1 @@
-data/ways.tsv
-
+info/ways.tsv info/nodes.tsv info/index.tsv localhost 8080
