@@ -52,14 +52,13 @@ public class RouteHandler implements ActionListener, MouseListener {
 				// Update status and get data
 				controller.setLabel("Finding a route...");
 				final List<String> streets = controller.getFields();
-				List<ClientMapWay> route;
+				List<ClientMapWay> route = null;
 				try {
 					route = hub.getRoute(streets.get(0), streets.get(1), streets.get(2), streets.get(3));
 				} catch (final IllegalArgumentException | IOException | ParseException e) {
 					if (e.getMessage() != null) {
 						controller.setLabel(e.getMessage());
 					}
-					return;
 				}
 				
 				// Someone else wanted a route, so just return
@@ -69,7 +68,12 @@ public class RouteHandler implements ActionListener, MouseListener {
 				
 				// Refresh frontend
 				controller.clearPoints();
-				controller.setLabel((!route.isEmpty()) ? "Route found!" : "No route found between those intersections");
+				if (route == null) {
+					controller.setLabel(ViewController.DEFAULT_STATUS);
+				} else {
+					controller.setLabel((!route.isEmpty()) ? "Route found!"
+							: "No route found between those intersections");
+				}
 				controller.setRoute(route);
 				controller.repaintMap();
 			}
@@ -89,10 +93,11 @@ public class RouteHandler implements ActionListener, MouseListener {
 		if (thread != null) {
 			thread.interrupt();
 		}
+		final boolean routeExisted = controller.getRoute() != null && !controller.getRoute().isEmpty();
 		controller.clearRoute();
 		
-		// If there's only one point in the user points, just return
-		if (!controller.updateUserPoints(new Point2D.Double(e.getX(), e.getY()))) {
+		// If there's only one point in the user points or a route existed, just return
+		if (routeExisted || !controller.updateUserPoints(new Point2D.Double(e.getX(), e.getY()))) {
 			return;
 		}
 		
@@ -111,7 +116,6 @@ public class RouteHandler implements ActionListener, MouseListener {
 					if (e.getMessage() != null) {
 						controller.setLabel(e.getMessage());
 					}
-					return;
 				}
 				
 				// Someone else wanted a route, so just return

@@ -29,27 +29,26 @@ import data.LatLongPoint;
  */
 public class MapView extends JComponent {
 	
-	private static final long		serialVersionUID		= 3037328084114829389L;
+	private static final long		serialVersionUID	= 3037328084114829389L;
 	private final ClientApp			app;
 	
 	// Constants
-	private static final Color		COLOR_WAY				= new Color(240, 240, 240);
-	private static final Color		COLOR_POINT				= new Color(30, 30, 170);
-	private static final Color		COLOR_ROUTE				= new Color(80, 150, 80);
-	private static final Color		COLOR_TRAFFIC_LOW		= Color.yellow;
-	private static final Color		COLOR_TRAFFIC_MEDIUM	= Color.orange;
-	private static final Color		COLOR_TRAFFIC_HIGH		= Color.red;
-	private static final double		MIN_SCALE				= 10000.0;
-	private static final double		MAX_SCALE				= 180000.0;
-	private static final double		SIZE_POINT				= 15;
+	private static final Color		COLOR_WAY			= new Color(240, 240, 240);
+	private static final Color		COLOR_POINT			= new Color(30, 30, 170);
+	private static final Color		COLOR_ROUTE			= new Color(80, 150, 80);
+	private static final Color		COLOR_TRAFFIC_MAX	= Color.red.darker();
+	private static final Color		COLOR_TRAFFIC_MIN	= Color.yellow;
+	private static final double		MIN_SCALE			= 10000.0;
+	private static final double		MAX_SCALE			= 180000.0;
+	private static final double		SIZE_POINT			= 15;
 	
 	// Information for translation and scale
-	private final Point2D.Double	currTranslation			= new Point2D.Double(0, 0);
-	private double					currScale				= 60000.0;
+	private final Point2D.Double	currTranslation		= new Point2D.Double(0, 0);
+	private double					currScale			= 60000.0;
 	private int						screenWidth;
 	private int						screenHeight;
 	private final LatLongPoint		centerPoint;
-	private double					centerScale				= 1.0;
+	private double					centerScale			= 1.0;
 	
 	/**
 	 * Constructor for a Canvas
@@ -100,15 +99,36 @@ public class MapView extends JComponent {
 	 */
 	private Color getStreetColor(final String street) {
 		final Double value = app.getHub().getTrafficValue(street);
-		if (value == null) {
+		final Double maxVal = app.getHub().getMaxTrafficValue();
+		final Double minVal = app.getHub().getMinTrafficValue();
+		if (value == null || maxVal == null || minVal == null) {
 			return COLOR_WAY;
-		} else if (Utils.inRangeInclusive(value, 1, 2)) {
-			return COLOR_TRAFFIC_LOW;
-		} else if (Utils.inRange(value, 2, 4)) {
-			return COLOR_TRAFFIC_MEDIUM;
-		} else {
-			return COLOR_TRAFFIC_HIGH;
 		}
+		final double percentVal = (value - minVal) / (maxVal - minVal);
+		return interpolateColors(COLOR_TRAFFIC_MIN, COLOR_TRAFFIC_MAX, percentVal);
+	}
+	
+	/**
+	 * Gives a color between two others, given a high/low color and percent of between
+	 * 
+	 * @param low the lower color
+	 * @param high the higher color
+	 * @param percent the percent between the two
+	 * @return a new color representing an interpolation between the two
+	 */
+	public static Color interpolateColors(final Color low, final Color high, final double percent) {
+		final Double[] colors = new Double[3];
+		colors[0] = Utils.normalize(low.getRed(), high.getRed(), percent);
+		colors[1] = Utils.normalize(low.getGreen(), high.getGreen(), percent);
+		colors[2] = Utils.normalize(low.getBlue(), high.getBlue(), percent);
+		for (int i = 0; i < colors.length; i++) {
+			if (colors[i] < 0) {
+				colors[i] = 0.0;
+			} else if (colors[i] > 255) {
+				colors[i] = 255.0;
+			}
+		}
+		return new Color(colors[0].intValue(), colors[1].intValue(), colors[2].intValue());
 	}
 	
 	/**

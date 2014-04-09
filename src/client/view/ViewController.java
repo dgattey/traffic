@@ -425,13 +425,18 @@ public class ViewController {
 		final LatLongPoint p = mapView.screenToLatLong(point);
 		
 		// Either nothing or both points exist
-		if (userPoints[0] == null || userPoints[1] != null) {
+		if (userPoints[0] == null) {
+			if (route != null) {
+				return false;
+			}
 			// Set first point
 			userPoints[0] = p;
 			userPoints[1] = null;
-		} else {
+		} else if (userPoints[1] == null) {
 			// Set the second point
 			userPoints[1] = p;
+		} else {
+			clearPoints();
 		}
 		repaintMap();
 		return userPoints[1] != null;
@@ -510,7 +515,13 @@ public class ViewController {
 	 * @param min the minimum point of the chunk
 	 */
 	public void removeChunk(final LatLongPoint min) {
-		final int sz = chunks.size();
 		chunks.remove(min);
+	}
+	
+	/**
+	 * For when the view needs to clear out all its chunks
+	 */
+	public void clearChunks() {
+		chunks.clear();
 	}
 }

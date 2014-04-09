@@ -127,4 +127,16 @@ public abstract class Utils {
 		return false;
 	}
 	
+	/**
+	 * Normalizes a percent of a range
+	 * 
+	 * @param min the min value
+	 * @param max the max value
+	 * @param percent the percent you want between min and max
+	 * @return the double representing percent between min and max
+	 */
+	public static double normalize(final double min, final double max, final double percent) {
+		return ((max - min) * percent) + min;
+	}
+	
 }

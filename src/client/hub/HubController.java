@@ -42,8 +42,12 @@ public class HubController implements Controllable {
 	private final int					serverPort;
 	private boolean						connected;
 	private final UUID					hubID;
+	
+	// Traffic information
 	private Thread						trafficThread;
 	private final Map<String, Double>	trafficMap;
+	private Double						trafficMin;
+	private Double						trafficMax;
 	
 	/**
 	 * Main Constructor for HubController
@@ -79,10 +83,11 @@ public class HubController implements Controllable {
 		connected = CommController.checkConnection(hostName, serverPort);
 		app.getViewController().setConnectionLabel(connected);
 		
-		// Connection after being disconnected for awhile
-		if (!previous && connected || app.getViewController().getChunks().isEmpty()) {
-			app.getViewController().chunk();
+		// Connection again after being disconnected
+		if (!previous && connected) {
+			app.getViewController().clearChunks();
 			restartTrafficLoop();
+			app.getViewController().repaintMap();
 		}
 		
 		// Lost connection
@@ -104,36 +109,39 @@ public class HubController implements Controllable {
 			@Override
 			public void run() {
 				try {
-					final CommController trafficC = new CommController(hostName, serverPort);
-					trafficC.connect();
-					trafficC.writeWithNL(ProtocolManager.Q_TR);
-					final BufferedReader reader = trafficC.getReader();
+					trafficMin = null;
+					trafficMax = null;
+					trafficMap.clear();
+					final CommController trafficControl = new CommController(hostName, serverPort);
+					trafficControl.connect();
+					trafficControl.writeWithNL(ProtocolManager.Q_TR);
+					final BufferedReader reader = trafficControl.getReader();
 					String line;
 					while ((line = reader.readLine()) != null && !Thread.interrupted()) {
 						final Entry<String, Double> trafficData = ProtocolManager.parseTrafficData(line);
 						if (trafficData == null) {
 							continue; // discard bad data but it shouldn't happen
 						}
+						
+						// Min and max for later use
+						if (trafficMin == null || trafficMin > trafficData.getValue()) {
+							trafficMin = trafficData.getValue();
+						}
+						if (trafficMax == null || trafficMax < trafficData.getValue()) {
+							trafficMax = trafficData.getValue();
+						}
+						
+						// Update the map
 						trafficMap.put(trafficData.getKey(), trafficData.getValue());
 						app.getViewController().repaintMap();
 					}
-					trafficC.disconnect();
+					trafficControl.disconnect();
 				} catch (final IOException e) {
 					return; // Shouldn't matter since it'll be restarted when the connection returns
 				}
 			};
 		};
 		trafficThread.start();
-	}
-	
-	/**
-	 * Returns a value for a street name from the traffic map - returns null if nothing found for that street
-	 * 
-	 * @param street a possible name of a street for traffic data
-	 * @return a value for the street's traffic
-	 */
-	public Double getTrafficValue(final String street) {
-		return trafficMap.get(street);
 	}
 	
 	/**
@@ -285,5 +293,28 @@ public class HubController implements Controllable {
 		if (e.getMessage() != null) {
 			Utils.printError("<HubController> Communication failed: " + e.getMessage());
 		}
+	}
+	
+	/**
+	 * Returns a value for a street name from the traffic map - returns null if nothing found for that street
+	 * 
+	 * @param street a possible name of a street for traffic data
+	 * @return a value for the street's traffic
+	 */
+	public Double getTrafficValue(final String street) {
+		return trafficMap.get(street);
+	}
+	
+	/**
+	 * Gives the current max traffic value
+	 * 
+	 * @return
+	 */
+	public Double getMaxTrafficValue() {
+		return trafficMax;
+	}
+	
+	public Double getMinTrafficValue() {
+		return trafficMin;
 	}
 }
