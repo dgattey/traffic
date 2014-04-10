@@ -35,7 +35,7 @@
     <jar destfile="${derived.jar}" basedir="${derived.classes}" includes="**/*.class"/>
   </target>
 
-  <target name="unit_test" depends="jar">
+  <target name="unit_test" depends="clean,jar,create_exec">
     <junit>
       <classpath refid="class.path"/>
       <classpath>
@@ -109,17 +109,17 @@
     </apply>
   </target>
 	
-  <target name="my_system_test" depends="compile,jar,create_exec">
+  <target name="server_test" depends="compile,jar,create_exec">
     <exec executable="sh">
       <arg value="-c"/>
-      <arg value="python /course/cs032/bin/tester.py -t120.0 -aTime: bin/${project}Server ${basedir}/system_tests/*"/>
+      <arg value="python /course/cs032/bin/tester.py -t180.0 -aTime: bin/${project}Server ${basedir}/system_tests/*"/>
     </exec>
   </target>
-	
-  <target name="system_test" depends="compile,jar,create_exec">
+
+  <target name="client_test" depends="compile,jar,create_exec">
     <exec executable="sh">
       <arg value="-c"/>
-      <arg value="python /course/cs032/bin/tester.py -t4.0 -aTime: bin/${project} /course/cs032/data/suites/${project}-student/*"/>
+      <arg value="python /course/cs032/bin/tester.py -t180.0 -aTime: bin/${project}Client ${basedir}/system_tests/*"/>
     </exec>
   </target>
 
