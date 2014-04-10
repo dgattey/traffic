@@ -58,6 +58,15 @@ public abstract class Utils {
 	}
 	
 	/**
+	 * Prints a message to sysout
+	 * 
+	 * @param msg the details!
+	 */
+	public static void printMessage(final String msg) {
+		System.out.println(msg);
+	}
+	
+	/**
 	 * Gets the minimum element of an int array
 	 * 
 	 * @param arr the array to search

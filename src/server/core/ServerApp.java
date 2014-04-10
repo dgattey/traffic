@@ -51,15 +51,17 @@ public class ServerApp extends App {
 		while (scanner.hasNextLine()) {
 			line = scanner.nextLine();
 			if (line.length() == 0 || line.equalsIgnoreCase("exit")) {
+				server.interrupt();
 				try {
 					server.kill();
+					break;
 				} catch (final IOException e) {
-					Utils.printError("<ServerApp> Error while killing Server.");
+					Utils.printError("<Server App> Server did not shutdown properly.");
 				}
-				System.exit(0);
 			}
+			
 		}
 		scanner.close();
+		System.exit(1);
 	}
-	
 }

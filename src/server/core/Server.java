@@ -43,16 +43,19 @@ public class Server extends Thread {
 	@Override
 	public void run() {
 		_running = true;
-		while (_running) {
+		while (_running && !Thread.currentThread().isInterrupted()) {
 			try {
 				final Socket clientConnection = _socket.accept();
 				final ClientHandler c = new ClientHandler(clientConnection, this);
 				c.start();
 			} catch (final IOException e) {
-				Utils.printError("<Server> Failed to accept clients.");
-				System.exit(1);
+				if (Thread.currentThread().isInterrupted()) {
+					Utils.printMessage("<Server> Shutting Down...");
+				} else {
+					Utils.printError("<Server> Failed to accept clients.");
+				}
+				break;
 			}
-			
 		}
 	}
 	

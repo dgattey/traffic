@@ -37,7 +37,7 @@ public class ResponseController {
 	 * 
 	 * @param t a Traffic Controller
 	 */
-	public void setTrafficController(final TrafficController t) {
+	private static void setTrafficController(final TrafficController t) {
 		GraphController.setTrafficMap((t != null) ? t.getMap() : null);
 	}
 	
