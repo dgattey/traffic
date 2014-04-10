@@ -102,6 +102,5 @@ public class Main {
 		
 		// Assuming all went well, start the app!
 		a.start();
-		System.out.println("Returned to Main");
 	}
 }
