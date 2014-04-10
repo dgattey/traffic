@@ -18,6 +18,11 @@ public class GraphController {
 	
 	private static ConcurrentHashMap<String, Double>	trafficMap;
 	
+	/**
+	 * Sets the traffic concurrent hash map
+	 * 
+	 * @param t the map
+	 */
 	public static void setTrafficMap(final ConcurrentHashMap<String, Double> t) {
 		trafficMap = t;
 	}

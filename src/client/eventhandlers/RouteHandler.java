@@ -23,8 +23,8 @@ import data.ParseException;
  */
 public class RouteHandler implements ActionListener, MouseListener {
 	
-	private final ClientApp	app;
-	private Thread			thread;
+	final ClientApp	app;
+	private Thread	thread;
 	
 	public RouteHandler(final ClientApp app) {
 		this.app = app;

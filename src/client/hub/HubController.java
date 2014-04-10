@@ -42,13 +42,13 @@ public class HubController implements Controllable {
 	final int							serverPort;
 	private boolean						connected;
 	
-	private final UUID					hubID;
+	final UUID							hubID;
 	
 	// Traffic information
 	private Thread						trafficThread;
-	private final Map<String, Double>	trafficMap;
-	private Double						trafficMin;
-	private Double						trafficMax;
+	final Map<String, Double>			trafficMap;
+	Double								trafficMin;
+	Double								trafficMax;
 	
 	/**
 	 * Main Constructor for HubController
@@ -200,7 +200,7 @@ public class HubController implements Controllable {
 		
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
-			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
+				|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
 			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		

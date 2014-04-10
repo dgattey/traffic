@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import data.LatLongPoint;
-import data.MapNode;
-import data.MapException;
 import server.io.IOController;
+import data.LatLongPoint;
+import data.MapException;
+import data.MapNode;
 
 /**
  * This class allows interaction with the KDTree<br>
@@ -20,6 +20,12 @@ public class KDTreeController {
 	private Collection<MapNode>	mapNodeSet; // Is a set by invariant (check parser)
 	private KDTree<MapNode>		tree;
 	
+	/**
+	 * Initializes a KDTree Controller
+	 * 
+	 * @throws IOException thrown internally
+	 * @throws MapException thrown internally
+	 */
 	public KDTreeController() throws IOException, MapException {
 		try {
 			mapNodeSet = IOController.getAllNodes().values();
@@ -76,6 +82,13 @@ public class KDTreeController {
 		return neighbors.get(0);
 	}
 	
+	/**
+	 * Naive nearest neighbor search
+	 * 
+	 * @param n the number of neighbors to find
+	 * @param p the lat long point to search around
+	 * @return the list of nearest neighbors
+	 */
 	public List<MapNode> getNearestNaive(final int n, final LatLongPoint p) {
 		final String searchID = Double.toString(-Double.MAX_VALUE);
 		final MapNode center = MapNode.create(searchID, p, null);

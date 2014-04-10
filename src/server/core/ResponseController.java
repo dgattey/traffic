@@ -17,11 +17,26 @@ import data.MapWay;
 import data.ParseException;
 import data.ProtocolManager;
 
+/**
+ * This class handles all responses to requests received by the server
+ * 
+ * @author aiguha
+ */
 public class ResponseController {
 	
 	ACController		_autocorrect;
 	KDTreeController	_kdtree;
 	
+	/**
+	 * Initializes a Response Controller
+	 * 
+	 * @param ways the ways file
+	 * @param nodes the nodes file
+	 * @param index the index file
+	 * @param t the traffic controller
+	 * @throws MapException if setting up the graph or kdtree failed
+	 * @throws IOException if any file io failed
+	 */
 	public ResponseController(final String ways, final String nodes, final String index, final TrafficController t)
 			throws MapException, IOException {
 		IOController.setup(ways, nodes, index);

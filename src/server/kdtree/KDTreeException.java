@@ -1,5 +1,10 @@
 package server.kdtree;
 
+/**
+ * KDTree Exception
+ * 
+ * @author aiguha
+ */
 public class KDTreeException extends Exception {
 	
 	/**

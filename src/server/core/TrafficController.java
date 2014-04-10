@@ -13,9 +13,9 @@ import data.ProtocolManager;
 public class TrafficController {
 	
 	ConcurrentHashMap<String, Double>	trafficMap;
-	private Socket						trafficSock;
+	Socket								trafficSock;
 	private final ClientPool			clients;
-	private boolean						connected;
+	boolean								connected;
 	
 	/**
 	 * Creates a new traffic controller with the given host name and port
@@ -52,7 +52,7 @@ public class TrafficController {
 					try {
 						Thread.sleep(4000);
 						trafficSock = new Socket(hostName, trafficPort);
-						System.out.println("Connected to the traffic server");
+						Utils.printError("Connected to the traffic server");
 						connected = true;
 						startGettingTraffic();
 					} catch (final IOException | InterruptedException e) {
@@ -81,7 +81,12 @@ public class TrafficController {
 		return trafficMap;
 	}
 	
-	private void startGettingTraffic() throws IOException {
+	/**
+	 * Starts reading in traffic from the traffic server
+	 * 
+	 * @throws IOException if io failed
+	 */
+	void startGettingTraffic() throws IOException {
 		String line;
 		final BufferedReader input = new BufferedReader(new InputStreamReader(trafficSock.getInputStream()));
 		while ((line = input.readLine()) != null) {
@@ -92,7 +97,7 @@ public class TrafficController {
 			}
 		}
 		connected = false;
-		System.out.println("Disconnected from the traffic server");
+		Utils.printMessage("Disconnected from the traffic server");
 	}
 	
 	/**

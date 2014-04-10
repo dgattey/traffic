@@ -1,5 +1,10 @@
 package server.io;
 
+/**
+ * DataSet Exception
+ * 
+ * @author aiguha
+ */
 public class DataSetException extends Exception {
 	
 	/**

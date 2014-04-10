@@ -19,6 +19,13 @@ public class GraphEdge<T extends Graphable<T>, S extends Weighable<S>> {
 	// Weight of Edge
 	private final double			weight;
 	
+	/**
+	 * Initializes a GraphEdge
+	 * 
+	 * @param content the content
+	 * @param source the source node
+	 * @param target the target node
+	 */
 	public GraphEdge(final S content, final GraphNode<T, S> source, final GraphNode<T, S> target) {
 		this.content = content;
 		this.source = source;

@@ -23,6 +23,16 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 	// Data Provider: allows dynamic graph construction
 	private final DataProvider<T, S>	provider;
 	
+	/**
+	 * Initializes Graph
+	 * 
+	 * @param start the starting node
+	 * @param end the ending node
+	 * @param prov the data provider
+	 * @throws IOException file io failed
+	 * @throws GraphException init failed
+	 * @throws DataProviderException data provider threw exception
+	 */
 	public Graph(final GraphNode<T, S> start, final GraphNode<T, S> end, final DataProvider<T, S> prov)
 			throws IOException, GraphException, DataProviderException {
 		if (start == null || end == null) {
@@ -139,7 +149,7 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 		}
 		// Path was not found in this case
 		if (Thread.currentThread().isInterrupted()
-			|| (!path.isEmpty() && !path.get(path.size() - 1).getSource().equals(start))) {
+				|| (!path.isEmpty() && !path.get(path.size() - 1).getSource().equals(start))) {
 			return null;
 		}
 		Collections.reverse(path);

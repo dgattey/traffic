@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Parser Tools for all DataSet IO
+ * 
+ * @author aiguha
+ */
 public class ParserTools {
 	
 	/**
@@ -161,6 +166,16 @@ public class ParserTools {
 		return ParserTools.getOrElse(lineArr, headerMap.get(header), null);
 	}
 	
+	/**
+	 * Searches for partial matches in a record
+	 * 
+	 * @param record the record string
+	 * @param search the search key
+	 * @param searchIndex the index of the column
+	 * @param delimiter the delimiter of the record
+	 * @return the result of comparing
+	 * @throws DataSetException found null or malformed records
+	 */
 	public static int searchPartialInRecord(final String record, final String search, final int searchIndex,
 			final String delimiter) throws DataSetException {
 		if (record == null) {
@@ -175,6 +190,16 @@ public class ParserTools {
 		return key.compareTo(search);
 	}
 	
+	/**
+	 * Searches for complete matches in a record
+	 * 
+	 * @param record the record string
+	 * @param search the search key
+	 * @param searchIndex the index of the column
+	 * @param delimiter the delimiter of the record
+	 * @return the result of comparing
+	 * @throws DataSetException found null or malformed records
+	 */
 	public static int searchFullyInRecord(final String record, final String search, final int searchIndex,
 			final String delimiter) throws DataSetException {
 		if (record == null) {

@@ -28,7 +28,7 @@ public abstract class App {
 	 * @param port the port number to check
 	 * @param name the name of the port to describe it to user in case of error
 	 */
-	protected void checkPort(final int port, final String name) {
+	protected static void checkPort(final int port, final String name) {
 		if (port < 1025 || port > 49150) {
 			throw new IllegalArgumentException(name + " port was outside allowable range");
 		}

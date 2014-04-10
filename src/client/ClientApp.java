@@ -16,9 +16,9 @@ import data.MapException;
  */
 public class ClientApp extends App {
 	
-	private final ViewController	viewController;
-	private final HubController		hub;
-	public final boolean			debug;
+	final ViewController		viewController;
+	private final HubController	hub;
+	public final boolean		debug;
 	
 	/**
 	 * Uses the App constructor plus gui specific stuff

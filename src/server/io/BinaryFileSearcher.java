@@ -14,10 +14,6 @@ import java.util.List;
  */
 public class BinaryFileSearcher {
 	
-	public BinaryFileSearcher() throws IOException {
-		
-	}
-	
 	/**
 	 * Reads the next valid record from a given pointer location, middle in the file r Side effect: places r's file
 	 * pointer at the start of the found record (if the record is found)

@@ -19,6 +19,11 @@ public class GraphNode<T extends Graphable<T>, S extends Weighable<S>> implement
 	// Represents the distance from the start of the Graph
 	private double						distance;
 	
+	/**
+	 * Initializes GraphNode
+	 * 
+	 * @param value the internal T value
+	 */
 	public GraphNode(final T value) {
 		this.parentEdge = null;
 		this.value = value;
@@ -26,6 +31,12 @@ public class GraphNode<T extends Graphable<T>, S extends Weighable<S>> implement
 		this.distance = Double.MAX_VALUE;
 	}
 	
+	/**
+	 * Initializes GraphNode
+	 * 
+	 * @param value the internal value
+	 * @param edges the list of edges
+	 */
 	public GraphNode(final T value, final List<GraphEdge<T, S>> edges) {
 		// Parent edges are null initially
 		this.parentEdge = null;

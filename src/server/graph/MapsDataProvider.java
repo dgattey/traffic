@@ -11,6 +11,11 @@ import server.io.IOController;
 import data.MapNode;
 import data.MapWay;
 
+/**
+ * Class that supplies MapData for Graphs
+ * 
+ * @author aiguha
+ */
 public class MapsDataProvider implements DataProvider<MapNode, MapWay> {
 	
 	// Stored objects to avoid re-reading files

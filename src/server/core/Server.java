@@ -19,6 +19,18 @@ public class Server extends Thread {
 	private final ResponseController	_response;
 	final TrafficController				_traffic;
 	
+	/**
+	 * Initializes Server
+	 * 
+	 * @param ways ways file
+	 * @param nodes nodes file
+	 * @param index index file
+	 * @param hostName the host name of the traffic server
+	 * @param trafficPort the port of the traffic server
+	 * @param serverPort the port to run on
+	 * @throws IOException failed file io
+	 * @throws MapException response controller could not be set up
+	 */
 	public Server(final String ways, final String nodes, final String index, final String hostName,
 			final int trafficPort, final int serverPort) throws IOException, MapException {
 		if (serverPort <= 1024) {
