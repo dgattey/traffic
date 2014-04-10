@@ -112,7 +112,7 @@
   <target name="my_system_test" depends="compile,jar,create_exec">
     <exec executable="sh">
       <arg value="-c"/>
-      <arg value="python /course/cs032/bin/tester.py -t120.0 -aTime: bin/${project} ${basedir}/system_tests/*"/>
+      <arg value="python /course/cs032/bin/tester.py -t120.0 -aTime: bin/${project}Server ${basedir}/system_tests/*"/>
     </exec>
   </target>
 	
