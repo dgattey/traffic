@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -80,4 +82,24 @@ public class ProtocolManagerTest {
 		}
 	}
 	
+	@Test
+	public void parseTrafficTest() {
+		final String t = "Thayer Street\t0.05";
+		final Entry<String, Double> e = ProtocolManager.parseTrafficData(t);
+		assertTrue(e.getKey().equals("Thayer Street"));
+		assertTrue(e.getValue() == 0.05);
+	}
+	
+	@Test
+	public void parseStreetListTest() {
+		final String list = "<list:string:2\nThayer Street\nCushing Street\n>\n";
+		try {
+			final List<String> l = ProtocolManager.parseStreetList(new BufferedReader(new StringReader(list)));
+			assertTrue(l.size() == 2);
+			assertTrue(l.get(0).equals("Thayer Street"));
+			assertTrue(l.get(1).equals("Cushing Street"));
+		} catch (ParseException | IOException e) {
+			fail("Threw Exception");
+		}
+	}
 }
