@@ -55,7 +55,7 @@ public abstract class Utils {
 	 * @param msg the details!
 	 */
 	public static void printError(final String msg) {
-		System.err.println("ERROR: " + msg);
+		System.out.println("ERROR: " + msg);
 	}
 	
 	/**
