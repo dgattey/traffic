@@ -43,7 +43,7 @@ public class ProtocolManagerTest {
 	public void parseCMWTest() {
 		try {
 			final String req = "<way:\n" + "/w/00001\n" + "The Street\n" + "/n/0002\n" + "#llp:41.72 -51.12\n"
-				+ "/n/0003\n" + "#llp:-1.1 -2.2\n" + ">\n";
+					+ "/n/0003\n" + "#llp:-1.1 -2.2\n" + ">\n";
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final ClientMapWay m = ProtocolManager.parseClientMapWay(r);
 			assertTrue(m != null);
@@ -62,16 +62,18 @@ public class ProtocolManagerTest {
 			final String req = ProtocolManager.Q_TR + "00001";
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final Pair<String, String> p = ProtocolManager.parseRequestHeader(r);
-			System.out.println(p);
+			assertTrue(p.getLeft().equals(ProtocolManager.Q_TR));
+			assertTrue(p.getRight().equals("00001"));
 			
 		} catch (final IOException e) {
 			fail("Threw Exception: " + e.getMessage());
 		}
 		try {
-			final String req = ProtocolManager.Q_TR;
+			final String req = ProtocolManager.Q_RS;
 			final BufferedReader r = new BufferedReader(new StringReader(req));
 			final Pair<String, String> p = ProtocolManager.parseRequestHeader(r);
-			System.out.println(p);
+			assertTrue(p.getLeft().equals(ProtocolManager.Q_RS));
+			assertTrue(p.getRight().isEmpty());
 			
 		} catch (final IOException e) {
 			fail("Threw Exception: " + e.getMessage());
