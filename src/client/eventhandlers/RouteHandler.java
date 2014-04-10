@@ -127,6 +127,7 @@ public class RouteHandler implements ActionListener, MouseListener {
 			controller.repaintMap();
 			return;
 		}
+		controller.repaintMap();
 		
 		// Make a new thread and try finding a route
 		thread = new Thread() {
