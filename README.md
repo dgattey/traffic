@@ -7,7 +7,6 @@ A project for CS032 to draw maps to screen, calculate shortest paths and give di
 - Error checking!!!
 	- Make sure empty index files work (junit tests)
 - JUnit tests
-- Printing errors from client like doc says!
 - System tests
 - README
 - Commenting
@@ -29,7 +28,7 @@ dgattey
 None at this time.
 
 ##Design Details##
-
+Prints errors with debug flag
 
 ##Optimizations##
 Multi Threading

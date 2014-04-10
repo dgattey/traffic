@@ -72,7 +72,7 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 	private void calculatePaths() throws GraphException, DataProviderException, IOException {
 		// Set distance of start of zero
 		this.start.setDistance(0);
-		final PriorityQueue<GraphNode<T, S>> pq = new PriorityQueue<>(20, new ASTARComparator<T, S>(end));
+		final PriorityQueue<GraphNode<T, S>> pq = new PriorityQueue<>(20, new ASTARComparator<>(end));
 		// Keep track of visited nodes
 		final HashSet<GraphNode<T, S>> visited = new HashSet<>();
 		pq.add(start);
@@ -139,7 +139,7 @@ public class Graph<T extends Graphable<T>, S extends Weighable<S>> {
 		}
 		// Path was not found in this case
 		if (Thread.currentThread().isInterrupted()
-				|| (!path.isEmpty() && !path.get(path.size() - 1).getSource().equals(start))) {
+			|| (!path.isEmpty() && !path.get(path.size() - 1).getSource().equals(start))) {
 			return null;
 		}
 		Collections.reverse(path);

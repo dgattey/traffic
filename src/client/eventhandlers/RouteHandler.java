@@ -8,6 +8,7 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.List;
 
+import main.Utils;
 import client.ClientApp;
 import client.hub.HubController;
 import client.view.ViewController;
@@ -28,7 +29,7 @@ public class RouteHandler implements ActionListener, MouseListener {
 	public RouteHandler(final ClientApp app) {
 		this.app = app;
 	}
-
+	
 	/**
 	 * Removes all current requests by cancelling
 	 */
@@ -47,7 +48,7 @@ public class RouteHandler implements ActionListener, MouseListener {
 		final ViewController controller = app.getViewController();
 		final HubController hub = app.getHub();
 		controller.setLabel(ViewController.DEFAULT_STATUS);
-		cancelRequests();		
+		cancelRequests();
 		controller.clearRoute();
 		controller.clearPoints();
 		
@@ -62,10 +63,26 @@ public class RouteHandler implements ActionListener, MouseListener {
 				List<ClientMapWay> route = null;
 				try {
 					route = hub.getRoute(streets.get(0), streets.get(1), streets.get(2), streets.get(3));
-				} catch (final IllegalArgumentException | IOException | ParseException e) {
+				} catch (final IllegalArgumentException e) {
 					if (e.getMessage() != null) {
 						controller.setLabel(e.getMessage());
-					} else controller.setLabel(ViewController.DEFAULT_STATUS);
+					} else {
+						controller.setLabel(ViewController.DEFAULT_STATUS);
+					}
+				} catch (final IOException e) {
+					if (e.getMessage() != null) {
+						controller.setLabel(e.getMessage());
+						Utils.printError("No connection for getting route");
+					} else {
+						controller.setLabel(ViewController.DEFAULT_STATUS);
+					}
+				} catch (final ParseException e) {
+					if (e.getMessage() != null) {
+						controller.setLabel(e.getMessage());
+						Utils.printError("Parsing error in getting route");
+					} else {
+						controller.setLabel(ViewController.DEFAULT_STATUS);
+					}
 				}
 				
 				// Someone else wanted a route, so just return
@@ -122,9 +139,19 @@ public class RouteHandler implements ActionListener, MouseListener {
 				List<ClientMapWay> route = null;
 				try {
 					route = hub.getRoute(pts.get(0), pts.get(1));
-				} catch (IOException | ParseException e) {
+				} catch (final IOException e) {
 					if (e.getMessage() != null) {
 						controller.setLabel(e.getMessage());
+						if (app.debug) {
+							Utils.printError("No connection for getting route");
+						}
+					}
+				} catch (final ParseException e) {
+					if (e.getMessage() != null) {
+						controller.setLabel(e.getMessage());
+						if (app.debug) {
+							Utils.printError("Parse error in getting route");
+						}
 					}
 				}
 				

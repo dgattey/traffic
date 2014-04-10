@@ -31,6 +31,7 @@ public class Main {
 	 */
 	public static ArgParser createFlagParser(final int possibleArgs) {
 		final Map<String, Class<?>> possibleFlags = new HashMap<>();
+		possibleFlags.put(Utils.DEBUG, null);
 		return new ArgParser(possibleFlags, possibleArgs);
 	}
 	
@@ -79,7 +80,7 @@ public class Main {
 			if (isClient) {
 				final String hostName = appInfo.get(1);
 				final int serverPort = Integer.parseInt(appInfo.get(2));
-				a = new ClientApp(hostName, serverPort);
+				a = new ClientApp(hostName, serverPort, parser.existsFlag(Utils.DEBUG));
 			} else {
 				final String ways = appInfo.get(1);
 				final String nodes = appInfo.get(2);

@@ -72,10 +72,10 @@ public class ParserTools {
 	 */
 	public static List<String> convertToList(final String list, final String delimiter) {
 		if (list == null || list.isEmpty()) {
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 		final String[] arr = list.split(delimiter);
-		return new ArrayList<String>(Arrays.asList(arr));
+		return new ArrayList<>(Arrays.asList(arr));
 	}
 	
 	/**

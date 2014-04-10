@@ -15,6 +15,7 @@ import data.MapException;
 public class ServerApp extends App {
 	
 	private Server	server;
+	private int		trafficPort;
 	
 	/**
 	 * Starts a new Server App
@@ -32,6 +33,7 @@ public class ServerApp extends App {
 		checkPort(trafficPort, "traffic");
 		try {
 			server = new Server(ways, nodes, index, hostName, trafficPort, serverPort);
+			this.trafficPort = trafficPort;
 		} catch (IOException | MapException e) {
 			Utils.printError("<ServerApp> Server could not be started.");
 			System.exit(1);
@@ -58,10 +60,33 @@ public class ServerApp extends App {
 				} catch (final IOException e) {
 					Utils.printError("<Server App> Server did not shutdown properly.");
 				}
+			} else if (line.equalsIgnoreCase("status")) {
+				printStatus();
 			}
 			
 		}
 		scanner.close();
 		System.exit(1);
+	}
+	
+	/**
+	 * Prints out a status block
+	 */
+	private void printStatus() {
+		final StringBuilder b = new StringBuilder();
+		b.append("-----------------------\n");
+		b.append("SERVER STATUS\n");
+		b.append(String.format("Server running with port number %d\n", serverPort));
+		if (server._traffic.isConnected()) {
+			b.append(String.format("Connected to traffic bot on port %d on server %s\n", trafficPort, hostName));
+		} else {
+			b.append("Not connected to traffic bot\n");
+		}
+		b.append("Traffic data saved for " + server._traffic.getMap().size() + " ways\n");
+		if (server._traffic.isConnected()) {
+			b.append("Number of clients connected: " + server._traffic.getPool().getSize() + "\n");
+		}
+		b.append("-----------------------\n");
+		System.out.println(b.toString());
 	}
 }

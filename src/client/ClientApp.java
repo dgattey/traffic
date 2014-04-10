@@ -18,19 +18,22 @@ public class ClientApp extends App {
 	
 	private final ViewController	viewController;
 	private final HubController		hub;
+	public final boolean			debug;
 	
 	/**
 	 * Uses the App constructor plus gui specific stuff
 	 * 
 	 * @param hostName the host name of the server to connect to
 	 * @param serverPort the host port of the server
+	 * @param debug if we should be in debug mode
 	 * @throws IOException if there was an error reading a file
 	 * @throws MapException if the hub had an error
 	 */
-	public ClientApp(final String hostName, final int serverPort) throws IOException, MapException {
+	public ClientApp(final String hostName, final int serverPort, final boolean debug) throws IOException, MapException {
 		super(hostName, serverPort);
 		viewController = new ViewController(this);
 		hub = new HubController(hostName, serverPort, this);
+		this.debug = debug;
 	}
 	
 	/**

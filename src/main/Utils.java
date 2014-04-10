@@ -16,8 +16,9 @@ public abstract class Utils {
 	
 	public static final String	APP_NAME		= "Traffic";
 	public static final String	APP_ABOUT		= "aiguha and dgattey";
-	public static final String	USAGE_CLIENT	= "Usage: trafficClient hostname serverport";
+	public static final String	USAGE_CLIENT	= "Usage: trafficClient hostname serverport [--debug]";
 	public static final String	USAGE_SERVER	= "Usage: trafficServer ways nodes index hostname trafficport serverport";
+	public static final String	DEBUG			= "debug";
 	private static Socket		testSocket;
 	
 	/**

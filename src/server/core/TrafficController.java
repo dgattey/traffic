@@ -15,6 +15,7 @@ public class TrafficController {
 	ConcurrentHashMap<String, Double>	trafficMap;
 	private Socket						trafficSock;
 	private final ClientPool			clients;
+	private boolean						connected;
 	
 	/**
 	 * Creates a new traffic controller with the given host name and port
@@ -31,13 +32,16 @@ public class TrafficController {
 		}
 		trafficMap = new ConcurrentHashMap<>();
 		clients = new ClientPool();
+		connected = false;
 		
 		connectToServer(hostname, port);
 	}
 	
 	/**
-	 * @param hostName
-	 * @param trafficPort
+	 * Connects to the traffic server (every few seconds if not connected)
+	 * 
+	 * @param hostName the host name of traffic
+	 * @param trafficPort the port of traffic
 	 */
 	private void connectToServer(final String hostName, final int trafficPort) {
 		new Thread() {
@@ -48,9 +52,12 @@ public class TrafficController {
 					try {
 						Thread.sleep(4000);
 						trafficSock = new Socket(hostName, trafficPort);
-						System.out.println("Connected to the traffic server\n");
+						System.out.println("Connected to the traffic server");
+						connected = true;
 						startGettingTraffic();
-					} catch (final IOException | InterruptedException e) {}
+					} catch (final IOException | InterruptedException e) {
+						connected = false;
+					}
 				}
 			}
 		}.start();
@@ -84,7 +91,8 @@ public class TrafficController {
 				clients.broadcast(line);
 			}
 		}
-		System.out.println("Disconnected from the traffic server\n");
+		connected = false;
+		System.out.println("Disconnected from the traffic server");
 	}
 	
 	/**
@@ -99,5 +107,12 @@ public class TrafficController {
 			final String fullString = street + "\t" + val + "\n";
 			c.sendWithoutClosing(fullString);
 		}
+	}
+	
+	/**
+	 * @return if the controller is connected to the traffic server
+	 */
+	public boolean isConnected() {
+		return connected;
 	}
 }

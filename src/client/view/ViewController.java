@@ -6,7 +6,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class ViewController {
 	public ViewController(final ClientApp app) {
 		this.app = app;
 	}
-
+	
 	/**
 	 * Cancels all current route requests
 	 */
@@ -280,12 +281,14 @@ public class ViewController {
 		routeButton = new JButton("Find Route");
 		routeButton.setEnabled(false);
 		routeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-		JButton clearButton = new JButton("Clear");
+		
+		final JButton clearButton = new JButton("Clear");
 		clearButton.setEnabled(true);
 		clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		clearButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			
+			@Override
+			public void actionPerformed(final ActionEvent e) {
 				clearFields();
 			}
 		});

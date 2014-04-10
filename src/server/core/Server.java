@@ -28,9 +28,11 @@ public class Server extends Thread {
 			throw new IllegalArgumentException("<Server> Non-null, non-empty arguments expected.");
 		}
 		
+		System.out.println("Server is loading...");
 		_traffic = new TrafficController(hostName, trafficPort);
 		_response = new ResponseController(ways, nodes, index, _traffic);
 		_socket = new ServerSocket(serverPort);
+		System.out.println("Loaded server! Type \"status\" to see what's happening");
 	}
 	
 	/**

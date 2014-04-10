@@ -5,10 +5,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.net.Socket;
 
-import main.Utils;
 import data.Pair;
 import data.ProtocolManager;
 
@@ -21,7 +19,7 @@ public class ClientHandler extends Thread {
 	
 	private final Socket			_client;
 	private final BufferedReader	_input;
-	private final Writer			_output;
+	private final BufferedWriter	_output;
 	
 	private final Server			_server;
 	
@@ -60,7 +58,6 @@ public class ClientHandler extends Thread {
 			final Pair<String, String> reqHeader = ProtocolManager.parseRequestHeader(_input);
 			switch (reqHeader.getLeft()) {
 			case ProtocolManager.Q_HB:
-				System.out.println("New client connected!\n");
 				return false;
 			case ProtocolManager.Q_TR:
 				_server.subscribeToTraffic(this);

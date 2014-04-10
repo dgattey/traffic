@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import main.Utils;
-
 /**
  * A group of ClientHandlers representing the a group of sockets
  */
@@ -70,5 +68,12 @@ public class ClientPool {
 		}
 		
 		_clients.clear();
+	}
+	
+	/**
+	 * @return the size of the client pool
+	 */
+	public int getSize() {
+		return _clients.size();
 	}
 }

@@ -252,7 +252,7 @@ public class HubController implements Controllable {
 					
 				});
 			} catch (final IOException e) {
-				// We don't care if this happened!
+				handleError("No connection for getting suggestions");
 			} catch (final ParseException e) {
 				handleError(e);
 			}
@@ -284,7 +284,7 @@ public class HubController implements Controllable {
 					
 				});
 			} catch (final IOException e) {
-				// We don't care if this happened!
+				handleError("No connection for getting chunks");
 			} catch (final ParseException e) {
 				handleError(e);
 			}
@@ -297,9 +297,20 @@ public class HubController implements Controllable {
 	 * 
 	 * @param e an exception
 	 */
-	private static void handleError(final Exception e) {
-		if (e.getMessage() != null) {
+	private void handleError(final Exception e) {
+		if (e.getMessage() != null && app.debug) {
 			Utils.printError("<HubController> Communication failed: " + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Prints an error out that happened in communicating with server
+	 * 
+	 * @param e an exception (string)
+	 */
+	private void handleError(final String e) {
+		if (app.debug) {
+			Utils.printError("<HubController> Communication failed: " + e);
 		}
 	}
 	

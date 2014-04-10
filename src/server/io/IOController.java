@@ -71,7 +71,7 @@ public class IOController {
 		waysFile = ways;
 		nodesFile = nodes;
 		indexFile = index;
-		mapWayStore = new HashMap<String, MapWay>();
+		mapWayStore = new HashMap<>();
 		try {
 			waysHeaderMap = ParserTools.findHeaders(waysFile, reqWaysHeaders, primaryDelimiter);
 			indexHeaderMap = ParserTools.findHeaders(indexFile, reqIndexHeaders, primaryDelimiter);
@@ -340,7 +340,7 @@ public class IOController {
 					final Map<String, String> p2 = ParserTools.parseLine(s2, indexHeaderMap, primaryDelimiter);
 					final List<String> l1 = ParserTools.convertToList(p1.get("nodes"), secondaryDelimiter);
 					final List<String> l2 = ParserTools.convertToList(p2.get("nodes"), secondaryDelimiter);
-					final Set<String> set1 = new HashSet<String>(l1);
+					final Set<String> set1 = new HashSet<>(l1);
 					// Returns the first valid intersection
 					if (set1.retainAll(l2) && !set1.isEmpty()) {
 						return allMapNodes.get(set1.toArray()[0]);
@@ -401,7 +401,7 @@ public class IOController {
 			}
 		}
 		if (start1.equals(end1) || start1.equals(end2) || start1.equals(start2) || start2.equals(end1)
-				|| start2.equals(end2) || end1.equals(end2)) {
+			|| start2.equals(end2) || end1.equals(end2)) {
 			System.out.println(String.format(
 					"Received (%s, %s). \n\t chunking between: (%s, %s, %s, %s) \n\t blocksize: %d chunksize: %d ", p1,
 					p2, start1, end1, start2, end2, blockData.size(), chunk.size()));
@@ -417,6 +417,6 @@ public class IOController {
 	 */
 	public static boolean isSetup() {
 		return !(waysFile == null || nodesFile == null || indexFile == null || allMapNodes == null
-				|| mapWayStore == null || waysHeaderMap == null || indexHeaderMap == null || nodesHeaderMap == null);
+			|| mapWayStore == null || waysHeaderMap == null || indexHeaderMap == null || nodesHeaderMap == null);
 	}
 }
