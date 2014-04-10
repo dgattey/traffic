@@ -39,7 +39,11 @@ local.properties
 .texlipse
 
 ##Folders
-info/
 derived/
 derived/*.jar
+
+##Big Files
+info/index.tsv
+info/ways.tsv
+info/nodes.tsv
 
