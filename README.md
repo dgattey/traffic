@@ -2,15 +2,17 @@ Traffic
 ========
 *By aiguha and dgattey*
 
-A project for CS032 to draw maps to screen, calculate shortest paths around map,
- and give directions. Includes traffic data sent by random server.
+A project for CS032 to draw maps to screen and give directions. Instantiated by
+map data in the form of a ways file, nodes file, and index file, as well as an
+optional traffic server. The server can run a large number of clients with one
+copy of data in memory.
 
 ###Backend Project Components
 1. Autocorrect: dgattey
 2. Stars: aiguha
 3. Bacon: aiguha
 
-### Known Bugs
+###Known Bugs
 None at this time!
 
 ###How to Run
@@ -21,19 +23,17 @@ None at this time!
    --debug flag if you want errors to print)
 
 ##Design Details
-We took our **frontend** package from Maps and made it the **client** package.
- The **backend** package became the **server** package. Because of our earlier
-separation, we were able to simply change the **hub** controller and add a
-**core** server package and everything else could stay the same. The **main**
-package has a Main class that given the appropriate number of flags and the
-correct arguments, starts up either a ClientApp or a ServerApp. Given our
-interfaces, everything is pretty seamless.
+We took our frontend package from Maps and made it the **client** package.
+ The backend package became the **server** package. Because of our earlier
+separation, we were able to simply change the HubController and add a
+**core** server package and everything else basically stayed the same.
+The **main** package has a Main class that given the appropriate number of
+flags and the correct arguments, starts up either a ClientApp or a ServerApp.
+Given our interfaces, everything is pretty seamless.
 
-Our client, server, and traffic bot all can be connected
-together in any order. If no connection exists, the client will attempt to reconnect
-to the server, and the server will attempt to reconnect to the traffic server
-every few seconds. Basically, because of this, no weird connection errors will
-happen. It'll either work and connect, or it'll try again in a bit.
+We have a server, client, data, and main package on the top level. Data is shared
+by both server and client, so there are connections there. But nothing in the
+client or server packages import the other's code.
 
 ###Client
 The client simply spawns a GUI and attempts a connection. It starts a timer that
@@ -52,6 +52,20 @@ the server. We used Callables to return a value from that thread, and an
 ExecutorService to run it.
 
 ###Server
+The server...TODO
+
+###Connections
+Our client, server, and traffic bot all can be connected together in any order.
+The client has a timer that attempts connection every few seconds and updates the
+UI accordingly. Therefore, it doesn't matter if the client starts before or after
+a server. Similarly, if the server can't send to a request, it removes it from its
+pool and forgets about it. Additionally, the server attempts reconnection to the
+traffic server if there's no connection every few seconds, so it can die and be
+restarted and the server will keep accepting data. The command line interface
+notifies you about connection status when you run 'status'. If there's no
+connection, it saves last known traffic data for use when routing. Since the
+client has no use for the data after a lost connection, it clears its traffic
+data but keeps its map data.
 
 ##Optimizations
 ###Multithreading
@@ -67,7 +81,7 @@ ExecutorService to run it.
 4. Each request runs on its own thread
 
 ###Protocol for Sending/Receiving
-We had a ProtocolManager that...
+We had a ProtocolManager that...TODO
 
 ##Testing
 Test our code by running the following:
@@ -84,5 +98,5 @@ tested closing the connection from the server to the client and vice versa in
 the middle of a request. No matter what order we did things, nothing failed!
 Additionally, we modified the traffic bot to send us information every x amount
 of time, and tested it with requests every 0.0000001 seconds. The whole map
-filled up, but even with crazy data happening, routes completed and reflected the
-traffic at the moment at which the route was created.
+filled up, but even with crazy amounts of data coming in, routes were found and
+reflected the amount of traffic at the moment at which the route was created.

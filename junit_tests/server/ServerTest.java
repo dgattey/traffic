@@ -1,5 +1,6 @@
 package server;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -9,7 +10,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import server.core.Server;
-
 import data.MapException;
 
 public class ServerTest {
@@ -21,6 +21,7 @@ public class ServerTest {
 	public void invalidInit() {
 		try {
 			final Server s = new Server("info/ways.tsv", "info/nodes.tsv", "info/index.tsv", null, 0, 0);
+			assertFalse(s != null);
 			fail("Should have thrown exception");
 		} catch (final IllegalArgumentException e) {
 			assertTrue(true);

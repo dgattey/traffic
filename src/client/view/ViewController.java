@@ -282,7 +282,7 @@ public class ViewController {
 		routeButton.setEnabled(false);
 		routeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		final JButton clearButton = new JButton("Clear");
+		final JButton clearButton = new JButton("Clear Fields");
 		clearButton.setEnabled(true);
 		clearButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		clearButton.addActionListener(new ActionListener() {
