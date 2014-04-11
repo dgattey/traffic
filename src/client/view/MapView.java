@@ -40,7 +40,7 @@ public class MapView extends JComponent {
 	private static final Color		COLOR_TRAFFIC_MAX	= Color.red.darker();
 	private static final Color		COLOR_TRAFFIC_MIN	= Color.yellow;
 	private static final double		MIN_SCALE			= 5000.0;
-	private static final double		MAX_SCALE			= 100000.0;
+	private static final double		MAX_SCALE			= 80000.0;
 	private static final double		SIZE_POINT			= 15;
 	
 	// Information for translation and scale
@@ -148,6 +148,9 @@ public class MapView extends JComponent {
 		for (final LatLongPoint p : app.getViewController().getChunks().keySet()) {
 			if (LatLongPoint.intersectChunk(p, p.plus(MapChunk.CHUNKSIZE, MapChunk.CHUNKSIZE), screenMax, screenMin)) {
 				final List<ClientMapWay> allWays = app.getViewController().getChunks().get(p).getWays();
+				if (allWays == null) {
+					continue;
+				}
 				for (final ClientMapWay w : allWays) {
 					
 					// Make sure ways that span two chunks don't get drawn twice
@@ -157,7 +160,7 @@ public class MapView extends JComponent {
 					
 					// Only draws lines that are big enough to make a difference for the user
 					final Line2D line = makeLine2D(w);
-					if (line.getP2().distanceSq(line.getP1()) > 10) {
+					if (line.getP2().distanceSq(line.getP1()) > 25) {
 						content.setColor(getStreetColor(w.getName()));
 						content.draw(line);
 						drawnWays.add(w.getID());
