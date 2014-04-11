@@ -76,6 +76,7 @@ public class ResponseController {
 			final Matcher m = p.matcher(input);
 			if (m.find()) {
 				errorResponse(w, null);
+				return;
 			}
 			
 			// Find suggestions

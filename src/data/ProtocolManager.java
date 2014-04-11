@@ -83,6 +83,9 @@ public class ProtocolManager {
 	 * @throws ParseException if the tag didn't exist
 	 */
 	public static void checkForOpeningTag(final String line, final String tag) throws ParseException {
+		if (Utils.isNullOrEmpty(line)) {
+			throw new ParseException("Request ended unexpectedly");
+		}
 		if (!line.startsWith(tag)) {
 			throw new ParseException(String.format("Missing Opening Tag (found %s instead of \"%s\")", line, tag));
 		}
@@ -105,6 +108,9 @@ public class ProtocolManager {
 	 * @throws ParseException if the tag didn't exist
 	 */
 	public static void checkForClosingTag(final String line) throws ParseException {
+		if (Utils.isNullOrEmpty(line)) {
+			throw new ParseException("Request ended unexpectedly");
+		}
 		if (!line.equals(CLOSE_TAG)) {
 			throw new ParseException(String.format("Missing Closing Tag (found %s instead of \">\")", line));
 		}
@@ -117,6 +123,9 @@ public class ProtocolManager {
 	 * @throws ParseException if the tag was wrong
 	 */
 	public static void checkForResponseFooter(final String line) throws ParseException {
+		if (Utils.isNullOrEmpty(line)) {
+			throw new ParseException("Request ended unexpectedly");
+		}
 		if (!line.equals(FOOTER)) {
 			throw new ParseException(String.format("Missing Footer (found %s instead of \"%s\")", line, FOOTER));
 		}
