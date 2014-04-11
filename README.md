@@ -52,7 +52,29 @@ the server. We used Callables to return a value from that thread, and an
 ExecutorService to run it.
 
 ###Server
-The server...TODO
+The server consists of five main packages. Four former backend packages: io, autocorrect,
+kdtree and graph, which manage File IO, autocompletion, nearest neighbor searches
+and shortest path calculations. These remained almost completely unchanged from Maps,
+as they were already prepped for multithreading. The graph package involved minor additions
+to enable realtime traffic-based route calculation. The fifth package is core, which
+sets up the multithreaded server and handles network communication with all clients
+and the traffic server.
+
+The server starts handling each client on a new thread, allowing the main thread
+to stay open for command-line interaction from the administrator (if any). As per
+our protocol, every request from the client is made on a new socket (except traffic
+requests) and responded to on the same one. Thus, one client typically has about four sockets
+connecting to the server. This strategy eliminates the bottleneck of writing multiple responses
+to one socket concurrently.
+
+When a new socket connects, the request header is read and it is dispatched to one
+of five response methods in ResponseController, which uses ACController, KDTreeController,
+GraphController and TrafficController to construct responses.
+
+The server, through TrafficController, is set up to continually try connecting to the traffic
+server, and constantly read traffic data while connected. When traffic data is unavailable, the
+server can still perform normally, including route calculation.
+
 
 ###Connections
 Our client, server, and traffic bot all can be connected together in any order.
