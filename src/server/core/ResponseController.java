@@ -214,6 +214,7 @@ public class ResponseController {
 		// Build Response
 		final StringBuilder response = new StringBuilder(256);
 		response.append(ProtocolManager.R_ER);
+		response.append("\n");
 		response.append(ProtocolManager.encodeError(e == null ? "No message" : e.getMessage()));
 		response.append(ProtocolManager.FOOTER);
 		response.append("\n");
