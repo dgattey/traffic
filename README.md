@@ -98,12 +98,57 @@ data but keeps its map data.
 
 ###Other
 1. Only having one request for a route at a time
-2. Cancelling of threads on server and client
+2. Canceling of threads on server and client
 3. Reusing objects as much as possible (HashMaps and HashSets)
 4. Each request runs on its own thread
 
-###Protocol for Sending/Receiving
-We had a ProtocolManager that...TODO
+###Communication Protocol
+####Objects
+
+#####Simple Objects
+
+- LatLongPoint
+- Error Messages
+
+These are denoted as **#[object_tag]: [fields...]** on a single line.
+
+    #llp: 41.12 -71.21
+
+#####Complex Objects
+- List[String]
+- MapWay
+- List[MapWay]
+
+
+These are denoted as **<[object_tag]: {optional length}:\n
+ [fields...] >**
+
+    <way:
+    /w/0001
+    Thayer Street
+    /n/0002
+    #llp: 41.12 -71.21
+    /n/0003
+    #llp: 47.50 -78.401
+    >
+
+Other objects are similarly constructed.
+
+####Requests And Responses
+
+All queries have the following structure:
+
+    @q:query_name:
+    [object...]
+    @x
+
+All responses have the following structure:
+
+    @r:response_name:
+    [object...]
+    @x
+
+
 
 ##Testing
 Test our code by running the following:
