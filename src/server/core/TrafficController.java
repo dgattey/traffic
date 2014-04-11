@@ -52,7 +52,7 @@ public class TrafficController {
 					try {
 						Thread.sleep(4000);
 						trafficSock = new Socket(hostName, trafficPort);
-						Utils.printError("Connected to the traffic server");
+						Utils.printMessage("Connected to the traffic server");
 						connected = true;
 						startGettingTraffic();
 					} catch (final IOException | InterruptedException e) {
