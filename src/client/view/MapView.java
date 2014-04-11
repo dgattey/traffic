@@ -160,7 +160,7 @@ public class MapView extends JComponent {
 					
 					// Only draws lines that are big enough to make a difference for the user
 					final Line2D line = makeLine2D(w);
-					if (line.getP2().distanceSq(line.getP1()) > 25) {
+					if (line.getP2().distanceSq(line.getP1()) > 12) {
 						content.setColor(getStreetColor(w.getName()));
 						content.draw(line);
 						drawnWays.add(w.getID());
