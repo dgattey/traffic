@@ -154,6 +154,13 @@ public class RouteHandler implements ActionListener, MouseListener {
 							Utils.printError("Parse error in getting route");
 						}
 					}
+				} catch (final IllegalArgumentException e) {
+					if (e.getMessage() != null) {
+						controller.setLabel(e.getMessage());
+						if (app.debug) {
+							Utils.printError(e.getMessage());
+						}
+					}
 				}
 				
 				// Someone else wanted a route, so just return

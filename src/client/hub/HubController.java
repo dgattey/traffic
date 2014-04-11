@@ -169,7 +169,7 @@ public class HubController implements Controllable {
 	@Override
 	public List<ClientMapWay> getRoute(final LatLongPoint a, final LatLongPoint b) throws IOException, ParseException {
 		if (a == null || b == null) {
-			throw new IllegalArgumentException("<HubController> null points to route find not allowed");
+			throw new IllegalArgumentException("Oops! Points can't be null");
 		}
 		List<ClientMapWay> ret = null;
 		if (isConnected()) {
@@ -200,7 +200,7 @@ public class HubController implements Controllable {
 		
 		// Error checking
 		if (streetA1 == null || streetA1.isEmpty() || streetA2 == null || streetA2.isEmpty() || streetB1 == null
-				|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
+			|| streetB1.isEmpty() || streetB2 == null || streetB2.isEmpty()) {
 			throw new IllegalArgumentException("<HubController> empty or null streets to route find not allowed");
 		}
 		

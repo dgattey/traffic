@@ -155,6 +155,8 @@ Test our code by running the following:
 - **Server system tests:** ant server_test
 - **Client system tests:** ant client_test
 - **JUnit tests:** ant unit_test
+- **More Server tests** start the server on port 9999. Once it's open, 
+run ./badRequest.sh and it should print out responses and expected responses
 
 ###By Hand
 We extensively tested the interactions between the client and server by running
