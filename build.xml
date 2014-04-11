@@ -102,7 +102,7 @@
     <echo file="bin/${project}Server" append="false">#! /bin/bash
     java -cp ${derived.jar} main.Main server "$$@"</echo>
     <echo file="bin/${project}Client" append="false">#! /bin/bash
-    java -cp ${derived.jar} main.Main client "$$@"</echo>
+    java -Xms512m -cp ${derived.jar} main.Main client "$$@"</echo>
     <apply executable="chmod">
       <arg value="+x"/>
       <fileset file="bin/${project}*"/>
