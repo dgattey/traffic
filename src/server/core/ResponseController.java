@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import server.autocorrect.ACController;
 import server.graph.GraphController;
@@ -68,6 +70,13 @@ public class ResponseController {
 		try {
 			// Get street name
 			final String input = ProtocolManager.parseStreetName(r);
+			
+			// Check for invalid characters
+			final Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+			final Matcher m = p.matcher(input);
+			if (m.find()) {
+				errorResponse(w, null);
+			}
 			
 			// Find suggestions
 			final List<String> sugg = _autocorrect.suggest(input);
@@ -215,7 +224,7 @@ public class ResponseController {
 		final StringBuilder response = new StringBuilder(256);
 		response.append(ProtocolManager.R_ER);
 		response.append("\n");
-		response.append(ProtocolManager.encodeError(e == null ? "No message" : e.getMessage()));
+		response.append(ProtocolManager.encodeError(e == null ? "Request Failed" : e.getMessage()));
 		response.append(ProtocolManager.FOOTER);
 		response.append("\n");
 		w.write(response.toString());
