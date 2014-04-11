@@ -40,7 +40,7 @@ public class MapView extends JComponent {
 	private static final Color		COLOR_TRAFFIC_MAX	= Color.red.darker();
 	private static final Color		COLOR_TRAFFIC_MIN	= Color.yellow;
 	private static final double		MIN_SCALE			= 5000.0;
-	private static final double		MAX_SCALE			= 180000.0;
+	private static final double		MAX_SCALE			= 100000.0;
 	private static final double		SIZE_POINT			= 15;
 	
 	// Information for translation and scale
